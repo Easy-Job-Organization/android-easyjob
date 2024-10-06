@@ -40,7 +40,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.1" //en documentacion dice 1.1.1
     }
     packaging {
         resources {
@@ -51,6 +51,22 @@ android {
 
 dependencies {
 
+    implementation(libs.coil.compose.v222)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation("androidx.fragment:fragment-ktx:1.8.4")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.coil.compose)
+    implementation(libs.gson)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.androidx.material)
+    implementation(libs.material3)
+    implementation("androidx.documentfile:documentfile:1.0.1") // por validar
+    implementation ("androidx.loader:loader:1.1.0") // por validar
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
