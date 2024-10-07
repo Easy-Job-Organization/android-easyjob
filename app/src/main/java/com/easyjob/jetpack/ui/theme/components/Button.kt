@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
+// PRIMARY BUTTON
 @Composable
 fun PrimaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
     Button(
@@ -45,6 +47,41 @@ fun PrimaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 5
     }
 }
 
+// SECONDARY BUTTON
+@Composable
+fun SecondaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF838383)),
+        modifier = Modifier
+            .width(width.dp)
+            .height(height.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = 4.dp, // Elevación normal
+            pressedElevation = 8.dp // Elevación cuando se presiona
+        )
+    ) {
+        Text(text = text, color = Color.Black, fontSize = 18.sp)
+    }
+}
+
+@Composable
+fun TextButton(text: String, onClick: () -> Unit, width: Int, height: Int = 20) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF838383)),
+        modifier = Modifier
+            .width(width.dp)
+            .height(height.dp)
+            .background(color = Color.Transparent),
+    ) {
+        Text(text = text, color = Color(0xFF838383), fontSize = 16.sp)
+    }
+}
+
+
+// BUTTON SECTION
 @Composable
 fun ButtonSection(active: Boolean, text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
 
@@ -75,23 +112,5 @@ private fun getBottomLineShape(lineThicknessDp: Dp) : Shape {
         lineTo(size.width, size.height - lineThicknessPx)
         // 4) Top-left corner
         lineTo(0f, size.height - lineThicknessPx)
-    }
-}
-
-@Composable
-fun SecondaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF838383)),
-        modifier = Modifier
-            .width(width.dp)
-            .height(height.dp),
-        shape = RoundedCornerShape(8.dp),
-        elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = 4.dp, // Elevación normal
-            pressedElevation = 8.dp // Elevación cuando se presiona
-        )
-    ) {
-        Text(text = text, color = Color.Black, fontSize = 18.sp)
     }
 }

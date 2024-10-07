@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -26,15 +27,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Input(value: String, label: String = "Ingresa aquí", onValueChange: (String) -> Unit, width: Int = 600) {
+fun Input(
+    value: String,
+    label: String = "Ingresa aquí",
+    onValueChange: (String) -> Unit,
+    width: Int = 600,
+    visualTransformation: VisualTransformation = VisualTransformation.None
+) {
     TextField(
         value = value,
         shape = RoundedCornerShape(8.dp),
         placeholder = { Text(modifier = Modifier.background(Color.Transparent), text = label) },
         onValueChange = onValueChange,
+        visualTransformation = visualTransformation,
+        keyboardOptions = KeyboardOptions.Default.copy(
+            keyboardType = if (visualTransformation is PasswordVisualTransformation) KeyboardType.Password else KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
         modifier = Modifier
             .width(width.dp)
             .padding(vertical = 8.dp)
@@ -45,7 +61,13 @@ fun Input(value: String, label: String = "Ingresa aquí", onValueChange: (String
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownMenu1(options: List<String>, selectedOption: String, onOptionSelected: (String) -> Unit, width: Int = 500, height: Int = 56) {
+fun DropdownMenu1(
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit,
+    width: Int = 500,
+    height: Int = 56
+) {
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
