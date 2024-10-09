@@ -46,8 +46,8 @@ fun Input(
 ) {
     TextField(
         value = value,
-        shape = RoundedCornerShape(8.dp),
         placeholder = { Text(modifier = Modifier.background(Color.Transparent), text = label) },
+        shape = RoundedCornerShape(8.dp),
         onValueChange = onValueChange,
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions.Default.copy(

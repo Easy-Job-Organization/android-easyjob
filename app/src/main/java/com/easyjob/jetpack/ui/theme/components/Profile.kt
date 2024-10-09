@@ -107,13 +107,22 @@ fun ProfileSection(
 }
 
 @Composable
-fun ButtonIconLink(icon: ImageVector, descriptionIcon: String, onClick: () -> Unit, text: String, color: Color) {
+fun ButtonIconLink(
+    icon: ImageVector,
+    descriptionIcon: String,
+    onClick: () -> Unit,
+    text: String,
+    color: Color,
+    backgroundColor: Color = Color.Transparent,
+    enable: Boolean = true
+) {
     Button(
         onClick = { onClick() },
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Transparent)
+            .background(backgroundColor)
             .padding(0.dp),
+        enabled = enable,
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color(0xFF133c55),

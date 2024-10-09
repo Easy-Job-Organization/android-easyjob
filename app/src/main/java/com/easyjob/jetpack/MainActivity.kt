@@ -74,7 +74,7 @@ fun App() {
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
-        composable("professionalProfile"){ ProfessionalProfileScreen(navController) }
+        composable("professionalProfile?id={id}"){ ProfessionalProfileScreen(navController) }
         composable("makeAppointment"){ MakeAppointmentScreen(navController) }
     }
 }

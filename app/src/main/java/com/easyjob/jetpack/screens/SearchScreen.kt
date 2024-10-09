@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.easyjob.jetpack.ui.theme.components.CardSearch
 
 @Composable
 fun SearchScreen(navController: NavController = rememberNavController()) {
@@ -27,6 +28,16 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
                 .padding(innerPadding),
         ) {
             Text(text = "Prueba")
+
+            CardSearch(
+                id = "1",
+                image = "",
+                descriptionImage = "Photo",
+                name = "Pepito Pérez Hernández",
+                stars = 5,
+                comments = "20",
+                navController = navController
+            )
         }
 
     }
