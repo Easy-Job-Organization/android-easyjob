@@ -15,39 +15,48 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.ShoppingCart
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.R
 import com.easyjob.jetpack.ui.theme.components.ActionCard
+import com.easyjob.jetpack.ui.theme.components.BottomNavBar
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.Topbar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen() {
-
-
+fun ProfileScreen(navController: NavController = rememberNavController()) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+
         topBar = {
             Topbar(
                 title = "Mi perfil",
                 icon = Icons.Default.Edit,
-                onEditClick = {}
+                onEditClick = {},
+                scrollBehavior = scrollBehavior,
             )
         },
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(15.dp),
     ) { innerPadding ->
 
         Column(modifier = Modifier
-            .fillMaxSize()
             .padding(innerPadding)
-            .padding(15.dp)
         ) {
 
             ProfileSection(

@@ -18,13 +18,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.DropdownMenu1
 import com.easyjob.jetpack.ui.theme.components.Input
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.TextButton
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController = rememberNavController()) {
 
     var name by remember {
         mutableStateOf("")
@@ -43,50 +46,43 @@ fun RegisterScreen() {
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
 
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
 
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .padding(15.dp)
-    ) { innerPadding ->
+        Box(modifier = Modifier) {
 
-        Column(
+            //Logo
+
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+            Input(value = name, label = "Nombre", onValueChange = { newValue -> name = newValue }, width = 300)
+            Input(value = phone, label = "Teléfono", onValueChange = { newValue -> phone = newValue }, width = 300)
+            DropdownMenu1(options = options, selectedOption = selectedOption, onOptionSelected = { option -> selectedOption = option })
+            Input(value = email, label = "Correo", onValueChange = { newValue -> email = newValue }, width = 300)
+            Input(value = password, label = "Contraseña", onValueChange = { newValue -> password = newValue }, width = 300, visualTransformation = PasswordVisualTransformation())
+
+            Box(modifier = Modifier.height(18.dp))
+
+            val options = NavOptions.Builder().setPopUpTo(route = "register", inclusive = true).build()
+            PrimaryButton(text = "Registrarse", onClick = { navController.navigate("home", options) }, width = 200)
+
+        }
+
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(top = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
 
-            Box(modifier = Modifier) {
-
-                //Logo
-
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
-                Input(value = name, label = "Nombre", onValueChange = { newValue -> name = newValue }, width = 300)
-                Input(value = phone, label = "Teléfono", onValueChange = { newValue -> phone = newValue }, width = 300)
-                DropdownMenu1(options = options, selectedOption = selectedOption, onOptionSelected = { option -> selectedOption = option })
-                Input(value = email, label = "Correo", onValueChange = { newValue -> email = newValue }, width = 300)
-                Input(value = password, label = "Contraseña", onValueChange = { newValue -> password = newValue }, width = 300, visualTransformation = PasswordVisualTransformation())
-
-                Box(modifier = Modifier.height(18.dp))
-
-                PrimaryButton(text = "Registrarse", onClick = { /*TODO*/ }, width = 200)
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .padding(top = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-
-                Text(text = "¿Ya tienes cuenta?")
-                TextButton(text = "Inicia sesión", onClick = { /*TODO*/ }, width = 50)
-
-            }
+            Text(text = "¿Ya tienes cuenta?")
+            TextButton(text = "Inicia sesión", onClick = { navController.navigate("login") }, width = 50)
 
         }
 

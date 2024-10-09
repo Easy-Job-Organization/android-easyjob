@@ -18,6 +18,8 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun BottomNavItem(
@@ -61,53 +64,53 @@ fun BottomNavItem(
 
 
 @Composable
-fun BottomNavBar(navController: NavController) {
+fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
     var selectedIndex by remember { mutableStateOf(0) }
 
-    BottomNavigation(
-        modifier = Modifier.fillMaxWidth(),
-        backgroundColor = Color.White,
-        contentColor = Color(0xff4091b6)
-    ) {
-        BottomNavItem(
-            icon = Icons.Default.Search,
-            descriptionIcon = "Buscar",
-            isSelected = selectedIndex == 0,
-            text = "Buscar",
+    NavigationBar {
+        NavigationBarItem(
+            selected = selectedIndex == 0,
             onClick = {
                 selectedIndex = 0
-                navController.navigate("search")
-            }
+                nestedNavController.navigate("search") {
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+            label = { Text(text = "Buscar") }
         )
-        BottomNavItem(
-            icon = Icons.Default.DateRange,
-            descriptionIcon = "Citas",
-            isSelected = selectedIndex == 1,
-            text = "Citas",
+        NavigationBarItem(
+            selected = selectedIndex == 1,
             onClick = {
                 selectedIndex = 1
-                navController.navigate("appointments")
-            }
+                nestedNavController.navigate("appointments") {
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Default.DateRange, contentDescription = "Citas") },
+            label = { Text(text = "Citas") }
         )
-        BottomNavItem(
-            icon = Icons.Default.Send,
-            descriptionIcon = "Mensajes",
-            isSelected = selectedIndex == 2,
-            text = "Mensajes",
+        NavigationBarItem(
+            selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
-                navController.navigate("messages")
-            }
+                nestedNavController.navigate("messages") {
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Filled.Send, contentDescription = "Mensajes") },
+            label = { Text(text = "Mensajes") }
         )
-        BottomNavItem(
-            icon = Icons.Default.Person,
-            descriptionIcon = "Perfil",
-            isSelected = selectedIndex == 3,
-            text = "Perfil",
+        NavigationBarItem(
+            selected = selectedIndex == 3,
             onClick = {
                 selectedIndex = 3
-                navController.navigate("profile")
-            }
+                nestedNavController.navigate("profile") {
+                    launchSingleTop = true
+                }
+            },
+            icon = { Icon(Icons.Filled.Person, contentDescription = "Perfil") },
+            label = { Text(text = "Perfil") }
         )
     }
 }

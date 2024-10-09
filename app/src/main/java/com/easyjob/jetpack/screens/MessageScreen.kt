@@ -11,14 +11,11 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppointmentScreen(navController: NavController = rememberNavController()) {
-
-
+fun MessageScreen(navController: NavController = rememberNavController()) {
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp)
     ) { innerPadding ->
 
         Column(
@@ -30,5 +27,4 @@ fun AppointmentScreen(navController: NavController = rememberNavController()) {
         }
 
     }
-
 }

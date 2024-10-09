@@ -6,19 +6,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun AppointmentScreen(navController: NavController = rememberNavController()) {
-
-
+fun MakeAppointmentScreen(navController: NavController = rememberNavController()) {
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp)
     ) { innerPadding ->
 
         Column(
@@ -30,5 +26,4 @@ fun AppointmentScreen(navController: NavController = rememberNavController()) {
         }
 
     }
-
 }

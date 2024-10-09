@@ -10,55 +10,58 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Topbar(
     title: String,
-    icon: ImageVector,
-    onEditClick: () -> Unit
+    icon: ImageVector? = null,
+    onEditClick: () -> Unit = {},
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-
-    TopAppBar(
-        modifier = Modifier
-            .fillMaxWidth()
-            .zIndex(1f)
-            .background(Color.White)
-            .padding(vertical = 8.dp)
-            .border(2.dp, Color.Gray),
-        backgroundColor = Color.White,
-        elevation = 8.dp
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color.White,
+            titleContentColor = Color(0xff133c55),
+        ),
+        title = {
             Text(
-                text = title,
-                fontSize = 24.sp,
+                title,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xff133c55)
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
-
-            IconButton(onClick = onEditClick) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Edit",
-                    tint = Color(0xff133c55)
-                )
+        },
+        navigationIcon = {
+            if (icon != null) {
+                IconButton(onClick = onEditClick) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = "Localized description"
+                    )
+                }
             }
-
-        }
-    }
-
+        },
+        scrollBehavior = scrollBehavior,
+    )
 }

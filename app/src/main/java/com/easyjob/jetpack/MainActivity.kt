@@ -34,7 +34,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.screens.AppointmentScreen
+import com.easyjob.jetpack.screens.HomeScreen
+import com.easyjob.jetpack.screens.LoginScreen
+import com.easyjob.jetpack.screens.MakeAppointmentScreen
+import com.easyjob.jetpack.screens.MessageScreen
+import com.easyjob.jetpack.screens.ProfessionalProfileScreen
 import com.easyjob.jetpack.screens.ProfileScreen
+import com.easyjob.jetpack.screens.RegisterScreen
 import com.easyjob.jetpack.screens.SearchScreen
 import com.easyjob.jetpack.ui.theme.EasyjobTheme
 import com.easyjob.jetpack.ui.theme.components.ActionCard
@@ -54,28 +60,26 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EasyjobTheme {
-                MainScreen()
+                App()
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun App() {
     val navController = rememberNavController()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom
-    ) {
-        NavHost(navController = navController, startDestination = "profile") {
-            composable("search") { SearchScreen() }
-            composable("appointments") { AppointmentScreen() }
-            //composable("messages") { MessagesScreen() }
-            composable("profile") { ProfileScreen() }
-        }
-
-        BottomNavBar(navController = navController)
+    NavHost(navController = navController, startDestination = "search") {
+        composable("login"){ LoginScreen(navController) }
+        composable("register"){ RegisterScreen(navController) }
+        composable("home"){ HomeScreen() }
+        composable("search") { SearchScreen(navController) }
+        composable("appointments") { AppointmentScreen(navController) }
+        composable("messages") { MessageScreen(navController) }
+        composable("profile") { ProfileScreen(navController) }
+        composable("professionalProfile"){ ProfessionalProfileScreen(navController) }
+        composable("makeAppointment"){ MakeAppointmentScreen(navController) }
     }
 }
 
@@ -90,6 +94,6 @@ class Service(
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        MainScreen()
+        App()
     }
 }

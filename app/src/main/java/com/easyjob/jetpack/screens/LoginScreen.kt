@@ -18,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.Input
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.TextButton
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController = rememberNavController()) {
 
     var email by remember {
         mutableStateOf("")
@@ -33,48 +36,40 @@ fun LoginScreen() {
     }
 
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
 
+        Box(modifier = Modifier) {
 
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .padding(15.dp)
-    ) { innerPadding ->
+            //Logo
 
-        Column(
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+
+            Input(value = email, label = "Correo", onValueChange = { email = it }, width = 300)
+            Input(value = password, label = "Contraseña", onValueChange = { password = it }, width = 300, visualTransformation = PasswordVisualTransformation())
+
+            Box(modifier = Modifier.height(18.dp))
+
+            val options = NavOptions.Builder().setPopUpTo(route = "home", inclusive = true).build()
+            PrimaryButton(text = "Iniciar sesión", onClick = { navController.navigate("home", options) }, width = 200) //revisar que haya cumplido la condicion
+
+        }
+
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+                .padding(top = 40.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
         ) {
 
-            Box(modifier = Modifier) {
-
-                //Logo
-
-            }
-
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-
-                Input(value = email, label = "Correo", onValueChange = { email = it }, width = 300)
-                Input(value = password, label = "Contraseña", onValueChange = { password = it }, width = 300, visualTransformation = PasswordVisualTransformation())
-
-                Box(modifier = Modifier.height(18.dp))
-
-                PrimaryButton(text = "Iniciar sesión", onClick = { /*TODO*/ }, width = 200)
-
-            }
-
-            Row(
-                modifier = Modifier
-                    .padding(top = 40.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-
-                Text(text = "¿Aún no tienes cuenta?")
-                TextButton(text = "Regístrate", onClick = { /*TODO*/ }, width = 50)
-
-            }
+            Text(text = "¿Aún no tienes cuenta?")
+            TextButton(text = "Regístrate", onClick = { navController.navigate("register") }, width = 50)
 
         }
 
