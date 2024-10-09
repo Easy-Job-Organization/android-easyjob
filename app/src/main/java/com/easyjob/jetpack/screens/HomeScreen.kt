@@ -26,19 +26,14 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        bottomBar = { BottomNavBar(nestedNavController = navController) }
+        bottomBar = { BottomNavBar(nestedNavController = nestedNavController) }
     ) { innerPadding ->
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-        ) {
-            NavHost(navController = nestedNavController, startDestination = "search", modifier = Modifier.padding(innerPadding)) {
-                composable("search"){ SearchScreen() }
-                composable("appointments"){ AppointmentScreen() }
-                composable("profile"){ ProfileScreen() }
-            }
+        NavHost(navController = nestedNavController, startDestination = "search", modifier = Modifier.padding(innerPadding)) {
+            composable("search"){ SearchScreen() }
+            composable("appointments"){ AppointmentScreen() }
+            composable("messages") { MessageScreen(navController) }
+            composable("profile"){ ProfileScreen() }
         }
 
     }

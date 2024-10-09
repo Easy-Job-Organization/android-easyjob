@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -51,38 +52,46 @@ fun RegisterScreen(navController: NavController = rememberNavController()) {
             .fillMaxSize()
             .padding(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Box(modifier = Modifier) {
+        Box(
+            modifier = Modifier.weight(1f)
+        ) {
 
             //Logo
 
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-            Input(value = name, label = "Nombre", onValueChange = { newValue -> name = newValue }, width = 300)
-            Input(value = phone, label = "Teléfono", onValueChange = { newValue -> phone = newValue }, width = 300)
+            Input(value = name, label = "Nombre", onValueChange = { newValue -> name = newValue })
+            Input(value = phone, label = "Teléfono", onValueChange = { newValue -> phone = newValue })
+            Input(value = email, label = "Correo", onValueChange = { newValue -> email = newValue })
+            Input(value = password, label = "Contraseña", onValueChange = { newValue -> password = newValue }, visualTransformation = PasswordVisualTransformation())
             DropdownMenu1(options = options, selectedOption = selectedOption, onOptionSelected = { option -> selectedOption = option })
-            Input(value = email, label = "Correo", onValueChange = { newValue -> email = newValue }, width = 300)
-            Input(value = password, label = "Contraseña", onValueChange = { newValue -> password = newValue }, width = 300, visualTransformation = PasswordVisualTransformation())
 
-            Box(modifier = Modifier.height(18.dp))
+            Box(modifier = Modifier.height(32.dp))
 
             val options = NavOptions.Builder().setPopUpTo(route = "register", inclusive = true).build()
-            PrimaryButton(text = "Registrarse", onClick = { navController.navigate("home", options) }, width = 200)
+            PrimaryButton(text = "Registrarse", onClick = { navController.navigate("home", options) }, width = 250)
 
         }
 
         Row(
             modifier = Modifier
-                .padding(top = 20.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalAlignment = Alignment.Bottom
         ) {
 
             Text(text = "¿Ya tienes cuenta?")
-            TextButton(text = "Inicia sesión", onClick = { navController.navigate("login") }, width = 50)
+            TextButton(text = "Inicia sesión", onClick = { navController.navigate("login") }, width = 100)
 
         }
 

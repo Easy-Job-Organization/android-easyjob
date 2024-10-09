@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,37 +41,45 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(15.dp),
+            .padding(horizontal = 20.dp, vertical = 80.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Box(modifier = Modifier) {
+        Box(
+            modifier = Modifier.weight(1f)
+        ) {
 
             //Logo
 
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-            Input(value = email, label = "Correo", onValueChange = { email = it }, width = 300)
-            Input(value = password, label = "Contraseña", onValueChange = { password = it }, width = 300, visualTransformation = PasswordVisualTransformation())
+            Input(value = email, label = "Correo", onValueChange = { email = it })
+            Input(value = password, label = "Contraseña", onValueChange = { password = it }, visualTransformation = PasswordVisualTransformation())
 
-            Box(modifier = Modifier.height(18.dp))
+            Box(modifier = Modifier.height(48.dp))
 
             val options = NavOptions.Builder().setPopUpTo(route = "home", inclusive = true).build()
-            PrimaryButton(text = "Iniciar sesión", onClick = { navController.navigate("home", options) }, width = 200) //revisar que haya cumplido la condicion
+            PrimaryButton(text = "Iniciar sesión", onClick = { navController.navigate("home", options) }, width = 250) //revisar que haya cumplido la condicion
 
         }
 
         Row(
             modifier = Modifier
-                .padding(top = 40.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalAlignment = Alignment.Bottom
         ) {
 
             Text(text = "¿Aún no tienes cuenta?")
-            TextButton(text = "Regístrate", onClick = { navController.navigate("register") }, width = 50)
+            TextButton(text = "Regístrate", onClick = { navController.navigate("register") }, width = 100)
 
         }
 

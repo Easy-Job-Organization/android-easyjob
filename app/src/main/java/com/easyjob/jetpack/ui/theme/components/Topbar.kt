@@ -22,6 +22,9 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -36,28 +39,44 @@ fun Topbar(
     title: String,
     icon: ImageVector? = null,
     onEditClick: () -> Unit = {},
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    isBack: Boolean,
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.White,
-            titleContentColor = Color(0xff133c55),
+            containerColor = Color(0xff133c55),
+            titleContentColor = Color.White,
         ),
+        modifier = Modifier
+            .shadow(elevation = 4.dp)
+            .zIndex(1f),
         title = {
             Text(
                 title,
-                fontSize = 22.sp,
+                fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                color = Color.White
             )
         },
         navigationIcon = {
+            if (isBack) {
+                IconButton(onClick = { /* do something */ }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Localized description",
+                    )
+                }
+            }
+        },
+        actions = {
             if (icon != null) {
                 IconButton(onClick = onEditClick) {
                     Icon(
                         imageVector = icon,
-                        contentDescription = "Localized description"
+                        contentDescription = "Localized description",
+                        tint = Color.White
                     )
                 }
             }

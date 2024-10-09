@@ -35,37 +35,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun BottomNavItem(
-    icon: ImageVector,
-    descriptionIcon: String,
-    isSelected: Boolean,
-    text: String,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-            .clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = descriptionIcon,
-            tint = if (isSelected) Color(0xff4091b6) else Color.Gray,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(
-            text = text,
-            fontSize = 12.sp,
-            color = if (isSelected) Color(0xff4091b6) else Color.Gray
-        )
-    }
-}
-
-
-@Composable
 fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
     var selectedIndex by remember { mutableStateOf(0) }
+    val selectedColor = Color(0xff4091b6)
 
     NavigationBar {
         NavigationBarItem(
@@ -76,8 +48,18 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
                     launchSingleTop = true
                 }
             },
-            icon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
-            label = { Text(text = "Buscar") }
+            icon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Buscar",
+                    tint = if (selectedIndex == 0) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Buscar",
+                    color = if (selectedIndex == 0) selectedColor else Color.Black
+                )
+            }
         )
         NavigationBarItem(
             selected = selectedIndex == 1,
@@ -87,8 +69,18 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
                     launchSingleTop = true
                 }
             },
-            icon = { Icon(Icons.Default.DateRange, contentDescription = "Citas") },
-            label = { Text(text = "Citas") }
+            icon = {
+                Icon(
+                    Icons.Default.DateRange,
+                    contentDescription = "Citas",
+                    tint = if (selectedIndex == 1) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Citas",
+                    color = if (selectedIndex == 1) selectedColor else Color.Black
+                )
+            }
         )
         NavigationBarItem(
             selected = selectedIndex == 2,
@@ -98,8 +90,18 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
                     launchSingleTop = true
                 }
             },
-            icon = { Icon(Icons.Filled.Send, contentDescription = "Mensajes") },
-            label = { Text(text = "Mensajes") }
+            icon = {
+                Icon(
+                    Icons.Filled.Send,
+                    contentDescription = "Mensajes",
+                    tint = if (selectedIndex == 2) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Mensajes",
+                    color = if (selectedIndex == 2) selectedColor else Color.Black
+                )
+            }
         )
         NavigationBarItem(
             selected = selectedIndex == 3,
@@ -109,8 +111,18 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
                     launchSingleTop = true
                 }
             },
-            icon = { Icon(Icons.Filled.Person, contentDescription = "Perfil") },
-            label = { Text(text = "Perfil") }
+            icon = {
+                Icon(
+                    Icons.Filled.Person,
+                    contentDescription = "Perfil",
+                    tint = if (selectedIndex == 3) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Perfil",
+                    color = if (selectedIndex == 3) selectedColor else Color.Black
+                )
+            }
         )
     }
 }

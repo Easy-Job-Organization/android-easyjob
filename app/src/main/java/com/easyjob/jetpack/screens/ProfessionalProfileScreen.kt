@@ -64,6 +64,7 @@ fun ProfessionalProfileScreen(navController: NavController = rememberNavControll
                 icon = Icons.Default.Edit,
                 onEditClick = {},
                 scrollBehavior = scrollBehavior,
+                isBack = true
             )
         },
     ) { innerPadding ->

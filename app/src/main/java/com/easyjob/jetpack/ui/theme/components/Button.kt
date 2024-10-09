@@ -2,9 +2,13 @@ package com.easyjob.jetpack.ui.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -23,11 +27,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.Alignment
 
 
 // PRIMARY BUTTON
 @Composable
-fun PrimaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
+fun PrimaryButton(text: String, onClick: () -> Unit, width: Int? = null) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
@@ -35,8 +41,17 @@ fun PrimaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 5
             contentColor = Color.White
         ),
         modifier = Modifier
-            .width(width.dp)
-            .height(height.dp),
+            .wrapContentHeight(Alignment.CenterVertically)
+            .height(50.dp)
+            .then(
+                if (width != null) {
+                    Modifier
+                        .width(width.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            ),
         shape = RoundedCornerShape(8.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(
             defaultElevation = 4.dp, // Elevación normal
@@ -49,13 +64,22 @@ fun PrimaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 5
 
 // SECONDARY BUTTON
 @Composable
-fun SecondaryButton(text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
+fun SecondaryButton(text: String, onClick: () -> Unit, width: Int? = null) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF838383)),
         modifier = Modifier
-            .width(width.dp)
-            .height(height.dp),
+            .wrapContentHeight(Alignment.CenterVertically)
+            .height(50.dp)
+            .then(
+                if (width != null) {
+                    Modifier
+                        .width(width.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            ),
         shape = RoundedCornerShape(8.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(
             defaultElevation = 4.dp, // Elevación normal
@@ -67,23 +91,34 @@ fun SecondaryButton(text: String, onClick: () -> Unit, width: Int, height: Int =
 }
 
 @Composable
-fun TextButton(text: String, onClick: () -> Unit, width: Int, height: Int = 20) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, contentColor = Color(0xFF838383)),
+fun TextButton(text: String, onClick: () -> Unit, width: Int? = null) {
+    TextButton(
+        onClick = { onClick() },
         modifier = Modifier
-            .width(width.dp)
-            .height(height.dp)
-            .background(color = Color.Transparent),
+            .wrapContentHeight()
+            .then(
+                if (width != null) {
+                    Modifier
+                        .width(width.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+                }
+            )
+            .padding(vertical = 5.dp)
     ) {
-        Text(text = text, color = Color(0xFF838383), fontSize = 16.sp)
+        Text(
+            text = text,
+            color = Color(0xff4091b6),
+            fontSize = 16.sp,
+        )
     }
 }
 
 
 // BUTTON SECTION
 @Composable
-fun ButtonSection(active: Boolean, text: String, onClick: () -> Unit, width: Int, height: Int = 56) {
+fun ButtonSection(active: Boolean, text: String, onClick: () -> Unit, width: Int? = null) {
 
     val color = if (active) Color(0xFFd2963d) else Color(0xFF636363).copy(alpha = 0.7f)
 
@@ -91,8 +126,18 @@ fun ButtonSection(active: Boolean, text: String, onClick: () -> Unit, width: Int
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
         modifier = Modifier
-            .width(width.dp)
-            .height(height.dp)
+            .wrapContentHeight()
+            .height(50.dp)
+            .then(
+                if (width != null) {
+                    Modifier
+                        .width(width.dp)
+                } else {
+                    Modifier
+                        .fillMaxWidth()
+
+                }
+            )
             .border(1.dp, color, shape = getBottomLineShape(lineThicknessDp = 1.dp)),
         shape = RoundedCornerShape(8.dp),
     ) {

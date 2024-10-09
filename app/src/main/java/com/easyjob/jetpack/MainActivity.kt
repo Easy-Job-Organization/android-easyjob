@@ -70,14 +70,10 @@ class MainActivity : ComponentActivity() {
 fun App() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "search") {
+    NavHost(navController = navController, startDestination = "login") {
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
-        composable("search") { SearchScreen(navController) }
-        composable("appointments") { AppointmentScreen(navController) }
-        composable("messages") { MessageScreen(navController) }
-        composable("profile") { ProfileScreen(navController) }
         composable("professionalProfile"){ ProfessionalProfileScreen(navController) }
         composable("makeAppointment"){ MakeAppointmentScreen(navController) }
     }

@@ -51,12 +51,14 @@ fun ProfileScreen(navController: NavController = rememberNavController()) {
                 icon = Icons.Default.Edit,
                 onEditClick = {},
                 scrollBehavior = scrollBehavior,
+                isBack = false
             )
         },
     ) { innerPadding ->
 
         Column(modifier = Modifier
             .padding(innerPadding)
+            .padding(horizontal = 15.dp, vertical = 5.dp)
         ) {
 
             ProfileSection(
