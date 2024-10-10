@@ -15,8 +15,6 @@ import com.easyjob.jetpack.ui.theme.components.CardSearch
 @Composable
 fun SearchScreen(navController: NavController = rememberNavController()) {
 
-
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

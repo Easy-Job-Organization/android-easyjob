@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -45,33 +46,37 @@ fun ProfileSection(
     descriptionImage: String,
     name: String = "Cargando",
     cityCountry: String = "Cargando",
+    iconSize: Int,
     stars: Int = 0,
     comments: String = "0")
 {
     Row(modifier = Modifier
         .fillMaxWidth()
-        .height(150.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+        .wrapContentHeight()
+        .padding(vertical = 7.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
         AsyncImage(
             model = image,
             contentDescription = descriptionImage,
             modifier = Modifier
                 .clip(CircleShape)
-                .size(120.dp),
+                .size(100.dp),
             error = painterResource(R.drawable.ic_launcher_background)
         )
 
-        Box(modifier = Modifier.width(7.dp))
+        Box(modifier = Modifier.width(12.dp))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
-                .padding(vertical = 10.dp, horizontal = 5.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Text(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
                 color = Color(0xFF133c55),
                 text = name,
                 lineHeight = 30.sp
@@ -79,7 +84,7 @@ fun ProfileSection(
 
             Text(
                 fontWeight = FontWeight.Normal,
-                fontSize = 18.sp,
+                fontSize = 17.sp,
                 color = Color(0xFF133c55),
                 text = cityCountry
             )
@@ -91,12 +96,12 @@ fun ProfileSection(
             ) {
                 
                 Box(modifier = Modifier) {
-                    RatingStars(rating = stars)
+                    RatingStars(rating = stars, iconSize = iconSize)
                 }
                 
                 Text(
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = iconSize.sp,
                     color = Color(0xFF133c55),
                     text = "$comments opiniones"
                 )
@@ -207,7 +212,7 @@ fun ActionCard(image: Int = R.drawable.ic_launcher_background, descriptionImage:
 }
 
 @Composable
-fun RatingStars(rating: Int) {
+fun RatingStars(rating: Int, iconSize: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         val totalStars = 5
         for (i in 1..totalStars) {
@@ -217,7 +222,7 @@ fun RatingStars(rating: Int) {
                 imageVector = Icons.Filled.Star,
                 contentDescription = null,
                 tint = starColor,
-                modifier = Modifier.size(21.dp)
+                modifier = Modifier.size(iconSize.dp)
             )
         }
     }

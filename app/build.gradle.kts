@@ -50,21 +50,26 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.androidx.material.v105)
+    implementation(libs.ui)
+    implementation(libs.ui.tooling.preview)
+    implementation(libs.androidx.foundation)
+    implementation(libs.androidx.activity.compose.v131)
+    implementation(libs.ui.tooling)
     implementation(libs.coil.compose.v222)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation("androidx.fragment:fragment-ktx:1.8.4")
+    implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.coil.compose)
     implementation(libs.gson)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.6")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.kotlinx.coroutines.play.services)
     implementation(libs.androidx.material)
     implementation(libs.material3)
-    implementation("androidx.documentfile:documentfile:1.0.1") // por validar
-    implementation ("androidx.loader:loader:1.1.0") // por validar
+    implementation(libs.androidx.documentfile) // por validar
+    implementation (libs.androidx.loader) // por validar
     implementation("androidx.compose.material3:material3-window-size-class:1.3.0")
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.androidx.core.ktx)
@@ -82,4 +87,5 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }

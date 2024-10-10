@@ -30,9 +30,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.easyjob.jetpack.screens.AppointmentScreen
 import com.easyjob.jetpack.screens.HomeScreen
 import com.easyjob.jetpack.screens.LoginScreen
@@ -74,8 +76,6 @@ fun App() {
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
-        composable("professionalProfile?id={id}"){ ProfessionalProfileScreen(navController) }
-        composable("makeAppointment"){ MakeAppointmentScreen(navController) }
     }
 }
 
@@ -83,6 +83,13 @@ class Service(
     val title: String,
     val descriptions: List<String>,
     val prices: List<Double>
+)
+
+class Comment(
+    val name: String,
+    val starts: Int,
+    val date: String,
+    val description: String,
 )
 
 

@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.ui.theme.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -23,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,9 +50,9 @@ fun CardSearch(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, Color.Gray)
-            .padding(horizontal = 15.dp, vertical = 7.dp),
+            .wrapContentHeight()
+            .border(1.dp, Color.Gray, RoundedCornerShape(18.dp))
+            .padding(horizontal = 15.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
@@ -58,7 +62,7 @@ fun CardSearch(
             contentDescription = descriptionImage,
             modifier = Modifier
                 .clip(CircleShape)
-                .size(100.dp),
+                .size(80.dp),
             error = painterResource(R.drawable.ic_launcher_background)
         )
 
@@ -66,27 +70,26 @@ fun CardSearch(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .width(220.dp)
+                .wrapContentHeight()
                 .padding(vertical = 10.dp, horizontal = 5.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                fontSize = 17.sp,
                 color = Color(0xFF133c55),
                 text = name,
                 lineHeight = 30.sp
             )
 
-            ButtonIconLink(
+            FilterCard(
                 icon = Icons.Sharp.Lock,
                 descriptionIcon = "Cerrajero",
-                onClick = { /*TODO*/ },
+                iconSize = 14,
                 text = "Cerrajero",
-                backgroundColor = Color(0xcc133c55),
                 color = Color(0xff133c55),
-                enable = false,
+                backgroundColor = Color(0x32133c55)
             )
 
             Row(
@@ -95,13 +98,13 @@ fun CardSearch(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Box(modifier = Modifier) {
-                    RatingStars(rating = stars)
+                Box {
+                    RatingStars(rating = stars, iconSize = 16)
                 }
 
                 Text(
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = 14.sp,
                     color = Color(0xFF133c55),
                     text = "$comments opiniones"
                 )
@@ -112,12 +115,60 @@ fun CardSearch(
         Box(modifier = Modifier.weight(1f))
 
         IconButton(onClick = {
-            navController.navigate("professionalProfile?id=$id")
+            navController.navigate("professionalProfile/$id")
         }) {
             Icon(
                 Icons.Rounded.KeyboardArrowRight,
                 contentDescription = "Ingresar"
             )
+        }
+
+    }
+}
+
+
+@Composable
+fun FilterCard(
+    icon: ImageVector,
+    descriptionIcon: String,
+    iconSize: Int,
+    text: String,
+    color: Color,
+    backgroundColor: Color = Color.Transparent,
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(6.dp))
+            .wrapContentHeight()
+            .wrapContentWidth()
+    ) {
+
+        Row(
+            modifier = Modifier
+                .background(backgroundColor)
+                .padding(horizontal = 10.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Box(modifier = Modifier) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = descriptionIcon,
+                    tint = color,
+                    modifier = Modifier.size(iconSize.dp)
+                )
+            }
+
+            Box(modifier = Modifier.width(10.dp))
+
+            Text(
+                fontWeight = FontWeight.Normal,
+                fontSize = iconSize.sp,
+                color = color,
+                text = text
+            )
+
         }
 
     }

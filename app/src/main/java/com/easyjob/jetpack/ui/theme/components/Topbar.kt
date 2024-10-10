@@ -32,6 +32,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +42,7 @@ fun Topbar(
     icon: ImageVector? = null,
     onEditClick: () -> Unit = {},
     scrollBehavior: TopAppBarScrollBehavior,
+    navController: NavController = rememberNavController(),
     isBack: Boolean,
 ) {
     CenterAlignedTopAppBar(
@@ -62,10 +65,13 @@ fun Topbar(
         },
         navigationIcon = {
             if (isBack) {
-                IconButton(onClick = { /* do something */ }) {
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Localized description",
+                        tint = Color.White
                     )
                 }
             }

@@ -66,6 +66,7 @@ fun ProfileScreen(navController: NavController = rememberNavController()) {
                 descriptionImage = "mclovin",
                 name = "Sebastián Escobar Marín",
                 cityCountry = "Cali, Colombia",
+                iconSize = 14,
                 stars = 4,
                 comments = "444"
             )
