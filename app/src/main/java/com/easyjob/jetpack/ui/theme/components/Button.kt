@@ -37,7 +37,7 @@ fun PrimaryButton(text: String, onClick: () -> Unit, width: Int? = null) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xff4091b6),
+            containerColor = Color(0xff3b82f6),
             contentColor = Color.White
         ),
         modifier = Modifier
@@ -102,14 +102,12 @@ fun TextButton(text: String, onClick: () -> Unit, width: Int? = null) {
                         .width(width.dp)
                 } else {
                     Modifier
-                        .fillMaxWidth()
                 }
             )
-            .padding(vertical = 5.dp)
     ) {
         Text(
             text = text,
-            color = Color(0xff4091b6),
+            color = Color(0xff3b82f6),
             fontSize = 16.sp,
         )
     }
