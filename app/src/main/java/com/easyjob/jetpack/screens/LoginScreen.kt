@@ -19,10 +19,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
+import com.easyjob.jetpack.ui.theme.components.EasyJobLogo
 import com.easyjob.jetpack.ui.theme.components.Input
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.TextButton
@@ -45,12 +47,11 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        Box(
-            modifier = Modifier.weight(1f)
+        Column(
+            modifier = Modifier.weight(2f),
+            verticalArrangement = Arrangement.Center
         ) {
-
-            //Logo
-
+            EasyJobLogo()
         }
 
         Column(
@@ -74,15 +75,20 @@ fun LoginScreen(navController: NavController = rememberNavController()) {
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .weight(1f),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
             verticalAlignment = Alignment.Bottom
         ) {
 
             Text(text = "¿Aún no tienes cuenta?")
-            TextButton(text = "Regístrate", onClick = { navController.navigate("register") }, width = 100)
+            TextButton(text = "Regístrate", onClick = { navController.navigate("register") })
 
         }
 
     }
 
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SplashScreenPreview() {
+    LoginScreen()
 }
