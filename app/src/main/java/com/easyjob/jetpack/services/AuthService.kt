@@ -1,6 +1,5 @@
 package com.easyjob.jetpack.services
 
-import android.util.Log
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -17,7 +16,6 @@ data class LoginResponse(val token: String)
 
 data class RegisterResponse(val token: String)
 
-// Define the AuthService interface
 interface AuthService {
     @POST("auth/client/login")
     suspend fun loginWithEmailAndPasswordClient(@Body request: LoginRequest): Response<LoginResponse>
@@ -41,15 +39,20 @@ interface AuthService {
         @Part("email") email: RequestBody,
         @Part("phone_number") phone_number: RequestBody,
         @Part("password") password: RequestBody,
-        @Part professional_image: MultipartBody.Part
-    ): Response<RegisterResponse>
+        @Part professional_image: MultipartBody.Part,
+        @Part("service_id") service: RequestBody,
+        @Part("language_id") language: RequestBody,
+        @Part("city_id") city: RequestBody,
+        @Part("speciality_id") speciality: RequestBody,
+
+        ): Response<RegisterResponse>
 
 }
 
 class AuthServiceImpl : AuthService {
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.easyjob.com.co/") // Replace with your actual base URL
+        .baseUrl("https://api.easyjob.com.co/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -85,7 +88,11 @@ class AuthServiceImpl : AuthService {
         email: RequestBody,
         phone_number: RequestBody,
         password: RequestBody,
-        professional_image: MultipartBody.Part
+        professional_image: MultipartBody.Part,
+        service: RequestBody,
+        language: RequestBody,
+        city: RequestBody,
+        speciality: RequestBody,
     ): Response<RegisterResponse> {
         val res = apiService.registerProfessional(
             name,
@@ -93,7 +100,11 @@ class AuthServiceImpl : AuthService {
             email,
             phone_number,
             password,
-            professional_image
+            professional_image,
+            service,
+            language,
+            city,
+            speciality
         )
         return res
     }

@@ -33,14 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import android.Manifest.permission.READ_MEDIA_IMAGES
-import android.Manifest.permission.READ_MEDIA_VIDEO
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,20 +45,20 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.easyjob.jetpack.R
 import com.easyjob.jetpack.ui.theme.components.DropdownMenu1
-import com.easyjob.jetpack.ui.theme.components.EasyJobLogo
 import com.easyjob.jetpack.ui.theme.components.Input
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.TextButton
 import com.easyjob.jetpack.viewmodels.RegisterViewModel
+import com.easyjob.jetpack.viewmodels.ResourcesViewModel
 
 @Composable
 fun RegisterScreen(
     navController: NavController = rememberNavController(),
     registerViewModel: RegisterViewModel = viewModel(),
+    resourcesViewModel: ResourcesViewModel = viewModel(),
     context: Context = LocalContext.current
 ) {
     var name by remember { mutableStateOf("") }
@@ -71,6 +68,17 @@ fun RegisterScreen(
     var password by remember { mutableStateOf("") }
     val options = listOf("Cliente", "Profesional")
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
+
+    val cities by resourcesViewModel.cities.observeAsState(listOf())
+    val languages by resourcesViewModel.languages.observeAsState(listOf())
+    val services by resourcesViewModel.services.observeAsState(listOf())
+    val specialities by resourcesViewModel.specialities.observeAsState(listOf())
+
+    var selectedService by remember { mutableStateOf("") }
+    var selectedLanguage by remember { mutableStateOf("") }
+    var selectedCity by remember { mutableStateOf("") }
+    var selectedSpeciality by remember { mutableStateOf("") }
+
     val authState by registerViewModel.authState.observeAsState()
 
     var uri by remember { mutableStateOf<Uri?>(null) }
@@ -78,7 +86,7 @@ fun RegisterScreen(
 
     RequestMediaPermissions(
         onPermissionsGranted = {
-            permissionsGranted = true // Actualiza el estado cuando los permisos son otorgados
+            permissionsGranted = true
             Log.d("RegisterScreen", "Permisos de medios otorgados")
         },
         onPermissionsDenied = {
@@ -86,12 +94,22 @@ fun RegisterScreen(
         }
     )
 
+    // Navegación al home si el registro es exitoso
     LaunchedEffect(authState) {
-        Log.d("RegisterScreen", "authState changed to $authState")
-        if (authState == 3) { // Trigger navigation on success
+        if (authState == 3) {
             navController.navigate("home") {
-                popUpTo("register") { inclusive = true } // Remove register from back stack
+                popUpTo("register") { inclusive = true }
             }
+        }
+    }
+
+    // Obtener recursos de la API al seleccionar Profesional
+    LaunchedEffect(selectedOption) {
+        if (selectedOption == "Profesional") {
+            resourcesViewModel.getCities()
+            resourcesViewModel.getLanguages()
+            resourcesViewModel.getServices()
+            resourcesViewModel.getSpecialities()
         }
     }
 
@@ -104,22 +122,19 @@ fun RegisterScreen(
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Row(modifier = Modifier.weight(2f)) { }
+        Row(modifier = Modifier.weight(2f)) {}
 
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(14.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Mostrar el componente de selección de foto siempre
+            // Selección de foto
             SinglePhotoPicker(uri = uri) { newUri ->
                 uri = newUri
             }
 
-            Box(modifier = Modifier.height(16.dp))
-
-            Input(
-                value = name, label = "Nombre", onValueChange = { name = it })
+            Input(value = name, label = "Nombre", onValueChange = { name = it })
             Input(value = last_name, label = "Apellidos", onValueChange = { last_name = it })
             Input(value = email, label = "Correo", onValueChange = { email = it })
             Input(value = phone_number, label = "Teléfono", onValueChange = { phone_number = it })
@@ -137,64 +152,77 @@ fun RegisterScreen(
 
             // Campos adicionales para profesionales
             if (selectedOption == "Profesional") {
-                val services = listOf("Carpinteria", "Plomeria", "Electricista") // Obtener de la DB
-                val languages = listOf("Español", "Inglés", "Francés") // Obtener de la DB
-                val cities = listOf("Bogotá", "Medellín", "Cali") // Obtener de la DB
-                val specialties = listOf("Especialidad 1", "Especialidad 2") // Obtener de la DB
-
-                var selectedService by remember { mutableStateOf("") }
-                var selectedLanguage by remember { mutableStateOf("") }
-                var selectedCity by remember { mutableStateOf("") }
-                var selectedSpecialty by remember { mutableStateOf("") }
-
                 DropdownMenu1(
-                    options = services,
+                    options = services.map { it.title },
                     selectedOption = selectedService,
                     onOptionSelected = { selectedService = it }
                 )
 
                 DropdownMenu1(
-                    options = languages,
+                    options = languages.map { it.language_name },
                     selectedOption = selectedLanguage,
                     onOptionSelected = { selectedLanguage = it }
                 )
 
                 DropdownMenu1(
-                    options = cities,
+                    options = cities.map { it.city_name },
                     selectedOption = selectedCity,
                     onOptionSelected = { selectedCity = it }
                 )
 
                 DropdownMenu1(
-                    options = specialties,
-                    selectedOption = selectedSpecialty,
-                    onOptionSelected = { selectedSpecialty = it }
+                    options = specialities.map { it.speciality_name },
+                    selectedOption = selectedSpeciality,
+                    onOptionSelected = { selectedSpeciality = it }
                 )
             }
 
-
             Box(modifier = Modifier.height(32.dp))
 
+            // Registro con la URI de la imagen y datos de usuario
             PrimaryButton(
                 text = "Registrarse",
                 onClick = {
-                    uri?.let {
-                        registerViewModel.signUp(
-                            name,
-                            last_name,
-                            email,
-                            phone_number,
-                            password,
-                            selectedOption,
-                            it,
-                            context.contentResolver
-                        )
+                    uri?.let { photo ->
+                        if (selectedOption == "Cliente") {
+                            registerViewModel.signUpClient(
+                                name,
+                                last_name,
+                                email,
+                                phone_number,
+                                password,
+                                selectedOption,
+                                photo,
+                                context.contentResolver
+                            )
+                        } else {
+                            val service_id = services.find { it.title == selectedService }?.id.toString()
+                            val language_id = languages.find { it.language_name == selectedLanguage }?.id.toString()
+                            val city_id = cities.find { it.city_name == selectedCity }?.id.toString()
+                            val speciality_id = specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
+
+                            registerViewModel.signUpProfessional(
+                                name,
+                                last_name,
+                                email,
+                                phone_number,
+                                password,
+                                selectedOption,
+                                photo,
+                                service_id,
+                                language_id,
+                                city_id,
+                                speciality_id,
+                                context.contentResolver
+                            )
+                        }
                     }
                 },
                 width = 250
             )
         }
 
+        // Indicador de carga o mensaje de error
         when (authState) {
             1 -> CircularProgressIndicator()
             2 -> Text("Hubo un error", color = Color.Red)
