@@ -19,7 +19,7 @@ interface AuthService {
 class AuthServiceImpl: AuthService {
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.easyjob.com.co/") // Replace with your actual base URL
+        .baseUrl("https://api.easyjob.com.co/") // Replace with your actual base URL emilysmith@example.com
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
