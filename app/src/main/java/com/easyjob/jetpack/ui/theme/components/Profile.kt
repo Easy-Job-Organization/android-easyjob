@@ -47,7 +47,7 @@ fun ProfileSection(
     name: String = "Cargando",
     cityCountry: String = "Cargando",
     iconSize: Int,
-    stars: Int = 0,
+    stars: Int=-1,
     comments: String = "0")
 {
     Row(modifier = Modifier
@@ -96,7 +96,7 @@ fun ProfileSection(
             ) {
                 
                 Box(modifier = Modifier) {
-                    RatingStars(rating = stars, iconSize = iconSize)
+                    stars != (-1 ?: RatingStars(rating = stars, iconSize = iconSize))
                 }
                 
                 Text(

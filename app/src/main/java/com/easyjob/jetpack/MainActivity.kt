@@ -100,6 +100,6 @@ class Comment(
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        App()
+        ProfessionalProfileScreen(id = "056c2ceb-2407-4116-8707-d6e27ce66a5f")
     }
 }
