@@ -40,19 +40,19 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
-import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
+import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfessionalProfileScreen(
+fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
-    professionalProfileViewModel: ProfessionalProfileViewModel = viewModel(),
+    professionalViewModel: ProfessionalViewModel = viewModel(),
     id: String,
 ) {
 
-    val professionalState by professionalProfileViewModel.professional.observeAsState()
-    val servicesState by professionalProfileViewModel.services.observeAsState()
-    val reviewsState by professionalProfileViewModel.reviews.observeAsState()
+    val professionalState by professionalViewModel.professional.observeAsState()
+    val servicesState by professionalViewModel.services.observeAsState()
+    val reviewsState by professionalViewModel.reviews.observeAsState()
     Log.e(">>>", professionalState.toString())
     Log.e(">>>", servicesState.toString())
     Log.e(">>>", reviewsState.toString())
@@ -60,9 +60,9 @@ fun ProfessionalProfileScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(id) {
-        professionalProfileViewModel.fetchProfessional(id)
-        professionalProfileViewModel.fetchServicesOfProfessinal(id)
-        professionalProfileViewModel.fetchReviewsOfProfessinal(id)
+        professionalViewModel.fetchProfessional(id)
+        professionalViewModel.fetchServicesOfProfessinal(id)
+        professionalViewModel.fetchReviewsOfProfessinal(id)
     }
 
     var activeSection by remember {

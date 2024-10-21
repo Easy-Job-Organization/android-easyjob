@@ -28,7 +28,9 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.TextButton
 
 @Composable
-fun RegisterScreen(navController: NavController = rememberNavController()) {
+fun RegisterScreen(
+    navController: NavController = rememberNavController()
+) {
 
     var name by remember {
         mutableStateOf("")

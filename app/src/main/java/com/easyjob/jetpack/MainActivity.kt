@@ -41,7 +41,6 @@ import com.easyjob.jetpack.screens.HomeScreen
 import com.easyjob.jetpack.screens.LoginScreen
 import com.easyjob.jetpack.screens.MakeAppointmentScreen
 import com.easyjob.jetpack.screens.MessageScreen
-import com.easyjob.jetpack.screens.ProfessionalProfileScreen
 import com.easyjob.jetpack.screens.ProfileScreen
 import com.easyjob.jetpack.screens.RegisterScreen
 import com.easyjob.jetpack.screens.SearchScreen
@@ -81,20 +80,6 @@ fun App() {
         composable("home"){ HomeScreen() }
     }
 }
-
-class Service(
-    val title: String,
-    val descriptions: List<String>,
-    val prices: List<Double>
-)
-
-class Comment(
-    val name: String,
-    val starts: Int,
-    val date: String,
-    val description: String,
-)
-
 
 @Preview(showBackground = true)
 @Composable

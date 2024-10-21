@@ -42,7 +42,7 @@ import com.easyjob.jetpack.R
 
 @Composable
 fun ProfileSection(
-    image: String,
+    image: String?,
     descriptionImage: String,
     name: String = "Cargando",
     cityCountry: String = "Cargando",
