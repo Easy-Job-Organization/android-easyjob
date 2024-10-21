@@ -39,7 +39,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
-import com.easyjob.jetpack.ui.theme.components.CardSearch
+import com.easyjob.jetpack.ui.theme.components.PrimaryButton
+import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.ui.theme.components.FilterCard
 import com.easyjob.jetpack.ui.theme.components.SearchBar
 import com.easyjob.jetpack.viewmodels.SearchScreenViewModel

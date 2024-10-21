@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +45,7 @@ import com.easyjob.jetpack.screens.ProfessionalProfileScreen
 import com.easyjob.jetpack.screens.ProfileScreen
 import com.easyjob.jetpack.screens.RegisterScreen
 import com.easyjob.jetpack.screens.SearchScreen
+import com.easyjob.jetpack.screens.SplashScreen
 import com.easyjob.jetpack.ui.theme.EasyjobTheme
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.BottomNavBar
@@ -72,31 +74,18 @@ class MainActivity : ComponentActivity() {
 fun App() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") { SplashScreen(navController)}
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
     }
 }
 
-class Service(
-    val title: String,
-    val descriptions: List<String>,
-    val prices: List<Double>
-)
-
-class Comment(
-    val name: String,
-    val starts: Int,
-    val date: String,
-    val description: String,
-)
-
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        App()
+        ProfessionalProfileScreen(id = "056c2ceb-2407-4116-8707-d6e27ce66a5f")
     }
 }
