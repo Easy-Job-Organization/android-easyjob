@@ -22,6 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -38,11 +42,22 @@ import com.easyjob.jetpack.R
 import com.easyjob.jetpack.ui.theme.components.CardSearch
 import com.easyjob.jetpack.ui.theme.components.FilterCard
 import com.easyjob.jetpack.ui.theme.components.SearchBar
+import com.easyjob.jetpack.viewmodels.SearchScreenViewModel
+import kotlin.math.floor
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController = rememberNavController()) {
+fun SearchScreen(
+    navController: NavController = rememberNavController(),
+    searchScreenViewModel: SearchScreenViewModel = viewModel()
+) {
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        searchScreenViewModel.loadProfessionalCards()
+    }
+
+    val professionalCards by searchScreenViewModel.professionalCards.observeAsState(emptyList())
 
     Scaffold(
         modifier = Modifier
@@ -73,7 +88,7 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
 
             }
 
-            SearchBar("Encuentra un técnico a tu medida")
+            SearchBar("Encuentra un técnico a tu medida", navController = navController)
 
             FlowRow(
                 modifier = Modifier
@@ -95,7 +110,7 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
 
                 FilterCard(
                     icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Plomería",
+                    descriptionIcon = "Plomero",
                     iconSize = 16,
                     text = "Plomería",
                     color = Color(0xff133c55),
@@ -114,7 +129,7 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
 
                 FilterCard(
                     icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Aseo",
+                    descriptionIcon = "Limpiador",
                     iconSize = 16,
                     text = "Aseo",
                     color = Color(0xff133c55),
@@ -123,7 +138,7 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
                 )
                 FilterCard(
                     icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Pintura",
+                    descriptionIcon = "Pintor",
                     iconSize = 16,
                     text = "Pintura",
                     color = Color(0xff133c55),
@@ -133,7 +148,7 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
 
                 FilterCard(
                     icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Carpinteria",
+                    descriptionIcon = "Carpintero",
                     iconSize = 16,
                     text = "Carpinteria",
                     color = Color(0xff133c55),
@@ -151,63 +166,17 @@ fun SearchScreen(navController: NavController = rememberNavController()) {
                     .padding(start = 15.dp, end = 15.dp)
                     .fillMaxWidth()
             ) {
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
+                professionalCards.forEach { card ->
+                    CardSearch(
+                        id = card.id,
+                        image = card.photo_url,
+                        descriptionImage = "Profile photo",
+                        name = card.name + card.last_name,
+                        stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
+                        comments = "XX",
+                        navController = navController
+                    )
+                }
             }
 
         }

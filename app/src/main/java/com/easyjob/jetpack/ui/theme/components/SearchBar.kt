@@ -3,6 +3,8 @@ package com.easyjob.jetpack.ui.theme.components
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -13,12 +15,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun SearchBar(hint : String, prevText: String=""){
+fun SearchBar(
+    hint : String,
+    prevText: String="",
+    navController: NavController = rememberNavController()
+){
     var searchQuery by remember { mutableStateOf(prevText) }
 
     Box(
@@ -48,6 +57,14 @@ fun SearchBar(hint : String, prevText: String=""){
                 unfocusedIndicatorColor = Color(20, 152, 213),
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White
+            ),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Search // Define que el botón sea de búsqueda
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    navController.navigate("results/${searchQuery}")
+                }
             )
         )
     }

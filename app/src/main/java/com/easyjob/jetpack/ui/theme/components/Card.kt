@@ -125,7 +125,7 @@ fun CardSearch(
             Box(modifier = Modifier.weight(1f))
 
             IconButton(onClick = {
-                navController.navigate("professionalProfile/$id")
+                navController.navigate("professionalProfileClient/$id")
             }) {
                 Icon(
                     Icons.Rounded.KeyboardArrowRight,
@@ -155,7 +155,7 @@ fun FilterCard(
             .clip(RoundedCornerShape(6.dp))
             .wrapContentHeight()
             .wrapContentWidth()
-            .clickable { navController.navigate("results") }
+            .clickable { navController.navigate("results/${descriptionIcon}") }
     ) {
 
         Row(

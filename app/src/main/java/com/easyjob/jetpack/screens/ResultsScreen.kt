@@ -19,21 +19,36 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.CardSearch
 import com.easyjob.jetpack.ui.theme.components.SearchBar
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.SearchScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ResultsScreen(navController: NavController = rememberNavController()) {
+fun ResultsScreen(
+    searchText: String = "",
+    navController: NavController = rememberNavController(),
+    searchScreenViewModel: SearchScreenViewModel = viewModel()
+) {
     val scrollState = rememberScrollState()
+
+    LaunchedEffect(Unit) {
+        searchScreenViewModel.loadSearchResults("Cali",searchText)
+    }
+
+    val searchResults by searchScreenViewModel.searchResult.observeAsState(null)
 
     Scaffold(
         modifier = Modifier
@@ -54,17 +69,17 @@ fun ResultsScreen(navController: NavController = rememberNavController()) {
 
             ){
                 IconButton(onClick = {
-                    navController.navigate("search")
+                    navController.popBackStack()
                 }) {
                     Icon(
                         Icons.Rounded.ArrowBack,
                         contentDescription = "Ingresar"
                     )
                 }
-                SearchBar("Encuentra un técnico a tu medida")
+                SearchBar("Encuentra un técnico a tu medida", searchText, navController= navController)
             }
 
-            Text("XX resultados encontrados", fontSize = 32.sp, modifier = Modifier.padding(start = 15.dp, bottom = 15.dp))
+            Text("${searchResults?.total.toString()} resultados encontrados", fontSize = 32.sp, modifier = Modifier.padding(start = 15.dp, bottom = 15.dp))
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -72,63 +87,17 @@ fun ResultsScreen(navController: NavController = rememberNavController()) {
                     .padding(start = 15.dp, end = 15.dp)
                     .fillMaxWidth()
             ) {
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
-                CardSearch(
-                    id = "1",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Pepito Pérez Hernández",
-                    stars = 5,
-                    comments = "20",
-                    navController = navController
-                )
-
-                CardSearch(
-                    id = "2",
-                    image = "",
-                    descriptionImage = "Photo",
-                    name = "Leonardo Bustamante",
-                    stars = 1,
-                    comments = "230",
-                    navController = navController
-                )
+                searchResults?.data?.forEach { card ->
+                    CardSearch(
+                        id = card.id,
+                        image = card.photo_url,
+                        descriptionImage = "Profile photo",
+                        name = card.name + card.last_name,
+                        stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
+                        comments = "XX",
+                        navController = navController
+                    )
+                }
             }
         }
     }

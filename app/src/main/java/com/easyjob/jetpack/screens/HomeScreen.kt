@@ -36,7 +36,12 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
             composable("appointments"){ AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
             composable("profile"){ ProfileScreen(navController) }
-            composable("results") { ResultsScreen(navController)}
+            composable("results/{search}", arguments = listOf(
+                    navArgument("search"){type = NavType.StringType
+            })) { entry ->
+                val search = entry.arguments?.getString("search")
+                ResultsScreen(searchText = search ?: "" ,nestedNavController)
+            }
             composable("professionalProfile/{id}", arguments = listOf(
                 navArgument("id"){type = NavType.StringType}
             )){ entry ->
