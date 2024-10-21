@@ -123,7 +123,7 @@ fun ProfessionalClientScreen(
                             name = "${professional.name} ${professional.last_name}",
                             cityCountry = city ?: "Ciudad desconocida",
                             iconSize = 16,
-                            stars = professional.score.toDouble().roundToInt(), //ajustar para el score del tecnico
+                            stars = professional.score?.toInt() ?: 0, //ajustar para el score del tecnico
                             comments = "",
                         )
                     }

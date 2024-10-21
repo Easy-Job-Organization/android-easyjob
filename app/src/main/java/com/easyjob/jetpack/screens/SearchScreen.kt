@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.ui.theme.components.CardSearch
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.ui.theme.components.FilterCard
@@ -75,14 +77,13 @@ fun SearchScreen(
             Column (modifier = Modifier
                 .padding(top = 50.dp)
                 .align(Alignment.Start)){
-                AsyncImage(
-                    model = "https://media.tutellus.com/libraries/45/01/lib/1360445882784.jpg",
-                    contentDescription = "Logos",
+                Image(
+                    painter = painterResource(id = R.drawable.easyjob_logo_main_color),
+                    contentDescription = "Easyjob logo",
                     modifier = Modifier
                         .clip(CircleShape)
-                        .size(100.dp)
-                        .padding(start = 10.dp),
-                    error = painterResource(R.drawable.ic_launcher_background)
+                        .size(80.dp)
+                        .padding(start = 25.dp),
                 )
 
                 Text("Hola.", fontSize = 32.sp, modifier = Modifier.padding(start = 20.dp))
