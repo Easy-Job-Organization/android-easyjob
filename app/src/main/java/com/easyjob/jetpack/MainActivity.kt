@@ -82,24 +82,10 @@ fun App() {
     }
 }
 
-class Service(
-    val title: String,
-    val descriptions: List<String>,
-    val prices: List<Double>
-)
-
-class Comment(
-    val name: String,
-    val starts: Int,
-    val date: String,
-    val description: String,
-)
-
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        App()
+        ProfessionalProfileScreen(id = "056c2ceb-2407-4116-8707-d6e27ce66a5f")
     }
 }
