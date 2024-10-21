@@ -1,24 +1,20 @@
 package com.easyjob.jetpack.services
 
 import android.util.Log
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 // Login
 data class LoginRequest(val email: String, val password: String)
 data class LoginResponse(val token: String)
 
-// Register
-data class RegisterRequest(
-    val name: String,
-    val last_name: String,
-    val email: String,
-    val phone_number: String,
-    val password: String
-)
 data class RegisterResponse(val token: String)
 
 // Define the AuthService interface
@@ -26,11 +22,27 @@ interface AuthService {
     @POST("auth/client/login")
     suspend fun loginWithEmailAndPasswordClient(@Body request: LoginRequest): Response<LoginResponse>
 
+    @Multipart
     @POST("auth/client/register")
-    suspend fun registerClient(@Body request: RegisterRequest): Response<RegisterResponse>
+    suspend fun registerClient(
+        @Part("name") name: RequestBody,
+        @Part("last_name") last_name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone_number") phone_number: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part client_image: MultipartBody.Part
+    ): Response<RegisterResponse>
 
+    @Multipart
     @POST("auth/professional/register")
-    suspend fun registerProfessional(@Body request: RegisterRequest): Response<RegisterResponse>
+    suspend fun registerProfessional(
+        @Part("name") name: RequestBody,
+        @Part("last_name") last_name: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("phone_number") phone_number: RequestBody,
+        @Part("password") password: RequestBody,
+        @Part professional_image: MultipartBody.Part
+    ): Response<RegisterResponse>
 
 }
 
@@ -48,13 +60,42 @@ class AuthServiceImpl : AuthService {
         return res
     }
 
-    override suspend fun registerClient(request: RegisterRequest): Response<RegisterResponse> {
-        val res = apiService.registerClient(request)
+    override suspend fun registerClient(
+        name: RequestBody,
+        last_name: RequestBody,
+        email: RequestBody,
+        phone_number: RequestBody,
+        password: RequestBody,
+        client_image: MultipartBody.Part
+    ): Response<RegisterResponse> {
+        val res = apiService.registerClient(
+            name,
+            last_name,
+            email,
+            phone_number,
+            password,
+            client_image
+        )
         return res
     }
 
-    override suspend fun registerProfessional(request: RegisterRequest): Response<RegisterResponse> {
-        val res = apiService.registerProfessional(request)
+    override suspend fun registerProfessional(
+        name: RequestBody,
+        last_name: RequestBody,
+        email: RequestBody,
+        phone_number: RequestBody,
+        password: RequestBody,
+        professional_image: MultipartBody.Part
+    ): Response<RegisterResponse> {
+        val res = apiService.registerProfessional(
+            name,
+            last_name,
+            email,
+            phone_number,
+            password,
+            professional_image
+        )
         return res
     }
+
 }
