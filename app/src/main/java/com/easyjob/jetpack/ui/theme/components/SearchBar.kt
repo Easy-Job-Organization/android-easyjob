@@ -32,7 +32,7 @@ fun SearchBar(
 
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(15.dp)
             .shadow(10.dp, RoundedCornerShape(50)) // Sombra aplicada aquí
     ) {
         OutlinedTextField(

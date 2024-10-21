@@ -94,7 +94,6 @@ fun ResultsScreen(
                         descriptionImage = "Profile photo",
                         name = card.name + card.last_name,
                         stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
-                        comments = "XX",
                         navController = navController
                     )
                 }

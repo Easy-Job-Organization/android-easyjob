@@ -23,6 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,10 +36,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 
 @Composable
 fun CardSearch(
@@ -45,17 +50,26 @@ fun CardSearch(
     descriptionImage: String,
     name: String = "Cargando",
     stars: Int = 0,
-    comments: String = "0",
+    professionalViewModel: ProfessionalProfileViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
+
+    LaunchedEffect(Unit) {
+        professionalViewModel.loadCommentsCount(id)
+    }
+
+    val comments by professionalViewModel.commentsCount.observeAsState(0)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(10.dp) // Añade un padding externo
             .shadow(10.dp, RoundedCornerShape(18.dp)) // Sombra aplicada al Box
             .background(Color.White, RoundedCornerShape(18.dp))
+            .clickable {
+                navController.navigate("professionalProfileClient/$id")
+            }
+
     ){
         Row(
             modifier = Modifier
@@ -124,14 +138,11 @@ fun CardSearch(
 
             Box(modifier = Modifier.weight(1f))
 
-            IconButton(onClick = {
-                navController.navigate("professionalProfileClient/$id")
-            }) {
-                Icon(
-                    Icons.Rounded.KeyboardArrowRight,
-                    contentDescription = "Ingresar"
-                )
-            }
+            Icon(
+                Icons.Rounded.KeyboardArrowRight,
+                contentDescription = "Ingresar"
+            )
+
 
         }
     }

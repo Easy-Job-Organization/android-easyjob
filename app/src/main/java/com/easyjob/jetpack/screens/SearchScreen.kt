@@ -45,6 +45,7 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.ui.theme.components.FilterCard
 import com.easyjob.jetpack.ui.theme.components.SearchBar
+import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.SearchScreenViewModel
 import kotlin.math.floor
 
@@ -52,7 +53,7 @@ import kotlin.math.floor
 @Composable
 fun SearchScreen(
     navController: NavController = rememberNavController(),
-    searchScreenViewModel: SearchScreenViewModel = viewModel()
+    searchScreenViewModel: SearchScreenViewModel = viewModel(),
 ) {
     val scrollState = rememberScrollState()
 
@@ -95,7 +96,7 @@ fun SearchScreen(
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp)
                 ,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -175,7 +176,6 @@ fun SearchScreen(
                         descriptionImage = "Profile photo",
                         name = card.name + card.last_name,
                         stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
-                        comments = "XX",
                         navController = navController
                     )
                 }
