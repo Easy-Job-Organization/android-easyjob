@@ -36,6 +36,7 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
             composable("appointments"){ AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
             composable("profile"){ ProfileScreen(navController) }
+            composable("results") { ResultsScreen(navController)}
             composable("professionalProfile/{id}", arguments = listOf(
                 navArgument("id"){type = NavType.StringType}
             )){ entry ->

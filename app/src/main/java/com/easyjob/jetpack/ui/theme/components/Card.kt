@@ -2,6 +2,7 @@ package com.easyjob.jetpack.ui.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -47,83 +49,94 @@ fun CardSearch(
     navController: NavController = rememberNavController()
 ) {
 
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .border(1.dp, Color.Gray, RoundedCornerShape(18.dp))
-            .padding(horizontal = 15.dp, vertical = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-    ) {
-
-        AsyncImage(
-            model = image,
-            contentDescription = descriptionImage,
+            .padding(10.dp) // Añade un padding externo
+            .shadow(10.dp, RoundedCornerShape(18.dp)) // Sombra aplicada al Box
+            .background(Color.White, RoundedCornerShape(18.dp))
+    ){
+        Row(
             modifier = Modifier
-                .clip(CircleShape)
-                .size(80.dp),
-            error = painterResource(R.drawable.ic_launcher_background)
-        )
-
-        Box(modifier = Modifier.width(7.dp))
-
-        Column(
-            modifier = Modifier
-                .width(220.dp)
+                .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(vertical = 10.dp, horizontal = 5.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .border(1.dp, Color.Gray, RoundedCornerShape(18.dp))
+                .padding(horizontal = 15.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
         ) {
-            Text(
-                fontWeight = FontWeight.Medium,
-                fontSize = 17.sp,
-                color = Color(0xFF133c55),
-                text = name,
-                lineHeight = 30.sp
+
+            AsyncImage(
+                model = image,
+                contentDescription = descriptionImage,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(80.dp),
+                error = painterResource(R.drawable.ic_launcher_background)
             )
 
-            FilterCard(
-                icon = Icons.Sharp.Lock,
-                descriptionIcon = "Cerrajero",
-                iconSize = 14,
-                text = "Cerrajero",
-                color = Color(0xff133c55),
-                backgroundColor = Color(0x32133c55)
-            )
+            Box(modifier = Modifier.width(7.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .width(220.dp)
+                    .wrapContentHeight()
+                    .padding(vertical = 10.dp, horizontal = 5.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-
-                Box {
-                    RatingStars(rating = stars, iconSize = 16)
-                }
-
                 Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 17.sp,
                     color = Color(0xFF133c55),
-                    text = "$comments opiniones"
+                    text = name,
+                    lineHeight = 30.sp
                 )
 
+                FilterCard(
+                    icon = Icons.Sharp.Lock,
+                    descriptionIcon = "Cerrajero",
+                    iconSize = 14,
+                    text = "Cerrajero",
+                    color = Color(0xff133c55),
+                    backgroundColor = Color(0x32133c55)
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Box {
+                        RatingStars(rating = stars, iconSize = 16)
+                    }
+
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = "$comments opiniones"
+                    )
+
+                }
             }
+
+            Box(modifier = Modifier.weight(1f))
+
+            IconButton(onClick = {
+                navController.navigate("professionalProfile/$id")
+            }) {
+                Icon(
+                    Icons.Rounded.KeyboardArrowRight,
+                    contentDescription = "Ingresar"
+                )
+            }
+
         }
-
-        Box(modifier = Modifier.weight(1f))
-
-        IconButton(onClick = {
-            navController.navigate("professionalProfile/$id")
-        }) {
-            Icon(
-                Icons.Rounded.KeyboardArrowRight,
-                contentDescription = "Ingresar"
-            )
-        }
-
     }
+
+
 }
 
 
@@ -135,12 +148,14 @@ fun FilterCard(
     text: String,
     color: Color,
     backgroundColor: Color = Color.Transparent,
+    navController: NavController = rememberNavController()
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(6.dp))
             .wrapContentHeight()
             .wrapContentWidth()
+            .clickable { navController.navigate("results") }
     ) {
 
         Row(
