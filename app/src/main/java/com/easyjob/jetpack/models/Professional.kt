@@ -11,3 +11,13 @@ data class Professional(
     val score: String,
     val description: String,
 )
+
+data class SpecialitiesResponse(
+    val id: String,
+    val name: String
+)
+
+data class CitiesResponse(
+    val id: String,
+    val name: String
+)

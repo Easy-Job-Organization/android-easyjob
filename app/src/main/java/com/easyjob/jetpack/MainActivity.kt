@@ -41,6 +41,7 @@ import com.easyjob.jetpack.screens.HomeScreen
 import com.easyjob.jetpack.screens.LoginScreen
 import com.easyjob.jetpack.screens.MakeAppointmentScreen
 import com.easyjob.jetpack.screens.MessageScreen
+import com.easyjob.jetpack.screens.ProfessionalProfileScreen
 import com.easyjob.jetpack.screens.ProfileScreen
 import com.easyjob.jetpack.screens.RegisterScreen
 import com.easyjob.jetpack.screens.SearchScreen
@@ -85,6 +86,6 @@ fun App() {
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        App()
+        ProfessionalProfileScreen(id = "056c2ceb-2407-4116-8707-d6e27ce66a5f")
     }
 }

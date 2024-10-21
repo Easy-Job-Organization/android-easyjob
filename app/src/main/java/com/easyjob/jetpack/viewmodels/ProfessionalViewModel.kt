@@ -30,7 +30,7 @@ class ProfessionalViewModel(
     private val _loading = MutableLiveData(false)
     val loading: LiveData<Boolean> = _loading
 
-    private val _errorMessage = MutableLiveData<String>()
+    private val _errorMessage = MutableLiveData<String>("")
     val errorMessage: LiveData<String> get() = _errorMessage
 
 

@@ -14,7 +14,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.sharp.Lock
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.easyjob.jetpack.models.Professional
+import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.ui.theme.components.ButtonSection
 import com.easyjob.jetpack.ui.theme.components.CommentsCard
 import com.easyjob.jetpack.ui.theme.components.FilterCard
@@ -40,27 +44,34 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
     professionalViewModel: ProfessionalViewModel = viewModel(),
+    professionalProfileViewModel: ProfessionalProfileViewModel = viewModel(),
     id: String,
 ) {
 
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
     val reviewsState by professionalViewModel.reviews.observeAsState()
-    Log.e(">>>", professionalState.toString())
-    Log.e(">>>", servicesState.toString())
-    Log.e(">>>", reviewsState.toString())
+    val city by professionalProfileViewModel.city.observeAsState()
+    //val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+
+    val loading by professionalViewModel.loading.observeAsState()
+    val error by professionalViewModel.errorMessage.observeAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(id) {
         professionalViewModel.fetchProfessional(id)
+        professionalProfileViewModel.loadCity(id)
+        professionalProfileViewModel.loadCommentsCount(id)
         professionalViewModel.fetchServicesOfProfessinal(id)
         professionalViewModel.fetchReviewsOfProfessinal(id)
     }
@@ -74,7 +85,7 @@ fun ProfessionalClientScreen(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
 
-                topBar = {
+        topBar = {
             Topbar(
                 title = "Perfil del profesional",
                 icon = Icons.Default.FavoriteBorder,
@@ -93,73 +104,86 @@ fun ProfessionalClientScreen(
                 .padding(horizontal = 17.dp, vertical = 8.dp),
         ) {
 
-            ProfileSection(
-                image = professionalState?.photo_url,
-                descriptionImage = "profile photo",
-                name = "${professionalState?.name} ${professionalState?.last_name}",
-                cityCountry = "Cali, Colombia",
-                iconSize = 16,
-                stars = 4,
-                comments = "444"
-            )
-            Column(modifier = Modifier
-                .padding(vertical = 14.dp)
-                .wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    FilterCard(
-                        icon = Icons.Sharp.Lock,
-                        descriptionIcon = "Electrodomésticos",
-                        iconSize = 16,
-                        text = "Electrodomésticos",
-                        color = Color(0xff133c55),
-                        backgroundColor = Color(0x32133c55)
-                    )
-
-                    FilterCard(
-                        icon = Icons.Sharp.Lock,
-                        descriptionIcon = "Plomería",
-                        iconSize = 16,
-                        text = "Plomería",
-                        color = Color(0xff133c55),
-                        backgroundColor = Color(0x32133c55)
-                    )
-
+            when {
+                loading == true -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
 
-                Column(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-
-                    PrimaryButton(text = "Agendar cita", onClick = { /*TODO*/ })
-                    SecondaryButton(text = "Enviar mensaje", onClick = { /*TODO*/ })
-
+                error != null && error!!.isNotEmpty() -> {
+                    Text(text = error ?: "Error desconocido", color = Color.Red)
                 }
 
-            }
+                loading == false -> {
+                    professionalState?.let { professional: Professional ->
+                        ProfileSection(
+                            image = professional.photo_url,
+                            descriptionImage = "profile photo",
+                            name = "${professional.name} ${professional.last_name}",
+                            cityCountry = city ?: "Ciudad desconocida",
+                            iconSize = 16,
+                            stars = professional.score.toDouble().roundToInt(), //ajustar para el score del tecnico
+                            comments = "",
+                        )
+                    }
 
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ButtonSection(active = activeSection, text = "Información", onClick = { activeSection = !activeSection }, width = 200)
-                ButtonSection(active = !activeSection, text = "Opiniones", onClick = { activeSection = !activeSection }, width = 200)
-            }
-            Box(modifier = Modifier.height(10.dp))
-            Column(modifier = Modifier.fillMaxWidth()) {
-                if (activeSection) {
-                    servicesState?.let { InformationCard(services = it) }
-                } else {
-                    reviewsState?.let { CommentsCard(reviews = it) }
+                    Column(modifier = Modifier
+                        .padding(vertical = 14.dp)
+                        .wrapContentHeight(),
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        servicesState?.let { services ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                services.forEach { service ->
+                                    service?.let {
+                                        FilterCard(
+                                            icon = Icons.Sharp.Lock,
+                                            descriptionIcon = service.title,
+                                            iconSize = 16,
+                                            text = service.title,
+                                            color = Color(0xff133c55),
+                                            backgroundColor = Color(0x32133c55)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Column(
+                            modifier = Modifier,
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            PrimaryButton(text = "Agendar cita", onClick = { /*TODO*/ })
+                            SecondaryButton(text = "Enviar mensaje", onClick = { /*TODO*/ })
+
+                        }
+
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        ButtonSection(active = activeSection, text = "Información", onClick = { activeSection = !activeSection }, width = 200)
+                        ButtonSection(active = !activeSection, text = "Opiniones", onClick = { activeSection = !activeSection }, width = 200)
+                    }
+                    Box(modifier = Modifier.height(10.dp))
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        if (activeSection) {
+                            servicesState?.let { InformationCard(services = it) }
+                        } else {
+                            reviewsState?.let { CommentsCard(reviews = it) }
+                        }
+                    }
                 }
             }
 
