@@ -184,5 +184,4 @@ fun SearchScreen(
         }
 
     }
-
 }

@@ -42,6 +42,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
+import org.w3c.dom.Comment
 
 @Composable
 fun CardSearch(
@@ -50,15 +51,10 @@ fun CardSearch(
     descriptionImage: String,
     name: String = "Cargando",
     stars: Int = 0,
+    comment: String = "0",
     professionalViewModel: ProfessionalProfileViewModel = viewModel(),
     navController: NavController = rememberNavController()
 ) {
-
-    LaunchedEffect(Unit) {
-        professionalViewModel.loadCommentsCount(id)
-    }
-
-    val comments by professionalViewModel.commentsCount.observeAsState(0)
 
     Box(
         modifier = Modifier
@@ -130,7 +126,7 @@ fun CardSearch(
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                         color = Color(0xFF133c55),
-                        text = "$comments opiniones"
+                        text = "XX opiniones"
                     )
 
                 }
