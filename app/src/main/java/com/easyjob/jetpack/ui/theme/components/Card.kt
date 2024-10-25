@@ -103,15 +103,6 @@ fun CardSearch(
                     lineHeight = 30.sp
                 )
 
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Cerrajero",
-                    iconSize = 14,
-                    text = "Cerrajero",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55)
-                )
-
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -155,14 +146,15 @@ fun FilterCard(
     text: String,
     color: Color,
     backgroundColor: Color = Color.Transparent,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    click: Boolean
 ) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(6.dp))
             .wrapContentHeight()
             .wrapContentWidth()
-            .clickable { navController.navigate("results/${descriptionIcon}") }
+            .clickable { if(click){navController.navigate("results/${descriptionIcon}")}}
     ) {
 
         Row(

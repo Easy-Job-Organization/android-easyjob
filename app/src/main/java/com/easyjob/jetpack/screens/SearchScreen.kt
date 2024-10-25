@@ -108,7 +108,8 @@ fun SearchScreen(
                     text = "Electrodomésticos",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
                 )
 
                 FilterCard(
@@ -118,7 +119,8 @@ fun SearchScreen(
                     text = "Plomería",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
                 )
                 FilterCard(
                     icon = Icons.Sharp.Lock,
@@ -127,7 +129,8 @@ fun SearchScreen(
                     text = "Electricista",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
                 )
 
                 FilterCard(
@@ -137,7 +140,8 @@ fun SearchScreen(
                     text = "Aseo",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
                 )
                 FilterCard(
                     icon = Icons.Sharp.Lock,
@@ -146,7 +150,8 @@ fun SearchScreen(
                     text = "Pintura",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
                 )
 
                 FilterCard(
@@ -156,7 +161,8 @@ fun SearchScreen(
                     text = "Carpinteria",
                     color = Color(0xff133c55),
                     backgroundColor = Color(0x32133c55),
-                    navController = navController
+                    navController = navController,
+                    click = true
 
                 )
             }

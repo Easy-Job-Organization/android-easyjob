@@ -44,7 +44,7 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
             }
             composable("professionalProfileClient/{id}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""
-                ProfessionalClientScreen(navController, id = id)
+                ProfessionalClientScreen(nestedNavController, id = id)
             }
             composable("makeAppointment"){ MakeAppointmentScreen(navController) }
         }

@@ -150,7 +150,8 @@ fun ProfessionalClientScreen(
                                             iconSize = 16,
                                             text = service.title,
                                             color = Color(0xff133c55),
-                                            backgroundColor = Color(0x32133c55)
+                                            backgroundColor = Color(0x32133c55),
+                                            click = false
                                         )
                                     }
                                 }
