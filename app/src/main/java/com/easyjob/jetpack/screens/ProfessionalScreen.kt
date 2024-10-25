@@ -61,7 +61,7 @@ fun ProfessionalClientScreen(
     val servicesState by professionalViewModel.services.observeAsState()
     val reviewsState by professionalViewModel.reviews.observeAsState()
     val city by professionalProfileViewModel.city.observeAsState()
-    //val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+    val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
 
     val loading by professionalViewModel.loading.observeAsState()
     val error by professionalViewModel.errorMessage.observeAsState()
@@ -124,7 +124,7 @@ fun ProfessionalClientScreen(
                             cityCountry = city ?: "Ciudad desconocida",
                             iconSize = 16,
                             stars = professional.score?.toDouble()?.roundToInt() ?: 0, //ajustar para el score del tecnico
-                            comments = "",
+                            comments = commentsCount.toString(),
                         )
                     }
 
