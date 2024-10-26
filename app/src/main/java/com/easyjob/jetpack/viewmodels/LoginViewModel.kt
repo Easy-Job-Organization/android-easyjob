@@ -4,14 +4,20 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
 import com.easyjob.jetpack.repositories.AuthRepositoryImpl
+import com.easyjob.jetpack.services.AuthServiceImpl
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginViewModel(
-    val repo: AuthRepository = AuthRepositoryImpl()
+    private val userPreferencesRepository: UserPreferencesRepository, // Add this line
+    private val repo: AuthRepository = AuthRepositoryImpl(
+        authService = AuthServiceImpl(),
+        userPreferencesRepository = userPreferencesRepository
+    )
 ): ViewModel() {
 
     //0. Idle

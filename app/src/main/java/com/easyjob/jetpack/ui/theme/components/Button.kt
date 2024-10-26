@@ -86,7 +86,7 @@ fun SecondaryButton(text: String, onClick: () -> Unit, width: Int? = null) {
             pressedElevation = 8.dp // Elevación cuando se presiona
         )
     ) {
-        Text(text = text, color = Color.Black, fontSize = 17.sp)
+        Text(text = text, color = Color.White, fontSize = 17.sp)
     }
 }
 

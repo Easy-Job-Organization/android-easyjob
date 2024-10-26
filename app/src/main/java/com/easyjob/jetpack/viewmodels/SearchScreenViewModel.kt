@@ -3,6 +3,7 @@ package com.easyjob.jetpack.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.ProfessionalCardResponse
@@ -12,10 +13,24 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class SearchScreenViewModel(
-    private val repo: SearchScreenRepository = SearchScreenRepositoryImpl()
+    private val repo: SearchScreenRepository = SearchScreenRepositoryImpl(),
+    private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
     val professionalCards = MutableLiveData<List<ProfessionalCardResponse>>()
     val searchResult = MutableLiveData<ProfessionalSearchScreenResponse?>()
+    val userName = MutableLiveData<String?>();
+
+    init {
+        loadUserName() // Carga el nombre del usuario al inicializar el ViewModel
+    }
+
+    private fun loadUserName() {
+        viewModelScope.launch {
+            userPreferencesRepository.nameFlow.collect { name ->
+                userName.value = name // Asigna el nombre del usuario a LiveData
+            }
+        }
+    }
 
     fun loadProfessionalCards(){
         viewModelScope.launch(Dispatchers.IO) {

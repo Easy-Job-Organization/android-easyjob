@@ -11,13 +11,24 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 // Login
-data class LoginRequest(val email: String, val password: String)
-data class LoginResponse(val token: String)
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val id: String,
+    val name: String,
+    val lastName: String,
+    val password: String,
+    val roles: List<String>,
+    val token: String,
+)
 
 data class RegisterResponse(val token: String)
 
 interface AuthService {
-    @POST("auth/client/login")
+    @POST("auth/user/login")
     suspend fun loginWithEmailAndPasswordClient(@Body request: LoginRequest): Response<LoginResponse>
 
     @Multipart
