@@ -57,21 +57,23 @@ import com.easyjob.jetpack.ui.theme.components.Input
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             EasyjobTheme {
-                App()
+                EasyJobApp()
             }
         }
     }
 }
 
 @Composable
-fun App() {
+fun EasyJobApp() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "splash") {

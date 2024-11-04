@@ -2,11 +2,13 @@ package com.easyjob.jetpack.data.store
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class UserPreferencesRepository (
-    private val context: Context
+class UserPreferencesRepository @Inject constructor(
+    @ApplicationContext private val context: Context
 ) {
 
     // Save user info to DataStore

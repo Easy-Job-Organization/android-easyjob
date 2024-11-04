@@ -35,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -54,7 +55,7 @@ import kotlin.math.floor
 @Composable
 fun SearchScreen(
     navController: NavController = rememberNavController(), // Initialize with the appropriate context
-    searchScreenViewModel: SearchScreenViewModel = viewModel(),
+    searchScreenViewModel: SearchScreenViewModel = hiltViewModel(),
 ) {
     val scrollState = rememberScrollState()
 

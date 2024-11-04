@@ -8,12 +8,15 @@ import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.ProfessionalCardResponse
 import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SearchScreenViewModel(
-    private val repo: SearchScreenRepository = SearchScreenRepositoryImpl(),
+@HiltViewModel
+class SearchScreenViewModel @Inject constructor(
+    private val repo: SearchScreenRepository,
     private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
     val professionalCards = MutableLiveData<List<ProfessionalCardResponse>>()

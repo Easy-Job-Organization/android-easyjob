@@ -15,7 +15,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
-
+import javax.inject.Inject
 
 
 interface AuthRepository {
@@ -50,8 +50,8 @@ interface AuthRepository {
     ): Response<RegisterResponse>
 }
 
-class AuthRepositoryImpl(
-    private val authService: AuthService = AuthServiceImpl(),
+class AuthRepositoryImpl @Inject constructor(
+    private val authService: AuthService,
     private val userPreferencesRepository: UserPreferencesRepository
 ) : AuthRepository {
     override suspend fun signIn(email: String, password: String): Response<LoginResponse> {
