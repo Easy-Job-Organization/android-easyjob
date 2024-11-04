@@ -71,8 +71,12 @@ fun CardSearch(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .border(1.dp, Color.Gray, RoundedCornerShape(18.dp))
-                .padding(horizontal = 15.dp, vertical = 5.dp),
+                .border(
+                    0.5.dp,
+                    Color.LightGray,
+                    RoundedCornerShape(18.dp)
+                )
+                .padding(horizontal = 15.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
@@ -105,7 +109,7 @@ fun CardSearch(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    //horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
@@ -114,11 +118,19 @@ fun CardSearch(
                     }
 
                     Text(
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = "($stars)",
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+
+                    /*Text(
                         fontWeight = FontWeight.Normal,
                         fontSize = 14.sp,
                         color = Color(0xFF133c55),
                         text = "XX opiniones"
-                    )
+                    )*/
 
                 }
             }
@@ -154,7 +166,11 @@ fun FilterCard(
             .clip(RoundedCornerShape(6.dp))
             .wrapContentHeight()
             .wrapContentWidth()
-            .clickable { if(click){navController.navigate("results/${descriptionIcon}")}}
+            .clickable {
+                if (click) {
+                    navController.navigate("results/${descriptionIcon}")
+                }
+            }
     ) {
 
         Row(

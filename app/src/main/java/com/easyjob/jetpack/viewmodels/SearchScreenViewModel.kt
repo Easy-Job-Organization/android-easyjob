@@ -3,19 +3,37 @@ package com.easyjob.jetpack.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.ProfessionalCardResponse
 import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SearchScreenViewModel(
-    private val repo: SearchScreenRepository = SearchScreenRepositoryImpl()
+@HiltViewModel
+class SearchScreenViewModel @Inject constructor(
+    private val repo: SearchScreenRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
     val professionalCards = MutableLiveData<List<ProfessionalCardResponse>>()
     val searchResult = MutableLiveData<ProfessionalSearchScreenResponse?>()
+    val userName = MutableLiveData<String?>();
+
+    init {
+        loadUserName() // Carga el nombre del usuario al inicializar el ViewModel
+    }
+
+    private fun loadUserName() {
+        viewModelScope.launch {
+            userPreferencesRepository.nameFlow.collect { name ->
+                userName.value = name // Asigna el nombre del usuario a LiveData
+            }
+        }
+    }
 
     fun loadProfessionalCards(){
         viewModelScope.launch(Dispatchers.IO) {

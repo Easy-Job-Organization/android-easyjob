@@ -4,14 +4,16 @@ import com.easyjob.jetpack.services.ProfessionalCardResponse
 import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
 import com.easyjob.jetpack.services.SearchScreenService
 import com.easyjob.jetpack.services.SearchScreenServiceImpl
+import javax.inject.Inject
 
 interface SearchScreenRepository {
     suspend fun fetchProfesionalCards(): List<ProfessionalCardResponse>
     suspend fun fetchProfesionalCardsSearch(city:String, speciality:String): ProfessionalSearchScreenResponse?
 }
 
-class SearchScreenRepositoryImpl(
-    private val searchScreenService: SearchScreenService = SearchScreenServiceImpl()
+
+class SearchScreenRepositoryImpl @Inject constructor(
+    private val searchScreenService: SearchScreenService
 ) : SearchScreenRepository {
     override suspend fun fetchProfesionalCards(): List<ProfessionalCardResponse> {
         val response = searchScreenService.getProfessionalProfileCards()

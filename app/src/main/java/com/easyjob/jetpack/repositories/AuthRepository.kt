@@ -3,6 +3,7 @@ package com.easyjob.jetpack.repositories
 import android.content.ContentResolver
 import android.net.Uri
 import android.util.Log
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.services.AuthService
 import com.easyjob.jetpack.services.AuthServiceImpl
 import com.easyjob.jetpack.services.LoginRequest
@@ -14,9 +15,12 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
+import javax.inject.Inject
 
 
 interface AuthRepository {
+
+
     suspend fun signIn(email: String, password: String): Response<LoginResponse>
 
     suspend fun signUpClient(
@@ -46,12 +50,26 @@ interface AuthRepository {
     ): Response<RegisterResponse>
 }
 
-class AuthRepositoryImpl(
-    val authService: AuthService = AuthServiceImpl()
+class AuthRepositoryImpl @Inject constructor(
+    private val authService: AuthService,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : AuthRepository {
     override suspend fun signIn(email: String, password: String): Response<LoginResponse> {
         val res = authService.loginWithEmailAndPasswordClient(LoginRequest(email, password))
-        Log.e(">>>", "The response is: ${res.body()}")
+        Log.e(">>>", "The response is: ${res.body()}");
+        if (res.isSuccessful) {
+            res.body()?.let { userResponse ->
+                // Save user preferences upon successful login
+                userPreferencesRepository.saveUserInfo(
+                    userId = userResponse.id,
+                    jwt = userResponse.token,
+                    roles = userResponse.roles,
+                    name = userResponse.name,
+                    lastName = userResponse.lastName
+                )
+            }
+        }
+
         return res
     }
 

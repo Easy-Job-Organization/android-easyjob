@@ -35,11 +35,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.ui.theme.components.CardSearch
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
@@ -52,8 +54,8 @@ import kotlin.math.floor
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    navController: NavController = rememberNavController(),
-    searchScreenViewModel: SearchScreenViewModel = viewModel(),
+    navController: NavController = rememberNavController(), // Initialize with the appropriate context
+    searchScreenViewModel: SearchScreenViewModel = hiltViewModel(),
 ) {
     val scrollState = rememberScrollState()
 
@@ -62,6 +64,7 @@ fun SearchScreen(
     }
 
     val professionalCards by searchScreenViewModel.professionalCards.observeAsState(emptyList())
+    val userName by searchScreenViewModel.userName.observeAsState("")
 
     Scaffold(
         modifier = Modifier
@@ -87,7 +90,7 @@ fun SearchScreen(
                         .padding(start = 25.dp),
                 )
 
-                Text("Hola.", fontSize = 32.sp, modifier = Modifier.padding(start = 20.dp))
+                Text("Hola $userName", fontSize = 32.sp, modifier = Modifier.padding(start = 20.dp))
 
             }
 
@@ -167,7 +170,7 @@ fun SearchScreen(
                 )
             }
 
-            Text("Destacados", fontSize = 32.sp, modifier = Modifier.padding(start = 15.dp, bottom = 15.dp))
+            Text("Destacados", fontSize = 28.sp, modifier = Modifier.padding(start = 24.dp, bottom = 24.dp))
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -180,9 +183,10 @@ fun SearchScreen(
                         id = card.id,
                         image = card.photo_url,
                         descriptionImage = "Profile photo",
-                        name = card.name + card.last_name,
+                        name = card.name + " " + card.last_name,
                         stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
                         navController = navController
+
                     )
                 }
             }
