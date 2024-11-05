@@ -16,7 +16,7 @@ class ProfessionalProfileViewModel(
 ) : ViewModel() {
 
     val professionalProfile = MutableLiveData<Professional>()
-    val city = MutableLiveData<String>()
+    //val city = MutableLiveData<List<String>>()
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
     val commentsCount = MutableLiveData<Int>()
     val specialities = MutableLiveData<List<SpecialitiesResponse>>()
@@ -42,15 +42,15 @@ class ProfessionalProfileViewModel(
         }
     }
 
-    fun loadCity(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val cityResponse = repo.fetchCities(id)
-
-            withContext(Dispatchers.Main) {
-                city.value = cityResponse?.name ?: "Ciudad desconocida"
-            }
-        }
-    }
+//    fun loadCity(id: String) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val cityResponse = repo.fetchCities(id)
+//
+//            withContext(Dispatchers.Main) {
+//                city.value = cityResponse. ?: "Ciudad desconocida"
+//            }
+//        }
+//    }
 
     fun loadCommentsCount(id: String) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -90,7 +90,8 @@ fun ProfileScreen(
                             image = profile.photo_url ?: "https://example.com/default_profile.jpg",
                             descriptionImage = "profile image",
                             name = profile.name ?: "Nombre no disponible",
-                            cityCountry = "",
+                            phoneNumber = profile.phone_number ?: "Numero no disponible",
+                            cities = profile.cities ?: listOf(),
                             iconSize = 14,
                             stars = -1,
                             comments = ""
