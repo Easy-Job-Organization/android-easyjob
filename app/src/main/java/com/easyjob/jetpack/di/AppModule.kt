@@ -29,7 +29,6 @@ object AppModule {
         return UserPreferencesRepository(context)
     }
 
-
     //Services
 
     @Provides
