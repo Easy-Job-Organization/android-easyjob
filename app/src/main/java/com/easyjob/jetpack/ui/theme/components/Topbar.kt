@@ -47,7 +47,7 @@ fun Topbar(
 ) {
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color(0xff133c55),
+            containerColor = Color(0xff3b82f6),
             titleContentColor = Color.White,
         ),
         modifier = Modifier
