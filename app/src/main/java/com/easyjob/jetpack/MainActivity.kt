@@ -81,6 +81,7 @@ fun EasyJobApp() {
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
+        composable("homeProfessional"){ ProfessionalProfileScreen(id = "0d774ed4-8b13-4f87-bbfa-914460c9293e") }
     }
 }
 

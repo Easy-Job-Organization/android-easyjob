@@ -55,6 +55,11 @@ fun LoginScreen(
                 popUpTo("login") { inclusive = true } // Remove login from back stack
             }
         }
+        if (authState == 4) { // Trigger navigation on success
+            navController.navigate("homeProfessional") {
+                popUpTo("login") { inclusive = true } // Remove login from back stack
+            }
+        }
     }
 
     Column(

@@ -36,10 +36,15 @@ class LoginViewModel @Inject constructor(
             val response = repo.signIn(email, password)
             Log.e("LoginViewModel", "$response")
 
-            if(response.isSuccessful) {
+            if(response.isSuccessful && response.body()?.roles?.get(0).equals("client")) {
                 withContext(Dispatchers.Main) {
                     authState.value = 3
-                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success.")
+                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success as a client.")
+                }
+            } else if(response.isSuccessful && response.body()?.roles?.get(0).equals("professional")) {
+                withContext(Dispatchers.Main) {
+                    authState.value = 4
+                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success as a professional.")
                 }
             } else {
                 withContext(Dispatchers.Main) {

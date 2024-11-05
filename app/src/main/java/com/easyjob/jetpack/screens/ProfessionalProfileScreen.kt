@@ -54,7 +54,6 @@ fun ProfessionalProfileScreen(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-
     val profile by viewModel.professionalProfile.observeAsState()
     //val city by viewModel.city.observeAsState()
     val commentsCount by viewModel.commentsCount.observeAsState(0)
@@ -214,9 +213,9 @@ fun ProfessionalProfileScreen(
                     specialities.forEach { speciality ->
                         FilterCard(
                             icon = Icons.Sharp.Lock, // Cambiar por un ícono relevante si es necesario
-                            descriptionIcon = speciality.name,
+                            descriptionIcon = speciality.name ?: "NO_SPECIALTY_NAME",
                             iconSize = 16,
-                            text = speciality.name,
+                            text = speciality.name?: "NO_SPECIALTY_NAME",
                             color = Color(0xff133c55),
                             backgroundColor = Color(0x32133c55),
                             click = false
