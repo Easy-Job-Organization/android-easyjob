@@ -56,7 +56,7 @@ fun ProfessionalProfileScreen(
 
 
     val profile by viewModel.professionalProfile.observeAsState()
-    val city by viewModel.city.observeAsState()
+    //val city by viewModel.city.observeAsState()
     val commentsCount by viewModel.commentsCount.observeAsState(0)
     val specialities by viewModel.specialities.observeAsState(emptyList())
     val profileState by viewModel.profileState.observeAsState(0)
@@ -65,7 +65,7 @@ fun ProfessionalProfileScreen(
     LaunchedEffect(id) {
         id?.let {
             viewModel.loadProfessionalProfile(it)
-            viewModel.loadCity(it)
+            //viewModel.loadCity(it)
             viewModel.loadCommentsCount(it)
             viewModel.loadSpecialities(it)
         }
@@ -112,7 +112,8 @@ fun ProfessionalProfileScreen(
                             image = professional.photo_url,
                             descriptionImage = professional.description,
                             name = professional.name,
-                            cityCountry = city ?: "Ciudad desconocida",
+                            phoneNumber = professional.phone_number,
+                            cities = professional.cities ?: listOf(),
                             iconSize = 16,
                             stars = professional.score.toDouble().roundToInt(),
                             comments = commentsCount.toString()

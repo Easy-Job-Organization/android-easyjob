@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.models.CitiesResponse
+import com.easyjob.jetpack.models.City
 
 
 @Composable
@@ -45,26 +47,32 @@ fun ProfileSection(
     image: String?,
     descriptionImage: String,
     name: String = "Cargando",
-    cityCountry: String = "Cargando",
+    cities: List<City>,
+    phoneNumber: String,
     iconSize: Int,
     stars: Int,
-    comments: String = "0")
+    comments: String = "0"
+)
 {
     Row(modifier = Modifier
         .fillMaxWidth()
         .wrapContentHeight()
-        .padding(vertical = 7.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.Start
     ) {
-        AsyncImage(
-            model = image,
-            contentDescription = descriptionImage,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(100.dp),
-            error = painterResource(R.drawable.ic_launcher_background)
-        )
+        Box(
+            modifier = Modifier.padding(5.dp)
+        ) {
+            AsyncImage(
+                model = image,
+                contentDescription = descriptionImage,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(100.dp),
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+        }
 
         Box(modifier = Modifier.width(12.dp))
 
@@ -82,30 +90,46 @@ fun ProfileSection(
                 lineHeight = 30.sp
             )
 
-            Text(
-                fontWeight = FontWeight.Normal,
-                fontSize = 17.sp,
-                color = Color(0xFF133c55),
-                text = cityCountry
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                
-                Box(modifier = Modifier) {
-                    if (stars > -1) RatingStars(rating = stars, iconSize = iconSize)
-                }
-                
                 Text(
                     fontWeight = FontWeight.Normal,
-                    fontSize = iconSize.sp,
+                    fontSize = 14.sp,
                     color = Color(0xFF133c55),
-                    text = "$comments opiniones"
+                    text = cities.joinToString(", "){
+                        it.city_name
+                    }
                 )
-                
+
+                Text(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    color = Color(0xFF133c55),
+                    text = phoneNumber
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Box(modifier = Modifier) {
+                        if (stars > -1) RatingStars(rating = stars, iconSize = iconSize)
+                    }
+
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = iconSize.sp,
+                        color = Color(0xFF133c55),
+                        text = "$comments opiniones"
+                    )
+
+                }
             }
         }
     }

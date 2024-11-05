@@ -8,6 +8,7 @@ data class Professional(
     val phone_number: String,
     val photo_url: String,
     val roles: List<String>,
+    val cities: List<City>,
     val score: String,
     val description: String,
 )
@@ -20,4 +21,9 @@ data class SpecialitiesResponse(
 data class CitiesResponse(
     val id: String,
     val name: String
+)
+
+data class City(
+    val id: String,
+    val city_name: String
 )

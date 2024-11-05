@@ -60,7 +60,7 @@ fun ProfessionalClientScreen(
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
     val reviewsState by professionalViewModel.reviews.observeAsState()
-    val city by professionalProfileViewModel.city.observeAsState()
+    //val city by professionalProfileViewModel.city.observeAsState()
     val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
 
     val loading by professionalViewModel.loading.observeAsState()
@@ -70,7 +70,7 @@ fun ProfessionalClientScreen(
 
     LaunchedEffect(id) {
         professionalViewModel.fetchProfessional(id)
-        professionalProfileViewModel.loadCity(id)
+        //professionalProfileViewModel.loadCity(id)
         professionalProfileViewModel.loadCommentsCount(id)
         professionalViewModel.fetchServicesOfProfessinal(id)
         professionalViewModel.fetchReviewsOfProfessinal(id)
@@ -121,7 +121,8 @@ fun ProfessionalClientScreen(
                             image = professional.photo_url,
                             descriptionImage = "profile photo",
                             name = "${professional.name} ${professional.last_name}",
-                            cityCountry = city ?: "Ciudad desconocida",
+                            phoneNumber = professional.phone_number,
+                            cities = professional.cities ?: listOf(),
                             iconSize = 16,
                             stars = professional.score?.toDouble()?.roundToInt() ?: 0, //ajustar para el score del tecnico
                             comments = commentsCount.toString(),
