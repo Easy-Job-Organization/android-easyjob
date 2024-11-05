@@ -88,6 +88,6 @@ fun EasyJobApp() {
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        ProfessionalProfileScreen(id = "056c2ceb-2407-4116-8707-d6e27ce66a5f")
+        ProfessionalProfileScreen(id = "0d774ed4-8b13-4f87-bbfa-914460c9293e")
     }
 }
