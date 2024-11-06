@@ -60,6 +60,7 @@ dependencies {
 
     //DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
     implementation(libs.androidx.material.v105)
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)

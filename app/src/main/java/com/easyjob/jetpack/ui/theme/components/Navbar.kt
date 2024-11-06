@@ -86,7 +86,7 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
             selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
-                nestedNavController.navigate("chatList") {
+                nestedNavController.navigate("listChat") {
                     launchSingleTop = true
                 }
             },
