@@ -1,8 +1,16 @@
 package com.easyjob.jetpack.ui.theme.components
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
+import android.icu.util.Calendar
+import android.view.Display.Mode
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
@@ -21,6 +30,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -125,3 +136,76 @@ fun DropdownMenu1(
         }
     }
 }
+
+@Composable
+fun DescriptionTextArea(
+    description: String,
+    onDescriptionChange: (String) -> Unit
+) {
+    TextField(
+        value = description,
+        onValueChange = onDescriptionChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp) // Altura para que funcione como área de texto
+            .shadow(8.dp, RoundedCornerShape(8.dp)) // Sombra con radio de 8dp
+            .padding(8.dp),
+        placeholder = { Text("Escribe la descripción aquí...") },
+        colors = TextFieldDefaults.colors(
+            unfocusedContainerColor = Color.White
+        ),
+        shape = RoundedCornerShape(8.dp), // Forma con bordes redondeados
+        maxLines = 5 // Limitar el número de líneas si lo prefieres
+    )
+}
+
+
+@Composable
+fun DateTimePicker() {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+    // State para mostrar los diálogos
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+
+    // DatePicker Dialog
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, pickedYear, pickedMonth, pickedDay ->
+            selectedDate = "$pickedDay/${pickedMonth + 1}/$pickedYear"
+        },
+        year, month, day
+    )
+
+    // TimePicker Dialog
+    val timePickerDialog = TimePickerDialog(
+        context,
+        { _, pickedHour, pickedMinute ->
+            selectedTime = "$pickedHour:$pickedMinute"
+        },
+        hour, minute, true
+    )
+
+    Column(
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(text = "Fecha seleccionada: $selectedDate")
+        Spacer(modifier = Modifier.height(16.dp))
+        PrimaryButton(text = "Elegir fecha", onClick = { datePickerDialog.show() })
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(text = "Hora seleccionada: $selectedTime")
+        Spacer(modifier = Modifier.height(16.dp))
+        PrimaryButton(text = "Elegir hora", onClick = { timePickerDialog.show() })
+    }
+}
+

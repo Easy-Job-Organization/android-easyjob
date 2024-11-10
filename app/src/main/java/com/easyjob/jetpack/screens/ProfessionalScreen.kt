@@ -165,7 +165,11 @@ fun ProfessionalClientScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            PrimaryButton(text = "Agendar cita", onClick = { /*TODO*/ })
+                            PrimaryButton(
+                                text = "Agendar cita",
+                                onClick = {
+                                navController.navigate("registerDate/${id}")
+                            })
                             SecondaryButton(text = "Enviar mensaje", onClick = { /*TODO*/ })
 
                         }
