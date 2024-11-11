@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
@@ -78,8 +79,10 @@ fun ProfessionalProfileScreen(
         topBar = {
             Topbar(
                 title = "Perfil del profesional",
-                icon = Icons.Default.FavoriteBorder,
-                onEditClick = {},
+                icon = Icons.Default.Edit,
+                onEditClick = {
+                    navController.navigate("editServices/$id")
+                },
                 scrollBehavior = scrollBehavior,
                 navController = navController,
                 isBack = true

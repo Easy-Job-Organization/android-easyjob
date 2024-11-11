@@ -37,6 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.easyjob.jetpack.screens.AppointmentScreen
+import com.easyjob.jetpack.screens.EditServicesScreen
 import com.easyjob.jetpack.screens.HomeScreen
 import com.easyjob.jetpack.screens.LoginScreen
 import com.easyjob.jetpack.screens.MakeAppointmentScreen
@@ -89,6 +90,6 @@ fun EasyJobApp() {
 @Composable
 fun GreetingPreview() {
     EasyjobTheme {
-        ProfessionalProfileScreen(id = "0d774ed4-8b13-4f87-bbfa-914460c9293e")
+        EditServicesScreen(professionalId = "0d774ed4-8b13-4f87-bbfa-914460c9293e")
     }
 }
