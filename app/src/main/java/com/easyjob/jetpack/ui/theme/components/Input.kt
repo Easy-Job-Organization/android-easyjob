@@ -161,7 +161,12 @@ fun DescriptionTextArea(
 
 
 @Composable
-fun DateTimePicker() {
+fun DateTimePicker(
+    selectedDate: String,
+    selectedTime: String,
+    onDateSelected: (String) -> Unit,
+    onTimeSelected: (String) -> Unit
+) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
@@ -170,15 +175,11 @@ fun DateTimePicker() {
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
 
-    // State para mostrar los diálogos
-    var selectedDate by remember { mutableStateOf("") }
-    var selectedTime by remember { mutableStateOf("") }
-
     // DatePicker Dialog
     val datePickerDialog = DatePickerDialog(
         context,
         { _, pickedYear, pickedMonth, pickedDay ->
-            selectedDate = "$pickedDay/${pickedMonth + 1}/$pickedYear"
+            onDateSelected("$pickedDay/${pickedMonth + 1}/$pickedYear")
         },
         year, month, day
     )
@@ -187,7 +188,7 @@ fun DateTimePicker() {
     val timePickerDialog = TimePickerDialog(
         context,
         { _, pickedHour, pickedMinute ->
-            selectedTime = "$pickedHour:$pickedMinute"
+            onTimeSelected("$pickedHour:$pickedMinute")
         },
         hour, minute, true
     )

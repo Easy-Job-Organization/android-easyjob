@@ -41,7 +41,6 @@ class SearchScreenServiceImpl : SearchScreenService {
 
     private val apiService: SearchScreenService = retrofit.create(SearchScreenService::class.java)
 
-
     override suspend fun getProfessionalProfileCards(): Response<ProfessionalSearchScreenResponse> {
         return apiService.getProfessionalProfileCards()
     }

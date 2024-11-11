@@ -17,6 +17,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,30 +27,38 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.easyjob.jetpack.models.CreateAppointment
 import com.easyjob.jetpack.ui.theme.components.DateTimePicker
 import com.easyjob.jetpack.ui.theme.components.DescriptionTextArea
 import com.easyjob.jetpack.ui.theme.components.DropdownMenu1
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.DateViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun RegisterDateScreen(
     id: String,
     navController: NavController = rememberNavController(),
-    //registerDateViewModel: RegisterDateViewModel = hiltViewModel()
+    registerDateViewModel: DateViewModel = hiltViewModel()
 ){
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(Unit) {
-
+        registerDateViewModel.loadProfessionalServices(id)
     }
+
+    val professionalServices by registerDateViewModel.professionalServices.observeAsState(emptyList())
+
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+
 
     Scaffold(
         modifier = Modifier
@@ -82,7 +91,7 @@ fun RegisterDateScreen(
                     .padding(bottom = 15.dp)
             )
             DropdownMenu1(
-                options = listOf("Cliente", "Profesional"),
+                options = professionalServices.map { it?.title ?: "-" },
                 selectedOption = selectedOption,
                 onOptionSelected = {selectedOption = it}
             )
@@ -113,14 +122,33 @@ fun RegisterDateScreen(
                     .padding(bottom = 15.dp)
             )
 
-            DateTimePicker()
+            DateTimePicker(
+                selectedDate = selectedDate,
+                selectedTime = selectedTime,
+                onDateSelected = { selectedDate = it },
+                onTimeSelected = { selectedTime = it }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Row(){
-                SecondaryButton(text = "Cancelar", onClick = { /*TODO*/}, width = 200)
+                SecondaryButton(text = "Cancelar", onClick = { navController.popBackStack()}, width = 200)
                 Spacer(modifier = Modifier.width(16.dp))
-                PrimaryButton(text = "Agendar", onClick = { /*TODO*/ }, width = 200)
+                PrimaryButton(
+                    text = "Agendar",
+                    onClick = {
+                        val nwAppointment = CreateAppointment(
+                            date = selectedDate,
+                            location = "Cali",
+                            hour = selectedTime,
+                            service = selectedOption,
+                            client = "",
+                            professional = id
+                            )
+                        registerDateViewModel.createDate(nwAppointment)
+                        navController.popBackStack()
+                              },
+                    width = 200)
             }
 
         }
