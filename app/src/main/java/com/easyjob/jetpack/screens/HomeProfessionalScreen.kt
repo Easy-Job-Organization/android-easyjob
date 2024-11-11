@@ -22,7 +22,7 @@ import com.easyjob.jetpack.ui.theme.components.BottomNavBar
 import com.easyjob.jetpack.ui.theme.components.Topbar
 
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()) {
+fun HomeProfessionalScreen(navController: NavController = rememberNavController()) {
     val nestedNavController = rememberNavController()
 
     Scaffold(
@@ -35,18 +35,8 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
             composable("search"){ SearchScreen(nestedNavController) }
             composable("appointments"){ AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
-            composable("profile"){ ProfileScreen(navController) }
-            composable("results/{search}", arguments = listOf(
-                    navArgument("search"){type = NavType.StringType
-            })) { entry ->
-                val search = entry.arguments?.getString("search")
-                ResultsScreen(searchText = search ?: "" ,nestedNavController)
-            }
-            composable("professionalProfileClient/{id}") { backStackEntry ->
-                val id = backStackEntry.arguments?.getString("id") ?: ""
-                ProfessionalClientScreen(nestedNavController, id = id)
-            }
-            composable("makeAppointment"){ MakeAppointmentScreen(navController) }
+            composable("profile"){ ProfessionalProfileScreen() }
+
 
         }
 

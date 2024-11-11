@@ -4,10 +4,14 @@ import android.content.Context
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
 import com.easyjob.jetpack.repositories.AuthRepositoryImpl
+import com.easyjob.jetpack.repositories.ProfessionalProfileRepository
+import com.easyjob.jetpack.repositories.ProfessionalProfileRepositoryImpl
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.AuthService
 import com.easyjob.jetpack.services.AuthServiceImpl
+import com.easyjob.jetpack.services.ProfessionalProfileService
+import com.easyjob.jetpack.services.ProfessionalProfileServiceImpl
 import com.easyjob.jetpack.services.SearchScreenService
 import com.easyjob.jetpack.services.SearchScreenServiceImpl
 import dagger.Module
@@ -43,6 +47,12 @@ object AppModule {
         return SearchScreenServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideProfessionalProfileService(): ProfessionalProfileService {
+        return ProfessionalProfileServiceImpl()
+    }
+
     //Repositories
 
     @Provides
@@ -60,5 +70,13 @@ object AppModule {
         searchScreenService: SearchScreenService
     ): SearchScreenRepository {
         return SearchScreenRepositoryImpl(searchScreenService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfessionalProfileRepository(
+        professionalProfileService: ProfessionalProfileService
+    ): ProfessionalProfileRepository {
+        return ProfessionalProfileRepositoryImpl(professionalProfileService)
     }
 }

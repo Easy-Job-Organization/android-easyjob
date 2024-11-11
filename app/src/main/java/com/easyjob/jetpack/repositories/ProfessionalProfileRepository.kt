@@ -6,6 +6,7 @@ import com.easyjob.jetpack.models.SpecialitiesResponse
 import com.easyjob.jetpack.services.ProfessionalProfileService
 import com.easyjob.jetpack.services.ProfessionalProfileServiceImpl
 import retrofit2.Response
+import javax.inject.Inject
 
 interface ProfessionalProfileRepository {
     suspend fun fetchProfessionalProfile(id: String): Response<Professional>
@@ -17,8 +18,8 @@ interface ProfessionalProfileRepository {
     suspend fun fetchSpecialities(id: String): List<SpecialitiesResponse>
 }
 
-class ProfessionalProfileRepositoryImpl(
-    private val professionalProfileService: ProfessionalProfileService = ProfessionalProfileServiceImpl()
+class ProfessionalProfileRepositoryImpl @Inject constructor(
+    private val professionalProfileService: ProfessionalProfileService
 ) : ProfessionalProfileRepository {
     override suspend fun fetchProfessionalProfile(id: String): Response<Professional> {
         return professionalProfileService.getProfessionalProfile(id)

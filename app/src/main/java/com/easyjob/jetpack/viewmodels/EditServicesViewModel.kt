@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.repositories.EditServicesRepository
 import com.easyjob.jetpack.repositories.EditServicesRepositoryImpl
@@ -15,6 +17,7 @@ import kotlinx.coroutines.withContext
 class EditServicesViewModel(private val repo: EditServicesRepository = EditServicesRepositoryImpl()) :
     ViewModel() {
     private val _services = MutableLiveData<List<Service?>>()
+
     val services: LiveData<List<Service?>> get() = _services
 
     private val _loading = MutableLiveData(false)
