@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.models.Service
@@ -30,8 +30,7 @@ import kotlin.math.floor
 @Composable
 fun EditServicesScreen(
     navController: NavController = rememberNavController(),
-    viewModel: EditServicesViewModel = viewModel(),
-    professionalId: String
+    viewModel: EditServicesViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -40,7 +39,7 @@ fun EditServicesScreen(
     val errorMessage by viewModel.errorMessage.observeAsState("")
 
     LaunchedEffect(Unit) {
-        viewModel.fetchServicesOfProfessinal(professionalId)
+        viewModel.fetchServicesOfProfessinal()
     }
 
     Scaffold(
@@ -82,8 +81,7 @@ fun EditServicesScreen(
                 else -> {
                     ServiceList(
                         services = services,
-                        onEditService = {},
-                        onDeleteService = {}
+                        navController = navController
                     )
                 }
             }
@@ -94,8 +92,7 @@ fun EditServicesScreen(
 @Composable
 fun ServiceList(
     services: List<Service?>,
-    onEditService: (Service) -> Unit,
-    onDeleteService: (Service) -> Unit
+    navController: NavController
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -106,8 +103,8 @@ fun ServiceList(
             service?.let {
                 ServiceItem(
                     service = service,
-                    onEditService = onEditService,
-                    onDeleteService = onDeleteService
+                    onEditService = {navController.navigate("editService/${service.id}")},
+                    onDeleteService = {}
                 )
             }
         }

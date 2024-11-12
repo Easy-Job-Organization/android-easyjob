@@ -4,12 +4,16 @@ import android.content.Context
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
 import com.easyjob.jetpack.repositories.AuthRepositoryImpl
+import com.easyjob.jetpack.repositories.EditServicesRepository
+import com.easyjob.jetpack.repositories.EditServicesRepositoryImpl
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepository
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepositoryImpl
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.AuthService
 import com.easyjob.jetpack.services.AuthServiceImpl
+import com.easyjob.jetpack.services.EditServicesService
+import com.easyjob.jetpack.services.EditServicesServiceImpl
 import com.easyjob.jetpack.services.ProfessionalProfileService
 import com.easyjob.jetpack.services.ProfessionalProfileServiceImpl
 import com.easyjob.jetpack.services.SearchScreenService
@@ -53,6 +57,12 @@ object AppModule {
         return ProfessionalProfileServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideEditServicesService(): EditServicesService {
+        return EditServicesServiceImpl()
+    }
+
     //Repositories
 
     @Provides
@@ -78,5 +88,13 @@ object AppModule {
         professionalProfileService: ProfessionalProfileService
     ): ProfessionalProfileRepository {
         return ProfessionalProfileRepositoryImpl(professionalProfileService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditServicesRepository(
+        editServicesService: EditServicesService
+    ): EditServicesRepository {
+        return EditServicesRepositoryImpl(editServicesService)
     }
 }

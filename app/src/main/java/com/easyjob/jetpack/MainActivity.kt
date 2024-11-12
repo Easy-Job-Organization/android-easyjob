@@ -38,6 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.easyjob.jetpack.screens.AppointmentScreen
 import com.easyjob.jetpack.screens.EditServicesScreen
+import com.easyjob.jetpack.screens.HomeProfessionalScreen
 import com.easyjob.jetpack.screens.HomeScreen
 import com.easyjob.jetpack.screens.LoginScreen
 import com.easyjob.jetpack.screens.MakeAppointmentScreen
@@ -82,14 +83,6 @@ fun EasyJobApp() {
         composable("login"){ LoginScreen(navController) }
         composable("register"){ RegisterScreen(navController) }
         composable("home"){ HomeScreen() }
-        composable("homeProfessional"){ ProfessionalProfileScreen() }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    EasyjobTheme {
-        EditServicesScreen(professionalId = "0d774ed4-8b13-4f87-bbfa-914460c9293e")
+        composable("homeProfessional"){ HomeProfessionalScreen() }
     }
 }

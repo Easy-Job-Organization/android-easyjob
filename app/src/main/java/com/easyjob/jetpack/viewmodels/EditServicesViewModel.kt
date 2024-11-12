@@ -10,13 +10,24 @@ import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.repositories.EditServicesRepository
 import com.easyjob.jetpack.repositories.EditServicesRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class EditServicesViewModel(private val repo: EditServicesRepository = EditServicesRepositoryImpl()) :
+@HiltViewModel
+class EditServicesViewModel @Inject constructor(
+    private val repo: EditServicesRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
+) :
     ViewModel() {
     private val _services = MutableLiveData<List<Service?>>()
+
+    suspend fun getUserId(): String? {
+        return userPreferencesRepository.userIdFlow.firstOrNull()
+    }
 
     val services: LiveData<List<Service?>> get() = _services
 
@@ -26,8 +37,9 @@ class EditServicesViewModel(private val repo: EditServicesRepository = EditServi
     private val _errorMessage = MutableLiveData<String>("")
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    fun fetchServicesOfProfessinal(id: String) {
+    fun fetchServicesOfProfessinal() {
         viewModelScope.launch(Dispatchers.IO) {
+            val id = getUserId()
             Log.d("EditServicesViewModel", "Starting")
             withContext(Dispatchers.Main) {
                 _loading.value = true
@@ -35,7 +47,7 @@ class EditServicesViewModel(private val repo: EditServicesRepository = EditServi
             }
 
             try {
-                val response = repo.getServicesOfProfessional(id)
+                val response = repo.getServicesOfProfessional(id!!)
                 withContext(Dispatchers.Main) {
                     Log.e("EditServicesViewModel", "${response}")
                     _services.value = response

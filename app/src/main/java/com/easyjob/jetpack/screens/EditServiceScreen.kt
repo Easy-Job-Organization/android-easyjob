@@ -1,17 +1,21 @@
 package com.easyjob.jetpack.screens
-/*
+
+import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.EditServiceViewModel
@@ -20,21 +24,29 @@ import com.easyjob.jetpack.viewmodels.EditServiceViewModel
 @Composable
 fun EditServiceScreen(
     navController: NavController = rememberNavController(),
-    viewModel: EditServiceViewModel = viewModel(),
-    serviceId: String
+    serviceId: String,
+    viewModel: EditServiceViewModel = viewModel()
 ) {
+    val serviceName by viewModel.serviceName.observeAsState("")
+    val serviceDescription by viewModel.serviceDescription.observeAsState("")
+    val servicePrice by viewModel.servicePrice.observeAsState(0.0)
+    val updateResult by viewModel.updateResult.observeAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val serviceName by viewModel.serviceName.collectAsState()
-    val serviceDescription by viewModel.serviceDescription.collectAsState()
-    val servicePrice by viewModel.servicePrice.collectAsState()
+
+    // Cargar el servicio actual cuando la pantalla se monta
+    LaunchedEffect(serviceId) {
+        Log.d("EditServiceScreen", "------------------ Hace el launchedEffect ------------")
+        viewModel.fetchServiceById(serviceId)
+        Log.d("EditServiceScreen", "------------------ Service{ ${serviceName} - ${servicePrice} - ${serviceDescription} ")
+    }
 
     Scaffold(
         topBar = {
             Topbar(
-                title = "Editar servicio",
-                scrollBehavior = scrollBehavior,
+                title = "Editar servicios",
                 navController = navController,
+                scrollBehavior = scrollBehavior,
                 isBack = true
             )
         }
@@ -47,28 +59,46 @@ fun EditServiceScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextField(
+            Text(
+                text = "Nombre del servicio",
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
                 value = serviceName,
-                onValueChange = { viewModel.onServiceNameChange(it) },
-                label = { Text("Nombre del servicio") },
-                modifier = Modifier.fillMaxWidth()
+                onValueChange = viewModel::onServiceNameChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Nombre del servicio") }
             )
 
-            OutlinedTextField(
+            Text(
+                text = "Descripción del servicio",
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
                 value = serviceDescription,
-                onValueChange = { viewModel.onServiceDescriptionChange(it) },
-                label = { Text("Describe brevemente el servicio a ofrecer") },
+                onValueChange = viewModel::onServiceDescriptionChange,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
+                    .height(120.dp),
+                placeholder = { Text("Descripción breve del servicio") }
             )
 
-            OutlinedTextField(
-                value = servicePrice,
-                onValueChange = { viewModel.onServicePriceChange(it) },
-                label = { Text("Cantidad a cobrar por el servicio") },
+            Text(
+                text = "Precio del servicio",
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                value = servicePrice.toString(),
+                onValueChange = { newValue: String ->
+                    val price = newValue.toDoubleOrNull() ?: 0.0
+                    viewModel.onServicePriceChange(price)
+                },
                 modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
+                placeholder = {Text ("Precio en COP")},
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             Button(
@@ -77,7 +107,17 @@ fun EditServiceScreen(
             ) {
                 Text("Guardar cambios")
             }
+
+            // Mostrar el resultado de la actualización
+            updateResult?.let { result ->
+                Spacer(modifier = Modifier.height(8.dp))
+                if (result.isSuccess && result.getOrNull() == true) {
+                    Text("Servicio actualizado exitosamente", color = MaterialTheme.colors.primary)
+                } else if (result.isFailure) {
+                    Text("Error al actualizar el servicio", color = MaterialTheme.colors.error)
+                }
+            }
         }
     }
 }
-*/
+

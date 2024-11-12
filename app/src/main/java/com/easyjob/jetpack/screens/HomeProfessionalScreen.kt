@@ -31,15 +31,22 @@ fun HomeProfessionalScreen(navController: NavController = rememberNavController(
         bottomBar = { BottomNavBar(nestedNavController = nestedNavController) }
     ) { innerPadding ->
 
-        NavHost(navController = nestedNavController, startDestination = "search", modifier = Modifier.padding(innerPadding)) {
-            composable("search"){ SearchScreen(nestedNavController) }
-            composable("appointments"){ AppointmentScreen(navController) }
+        NavHost(
+            navController = nestedNavController,
+            startDestination = "profile",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("profile") { ProfessionalProfileScreen(nestedNavController) }
+            composable("search") { SearchScreen(nestedNavController) }
+            composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
-            composable("profile"){ ProfessionalProfileScreen() }
-
-
+            composable("editServices") { EditServicesScreen(nestedNavController) }
+            composable("editService/{id}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("id") ?: ""
+                EditServiceScreen(nestedNavController, serviceId = id)
+            }
         }
-
     }
 
 }
+

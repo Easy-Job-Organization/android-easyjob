@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -19,8 +20,8 @@ class EditServiceViewModel(
     private val _serviceDescription = MutableLiveData("")
     val serviceDescription: LiveData<String> get() = _serviceDescription
 
-    private val _servicePrice = MutableLiveData("")
-    val servicePrice: LiveData<String> get() = _servicePrice
+    private val _servicePrice = MutableLiveData(0.0)
+    val servicePrice: LiveData<Double> get() = _servicePrice
 
     private val _updateResult = MutableLiveData<Result<Boolean>>()
     val updateResult: LiveData<Result<Boolean>> get() = _updateResult
@@ -33,7 +34,7 @@ class EditServiceViewModel(
         _serviceDescription.value = newDescription
     }
 
-    fun onServicePriceChange(newPrice: String) {
+    fun onServicePriceChange(newPrice: Double) {
         _servicePrice.value = newPrice
     }
 
@@ -41,13 +42,34 @@ class EditServiceViewModel(
         viewModelScope.launch {
             val name = serviceName.value ?: ""
             val description = serviceDescription.value ?: ""
-            val price = servicePrice.value?.toDoubleOrNull() ?: 0.0
+            val price = servicePrice.value ?: 0.0
 
             _updateResult.value = try {
                 val success = repository.updateService(serviceId, name, description, price)
                 Result.success(success)
             } catch (e: Exception) {
                 Result.failure(e)
+            }
+        }
+    }
+
+    // Método para cargar el servicio actual
+    fun fetchServiceById(serviceId: String) {
+        Log.d("EditServiceViewModel", "XXXXXXXXXXXX entraaaaaaaa")
+        viewModelScope.launch {
+            try {
+                val response = repository.getService(serviceId)
+                Log.d("EditServiceViewModel", "XXXXXXXX Response: ${response}")
+                if (response.isSuccessful) {
+                    response.body()?.let { service ->
+                        _serviceName.value = service.title
+                        _serviceDescription.value = service.description
+                        _servicePrice.value = service.price
+                    }
+                }
+                Log.d("EditServiceViewModel", "XXXXXXXX Service{ ${_serviceName} - ${_servicePrice} - ${_serviceDescription} ")
+            } catch (e: Exception) {
+                // Manejo de excepción (podrías mostrar un mensaje de error en la UI)
             }
         }
     }

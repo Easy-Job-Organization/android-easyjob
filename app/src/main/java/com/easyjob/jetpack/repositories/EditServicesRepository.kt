@@ -4,13 +4,14 @@ import android.util.Log
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.services.EditServicesService
 import com.easyjob.jetpack.services.EditServicesServiceImpl
+import javax.inject.Inject
 
 interface EditServicesRepository {
     suspend fun getServicesOfProfessional(id: String): List<Service?>
 }
 
-class EditServicesRepositoryImpl(
-    private val editServicesService: EditServicesService = EditServicesServiceImpl()
+class EditServicesRepositoryImpl @Inject constructor(
+    private val editServicesService: EditServicesService
 ) : EditServicesRepository {
     override suspend fun getServicesOfProfessional(id: String): List<Service?> {
         val res = editServicesService.getServicesOfProfessional(id)
