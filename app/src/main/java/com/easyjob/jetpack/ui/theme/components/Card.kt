@@ -146,7 +146,6 @@ fun CardSearch(
         }
     }
 
-
 }
 
 
@@ -202,4 +201,86 @@ fun FilterCard(
         }
 
     }
+}
+
+@Composable
+fun ChatCard(
+    id: String,
+    image: String,
+    descriptionImage: String,
+    name: String = "Cargando",
+    profession: String = "Cargando",
+    navController: NavController = rememberNavController()
+) {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .shadow(10.dp, RoundedCornerShape(18.dp))
+            .background(Color.White, RoundedCornerShape(18.dp))
+            .clickable {
+                navController.navigate("chat/$id")
+            },
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .border(
+                    0.5.dp,
+                    Color.LightGray,
+                    RoundedCornerShape(18.dp)
+                )
+                .padding(horizontal = 15.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+        ) {
+
+            AsyncImage(
+                model = image,
+                contentDescription = descriptionImage,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(80.dp),
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+
+            Box(modifier = Modifier.width(7.dp))
+
+            Column(
+                modifier = Modifier
+                    .width(220.dp)
+                    .wrapContentHeight()
+                    .padding(vertical = 10.dp, horizontal = 5.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 17.sp,
+                    color = Color(0xFF133c55),
+                    text = name,
+                    lineHeight = 30.sp
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = profession,
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+
+                }
+            }
+
+        }
+
+    }
+
 }

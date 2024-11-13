@@ -26,13 +26,13 @@ import androidx.navigation.compose.rememberNavController
 fun SearchBar(
     hint : String,
     prevText: String="",
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    width: Int? = null
 ){
     var searchQuery by remember { mutableStateOf(prevText) }
 
     Box(
         modifier = Modifier
-            .padding(15.dp)
             .shadow(10.dp, RoundedCornerShape(50)) // Sombra aplicada aquí
     ) {
         OutlinedTextField(
@@ -41,7 +41,15 @@ fun SearchBar(
             shape = RoundedCornerShape(50), // Bordes redondeados
             singleLine = true,
             modifier = Modifier
-                .fillMaxWidth(),
+                .then(
+                    if (width != null) {
+                        Modifier
+                            .width(width.dp)
+                    } else {
+                        Modifier
+                            .fillMaxWidth()
+                    }
+                ),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,

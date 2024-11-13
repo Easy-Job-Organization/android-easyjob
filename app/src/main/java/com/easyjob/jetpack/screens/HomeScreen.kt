@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.easyjob.jetpack.ui.theme.components.BottomNavBar
@@ -25,15 +26,26 @@ import com.easyjob.jetpack.ui.theme.components.Topbar
 fun HomeScreen(navController: NavController = rememberNavController()) {
     val nestedNavController = rememberNavController()
 
+    val currentBackStackEntry = nestedNavController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry.value?.destination?.route
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        bottomBar = { BottomNavBar(nestedNavController = nestedNavController) }
+        bottomBar = {
+            if (currentRoute != null && !currentRoute.startsWith("chat")) {
+                BottomNavBar(nestedNavController = nestedNavController)
+            }
+        }
     ) { innerPadding ->
 
-        NavHost(navController = nestedNavController, startDestination = "search", modifier = Modifier.padding(innerPadding)) {
-            composable("search"){ SearchScreen(nestedNavController) }
-            composable("appointments"){ AppointmentScreen(navController) }
+        NavHost(
+            navController = nestedNavController,
+            startDestination = "search",
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable("search") { SearchScreen(nestedNavController) }
+            composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
             composable("profile"){ ProfileScreen(navController) }
             composable("registerDate/{id}", arguments = listOf(
@@ -43,16 +55,24 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
                 RegisterDateScreen(id = id ?:"", nestedNavController)
             }
             composable("results/{search}", arguments = listOf(
-                    navArgument("search"){type = NavType.StringType
-            })) { entry ->
+                navArgument("search") { type = NavType.StringType }
+            )) { entry ->
                 val search = entry.arguments?.getString("search")
-                ResultsScreen(searchText = search ?: "" ,nestedNavController)
+                ResultsScreen(searchText = search ?: "", nestedNavController)
             }
             composable("professionalProfileClient/{id}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""
                 ProfessionalClientScreen(nestedNavController, id = id)
             }
-            composable("makeAppointment"){ MakeAppointmentScreen(navController) }
+            composable("makeAppointment") { MakeAppointmentScreen(navController) }
+            composable("listChat") { ChatList(nestedNavController) }
+            composable(
+                "chat/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { entry ->
+                val id = entry.arguments?.getString("id") ?: ""
+                Chat(nestedNavController, idProfessional = id)
+            }
         }
 
     }
