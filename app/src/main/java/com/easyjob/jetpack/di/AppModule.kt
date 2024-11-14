@@ -72,6 +72,12 @@ object AppModule {
             .build()
     }
 
+    @Provides
+    @Singleton
+    fun provideAuthDateService(): DateService {
+        return DateServiceImpl();
+    }
+
     // Provee las instancias de los servicios usando Retrofit
     @Provides
     @Singleton
@@ -104,6 +110,14 @@ object AppModule {
     }
 
     // Repositories
+
+    @Provides
+    @Singleton
+    fun provideAuthDateRepository(
+        dateService: DateService
+    ): DateRepository {
+        return DateRepositoryImpl(dateService)
+    }
 
     @Provides
     @Singleton
