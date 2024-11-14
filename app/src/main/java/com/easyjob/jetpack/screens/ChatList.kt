@@ -31,6 +31,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,42 +68,17 @@ fun ChatList(
         chatsViewModel.loadGroupChats()
     }
 
+    val groupChats by chatsViewModel.groupChats.observeAsState(emptyList())
     var searchText by remember { mutableStateOf("") }
 
-    val professionals = listOf(
-        Professional(
-            id = "1",
-            name = "John",
-            last_name = "Doe",
-            email = "john@example.com",
-            phone_number = "123456789",
-            photo_url = "https://example.com/photo1.jpg",
-            roles = listOf("Engineer"),
-            cities = listOf(City("1", "New York")),
-            score = "4.5",
-            description = "Experienced engineer"
-        ),
-        Professional(
-            id = "2",
-            name = "Jane",
-            last_name = "Smith",
-            email = "jane@example.com",
-            phone_number = "987654321",
-            photo_url = "https://example.com/photo2.jpg",
-            roles = listOf("Designer"),
-            cities = listOf(City("2", "Los Angeles")),
-            score = "4.0",
-            description = "Creative designer"
-        )
-    )
 
     val filteredProfessionals = if (searchText.isEmpty()) {
-        professionals
+        groupChats
     } else {
-        professionals.filter {
+        groupChats.filter {
             it.name.contains(searchText, ignoreCase = true) ||
-                    it.last_name.contains(searchText, ignoreCase = true) ||
-                    it.description.contains(searchText, ignoreCase = true)
+                    it.client?.name?.contains(searchText, ignoreCase = true) == true ||
+                    it.professional?.name?.contains(searchText, ignoreCase = true) == true
         }
     }
 
@@ -182,15 +158,17 @@ fun ChatList(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(filteredProfessionals) { professional ->
-                    ChatCard(
-                        id = (professional.id.toIntOrNull() ?: 0).toString(),
-                        image = painterResource(R.drawable.ic_launcher_background).toString(),
-                        descriptionImage = "Profile photo",
-                        name = "${professional.name} ${professional.last_name}",
-                        profession = professional.description,
-                        navController = navController
-                    )
+                items(filteredProfessionals) { groupChat ->
+                    if(groupChat.professional != null) {
+                        ChatCard(
+                            id = (groupChat.id.toIntOrNull() ?: 0).toString(),
+                            image = groupChat.professional.photo_url,
+                            descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
+                            name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
+                            profession = groupChat.professional.,
+                            navController = navController
+                        )
+                    }
                 }
             }
         }

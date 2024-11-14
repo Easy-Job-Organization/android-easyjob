@@ -22,7 +22,7 @@ import javax.inject.Inject
 class ChatsViewModel @Inject constructor(
     private val repo: ChatsRepository,
 ): ViewModel() {
-    val professionalProfile = MutableLiveData<List<GroupChatResponse>>();
+    val groupChats = MutableLiveData<List<GroupChatResponse>>();
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
 
     fun loadGroupChats() {
@@ -32,14 +32,13 @@ class ChatsViewModel @Inject constructor(
             }
 
             val response = repo.retrieveGroupChats()
-            Log.e("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", response.body().toString())
 
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     if(response.body() == null) {
-                        professionalProfile.value = listOf()
+                        groupChats.value = listOf()
                     } else {
-                        professionalProfile.value = response.body()
+                        groupChats.value = response.body()
                         profileState.value = 3 // Success
                     }
 
