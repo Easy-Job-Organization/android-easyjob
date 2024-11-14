@@ -4,7 +4,6 @@ import com.easyjob.jetpack.models.CitiesResponse
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.models.SpecialitiesResponse
 import com.easyjob.jetpack.services.ProfessionalProfileService
-import com.easyjob.jetpack.services.ProfessionalProfileServiceImpl
 import retrofit2.Response
 import javax.inject.Inject
 

@@ -3,7 +3,6 @@ package com.easyjob.jetpack.repositories
 import android.util.Log
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.services.EditServicesService
-import com.easyjob.jetpack.services.EditServicesServiceImpl
 import javax.inject.Inject
 
 interface EditServicesRepository {

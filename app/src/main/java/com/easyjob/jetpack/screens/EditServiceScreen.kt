@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.Topbar
@@ -25,7 +25,7 @@ import com.easyjob.jetpack.viewmodels.EditServiceViewModel
 fun EditServiceScreen(
     navController: NavController = rememberNavController(),
     serviceId: String,
-    viewModel: EditServiceViewModel = viewModel()
+    viewModel: EditServiceViewModel = hiltViewModel()
 ) {
     val serviceName by viewModel.serviceName.observeAsState("")
     val serviceDescription by viewModel.serviceDescription.observeAsState("")
@@ -93,11 +93,13 @@ fun EditServiceScreen(
             TextField(
                 value = servicePrice.toString(),
                 onValueChange = { newValue: String ->
-                    val price = newValue.toDoubleOrNull() ?: 0.0
-                    viewModel.onServicePriceChange(price)
+                    val price = newValue.toDoubleOrNull()
+                    if (price != null) {
+                        viewModel.onServicePriceChange(price)
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = {Text ("Precio en COP")},
+                placeholder = { Text("Precio en COP") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 

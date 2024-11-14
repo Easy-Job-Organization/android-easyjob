@@ -3,8 +3,8 @@ package com.easyjob.jetpack.repositories
 import android.util.Log
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.services.EditServiceService
-import com.easyjob.jetpack.services.EditServiceServiceImpl
 import retrofit2.Response
+import javax.inject.Inject
 
 interface EditServiceRepository {
     suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean
@@ -12,16 +12,18 @@ interface EditServiceRepository {
     suspend fun getService(id: String): Response<Service>
 }
 
-class EditServiceRepositoryImpl(
-    private val editServiceService: EditServiceService = EditServiceServiceImpl()
+class EditServiceRepositoryImpl @Inject constructor(
+    private val editServiceService: EditServiceService
 ) : EditServiceRepository {
     override suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean {
-        return editServiceService.updateService(id, mapOf(
+        val updates = mapOf<String, Any>(
             "name" to name,
             "description" to description,
             "price" to price
-        )).isSuccessful
+        )
+        return editServiceService.updateService(id, updates).isSuccessful
     }
+
 
     override suspend fun getService(id: String): Response<Service> {
         Log.d("EditServiceRepository", "+++++++++ Entra al repository - ${id}")

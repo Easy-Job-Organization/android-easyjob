@@ -10,18 +10,3 @@ interface EditServicesService {
     @GET("/professionals/services/{id}")
     suspend fun getServicesOfProfessional(@Path("id") id: String): List<Service?>
 }
-
-class EditServicesServiceImpl : EditServicesService {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.easyjob.com.co/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val apiService: EditServicesService = retrofit.create(EditServicesService::class.java)
-
-    override suspend fun getServicesOfProfessional(id: String): List<Service?> {
-        val res = apiService.getServicesOfProfessional(id)
-        return res
-    }
-}

@@ -6,13 +6,24 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.repositories.EditServiceRepository
 import com.easyjob.jetpack.repositories.EditServiceRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.firstOrNull
+import javax.inject.Inject
 
-class EditServiceViewModel(
-    private val repository: EditServiceRepository = EditServiceRepositoryImpl()
+
+@HiltViewModel
+class EditServiceViewModel  @Inject constructor(
+    private val repository: EditServiceRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
+
+    suspend fun getToken(): String? {
+        return userPreferencesRepository.jwtFlow.firstOrNull()
+    }
 
     private val _serviceName = MutableLiveData("")
     val serviceName: LiveData<String> get() = _serviceName
@@ -44,10 +55,13 @@ class EditServiceViewModel(
             val description = serviceDescription.value ?: ""
             val price = servicePrice.value ?: 0.0
 
+            Log.d("EditServiceViewModel", "Intentando actualizar el servicio con ID: $serviceId")
             _updateResult.value = try {
                 val success = repository.updateService(serviceId, name, description, price)
+                Log.d("EditServiceViewModel", "Actualización exitosa: $success")
                 Result.success(success)
             } catch (e: Exception) {
+                Log.e("EditServiceViewModel", "Error al actualizar el servicio", e)
                 Result.failure(e)
             }
         }
@@ -55,21 +69,23 @@ class EditServiceViewModel(
 
     // Método para cargar el servicio actual
     fun fetchServiceById(serviceId: String) {
-        Log.d("EditServiceViewModel", "XXXXXXXXXXXX entraaaaaaaa")
+        Log.d("EditServiceViewModel", "Iniciando fetch del servicio con ID: $serviceId")
         viewModelScope.launch {
             try {
                 val response = repository.getService(serviceId)
-                Log.d("EditServiceViewModel", "XXXXXXXX Response: ${response}")
+                Log.d("EditServiceViewModel", "Respuesta de servicio: $response")
+
                 if (response.isSuccessful) {
                     response.body()?.let { service ->
                         _serviceName.value = service.title
                         _serviceDescription.value = service.description
                         _servicePrice.value = service.price
                     }
+                } else {
+                    Log.e("EditServiceViewModel", "Error al cargar el servicio: ${response.errorBody()?.string()}")
                 }
-                Log.d("EditServiceViewModel", "XXXXXXXX Service{ ${_serviceName} - ${_servicePrice} - ${_serviceDescription} ")
             } catch (e: Exception) {
-                // Manejo de excepción (podrías mostrar un mensaje de error en la UI)
+                Log.e("EditServiceViewModel", "Excepción al cargar el servicio", e)
             }
         }
     }
