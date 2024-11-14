@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -52,7 +53,7 @@ fun CardSearch(
     name: String = "Cargando",
     stars: Int = 0,
     comment: String = "0",
-    professionalViewModel: ProfessionalProfileViewModel = viewModel(),
+    professionalViewModel: ProfessionalProfileViewModel = hiltViewModel(),
     navController: NavController = rememberNavController()
 ) {
 

@@ -8,12 +8,14 @@ import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.models.SpecialitiesResponse
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepository
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@HiltViewModel
 class ProfessionalClientViewModel @Inject constructor(
     private val repo: ProfessionalProfileRepository
 ) : ViewModel() {

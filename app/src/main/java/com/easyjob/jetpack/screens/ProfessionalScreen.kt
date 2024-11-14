@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -54,7 +55,7 @@ import kotlin.math.roundToInt
 fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
     professionalViewModel: ProfessionalViewModel = viewModel(),
-    professionalProfileViewModel: ProfessionalClientViewModel = viewModel(),
+    professionalProfileViewModel: ProfessionalClientViewModel = hiltViewModel(),
     id: String,
 ) {
 

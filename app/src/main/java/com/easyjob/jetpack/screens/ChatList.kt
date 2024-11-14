@@ -29,6 +29,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.R
@@ -52,12 +54,19 @@ import com.easyjob.jetpack.ui.theme.components.CardSearch
 import com.easyjob.jetpack.ui.theme.components.ChatCard
 import com.easyjob.jetpack.ui.theme.components.SearchBar
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.ChatsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatList(
     navController: NavController = rememberNavController(),
+    chatsViewModel: ChatsViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(Unit) {
+        chatsViewModel.loadGroupChats()
+    }
+
     var searchText by remember { mutableStateOf("") }
 
     val professionals = listOf(
