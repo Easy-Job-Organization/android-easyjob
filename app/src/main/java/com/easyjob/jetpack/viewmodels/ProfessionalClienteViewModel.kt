@@ -8,40 +8,31 @@ import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.models.SpecialitiesResponse
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepository
 import com.easyjob.jetpack.repositories.ProfessionalProfileRepositoryImpl
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@HiltViewModel
-class ProfessionalProfileViewModel @Inject constructor(
-    private val repo: ProfessionalProfileRepository,
-    private val userPreferencesRepository: UserPreferencesRepository
+class ProfessionalClientViewModel @Inject constructor(
+    private val repo: ProfessionalProfileRepository
 ) : ViewModel() {
 
-    suspend fun getUserId(): String? {
-        return userPreferencesRepository.userIdFlow.firstOrNull()
-    }
-
     val professionalProfile = MutableLiveData<Professional>()
-
     //val city = MutableLiveData<List<String>>()
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
     val commentsCount = MutableLiveData<Int>()
     val specialities = MutableLiveData<List<SpecialitiesResponse>>()
 
-    fun loadProfessionalProfile() {
+    fun loadProfessionalProfile(id: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
-            val id = getUserId()
 
             withContext(Dispatchers.Main) {
                 profileState.value = 1 // Loading
             }
 
-            val response = repo.fetchProfessionalProfile(id!!)
+            val response = repo.fetchProfessionalProfile(id)
 
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
@@ -66,20 +57,18 @@ class ProfessionalProfileViewModel @Inject constructor(
 //        }
 //    }
 
-    fun loadCommentsCount() {
+    fun loadCommentsCount(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = getUserId()
-            val count = repo.fetchReviews(id!!)
+            val count = repo.fetchReviews(id)
             withContext(Dispatchers.Main) {
                 commentsCount.value = count
             }
         }
     }
 
-    fun loadSpecialities() {
+    fun loadSpecialities(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = getUserId()
-            val specialitiesList = repo.fetchSpecialities(id!!)
+            val specialitiesList = repo.fetchSpecialities(id)
             withContext(Dispatchers.Main) {
                 specialities.value = specialitiesList
             }

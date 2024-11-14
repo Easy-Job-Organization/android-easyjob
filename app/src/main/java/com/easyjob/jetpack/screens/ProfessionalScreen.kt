@@ -44,6 +44,7 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import kotlin.math.roundToInt
@@ -53,7 +54,7 @@ import kotlin.math.roundToInt
 fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
     professionalViewModel: ProfessionalViewModel = viewModel(),
-    professionalProfileViewModel: ProfessionalProfileViewModel = viewModel(),
+    professionalProfileViewModel: ProfessionalClientViewModel = viewModel(),
     id: String,
 ) {
 
