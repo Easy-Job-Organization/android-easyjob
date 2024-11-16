@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.services
 
+import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -10,7 +11,6 @@ import retrofit2.http.Path
 interface ProfileService {
     @GET("clients/{id}")
     suspend fun getProfile(@Path("id") id: String): Response<Professional>
-
 }
 
 class ProfileServiceImpl : ProfileService {

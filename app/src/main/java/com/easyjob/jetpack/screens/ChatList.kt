@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -20,7 +19,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Create
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -39,21 +37,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.easyjob.jetpack.R
-import com.easyjob.jetpack.models.City
-import com.easyjob.jetpack.models.Professional
-import com.easyjob.jetpack.ui.theme.components.BottomNavBar
-import com.easyjob.jetpack.ui.theme.components.CardSearch
-import com.easyjob.jetpack.ui.theme.components.ChatCard
-import com.easyjob.jetpack.ui.theme.components.SearchBar
+import com.easyjob.jetpack.ui.theme.components.GroupChatCard
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ChatsViewModel
 
@@ -160,12 +150,12 @@ fun ChatList(
             ) {
                 items(filteredProfessionals) { groupChat ->
                     if(groupChat.professional != null) {
-                        ChatCard(
-                            id = (groupChat.id.toIntOrNull() ?: 0).toString(),
+                        GroupChatCard(
+                            id = groupChat.professional.id,
                             image = groupChat.professional.photo_url,
                             descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
                             name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
-                            profession = groupChat.professional.,
+                            score = groupChat.professional.score ,
                             navController = navController
                         )
                     }

@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -57,7 +58,7 @@ import com.easyjob.jetpack.viewmodels.ResourcesViewModel
 @Composable
 fun RegisterScreen(
     navController: NavController = rememberNavController(),
-    registerViewModel: RegisterViewModel = viewModel(),
+    registerViewModel: RegisterViewModel = hiltViewModel(),
     resourcesViewModel: ResourcesViewModel = viewModel(),
     context: Context = LocalContext.current
 ) {

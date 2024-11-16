@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.repositories
 
+import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.services.ProfileService
 import com.easyjob.jetpack.services.ProfileServiceImpl

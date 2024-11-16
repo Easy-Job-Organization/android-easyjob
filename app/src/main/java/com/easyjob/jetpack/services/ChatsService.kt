@@ -40,7 +40,7 @@ interface ChatsService {
     @GET("chats/{client_id}/{professional_id}")
     suspend fun getChatsClientProfessional(
         @Path("client_id") clientId: String,
-        @Path("Professional_id") professionalId: String): Response<GroupChatChatsResponse>
+        @Path("professional_id") professionalId: String): Response<GroupChatChatsResponse>
 }
 
 class ChatsServiceImpl : ChatsService {

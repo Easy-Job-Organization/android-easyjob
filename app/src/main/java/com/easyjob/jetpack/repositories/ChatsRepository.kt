@@ -36,6 +36,7 @@ class ChatsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun retrieveChatsClientProfessional(professionalId: String): Response<GroupChatChatsResponse> {
+
         val userId = userPreferencesRepository.userIdFlow.first()
         if(userId ==null) {
             Log.e("GroupChatRepository", "User ID is null")

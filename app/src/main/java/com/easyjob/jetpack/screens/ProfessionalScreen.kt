@@ -172,7 +172,7 @@ fun ProfessionalClientScreen(
                                 onClick = {
                                 navController.navigate("registerDate/${id}")
                             })
-                            SecondaryButton(text = "Enviar mensaje", onClick = { /*TODO*/ })
+                            SecondaryButton(text = "Enviar mensaje", onClick = { navController.navigate("chat/$id") })
 
                         }
 

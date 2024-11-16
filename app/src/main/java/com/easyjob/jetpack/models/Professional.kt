@@ -9,7 +9,7 @@ data class Professional(
     val photo_url: String,
     val roles: List<String>,
     val cities: List<City>,
-    val score: String,
+    val score: Double,
     val description: String,
 )
 
