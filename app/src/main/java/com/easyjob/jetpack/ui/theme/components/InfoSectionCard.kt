@@ -137,7 +137,7 @@ fun CommentsCard(reviews: List<Review?>) {
                                 text = review.client.name,
                                 lineHeight = 26.sp,
                             )
-                            RatingStars(rating = review.score.roundToInt(), iconSize = 16)
+                            RatingStars(rating = review.score, iconSize = 16)
                         }
 
                         Text(

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.repositories.ProfileRepository
 import com.easyjob.jetpack.repositories.ProfileRepositoryImpl

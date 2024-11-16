@@ -12,12 +12,15 @@ import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
 import com.easyjob.jetpack.repositories.AuthRepositoryImpl
 import com.easyjob.jetpack.services.AuthServiceImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.InputStream
+import javax.inject.Inject
 
-class RegisterViewModel(
+@HiltViewModel
+class RegisterViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository, // Add this line
     val repo: AuthRepository = AuthRepositoryImpl(
         authService = AuthServiceImpl(),
