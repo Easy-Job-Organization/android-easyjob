@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -44,7 +46,7 @@ import kotlin.math.roundToInt
 @Composable
 fun ProfileScreen(
     navController: NavController = rememberNavController(),
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -68,12 +70,14 @@ fun ProfileScreen(
                 isBack = false
             )
         },
+        containerColor = Color.White
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 15.dp, vertical = 5.dp)
+                .fillMaxSize()
         ) {
             when (profileState) {
                 1 -> {
@@ -91,7 +95,7 @@ fun ProfileScreen(
                             descriptionImage = "profile image",
                             name = profile.name ?: "Nombre no disponible",
                             phoneNumber = profile.phone_number ?: "Numero no disponible",
-                            cities = profile.cities ?: listOf(),
+                            cities =  listOf(),
                             iconSize = 14,
                             stars = -1,
                             comments = ""

@@ -2,6 +2,7 @@ package com.easyjob.jetpack.ui.theme.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +15,13 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.EmojiEmotions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -44,9 +47,9 @@ import androidx.navigation.compose.rememberNavController
 fun TextChatBar(
     hint: String,
     prevText: String = "",
-    width: Int? = null
+    width: Int? = null,
+    onValueChange: (String) -> Unit
 ) {
-    var textQuery by remember { mutableStateOf(prevText) }
 
     Box(
         modifier = Modifier
@@ -76,15 +79,16 @@ fun TextChatBar(
             Spacer(modifier = Modifier.width(8.dp))
 
             BasicTextField(
-                value = textQuery,
-                onValueChange = { textQuery = it },
+                value = prevText,
+                onValueChange = {
+                    onValueChange(it) },
                 singleLine = true,
                 textStyle = TextStyle(fontSize = 20.sp),
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 8.dp, vertical = 4.dp),
                 decorationBox = { innerTextField ->
-                    if (textQuery.isEmpty()) {
+                    if (prevText.isEmpty()) {
                         Text(
                             text = hint,
                             color = Color.Gray,
@@ -97,31 +101,33 @@ fun TextChatBar(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            Icon(
+            /*Icon(
                 imageVector = Icons.Default.AttachFile, // Cambiar a ícono de clip
                 contentDescription = "Adjuntar",
                 tint = Color.Gray,
                 modifier = Modifier.size(24.dp)
-            )
+            )*/
         }
     }
 }
 
 
 @Composable
-fun RecordChat() {
+fun SendMessageButton(onClick: () -> Unit) {
 
     Box(
         modifier = Modifier
             .size(62.dp)
             .padding(8.dp)
-            .background(Color(0xFF4091B6), RoundedCornerShape(100)),
-        contentAlignment = Alignment.Center
+            .background(Color(0xff3b82f6), RoundedCornerShape(100))
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center,
+
     ) {
 
         Icon(
-            imageVector = Icons.Default.Mic, // Cambiar a ícono de clip
-            contentDescription = "Record",
+            imageVector = Icons.AutoMirrored.Filled.Send,
+            contentDescription = "Send Message",
             tint = Color.White,
             modifier = Modifier.size(24.dp)
         )

@@ -109,7 +109,29 @@ object AppModule {
         return retrofit.create(EditServiceService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideChatService(): ChatsService {
+        return ChatsServiceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileService(): ProfileService {
+        return ProfileServiceImpl()
+    }
+
+
+
     // Repositories
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(
+        profileService: ProfileService
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(profileService)
+    }
 
     @Provides
     @Singleton
@@ -159,5 +181,14 @@ object AppModule {
         editServiceService: EditServiceService
     ): EditServiceRepository {
         return EditServiceRepositoryImpl(editServiceService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatRepository(
+        chatsService: ChatsService,
+        userPreferencesRepository: UserPreferencesRepository
+    ): ChatsRepository {
+        return ChatsRepositoryImpl(chatsService, userPreferencesRepository)
     }
 }

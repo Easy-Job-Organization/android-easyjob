@@ -85,7 +85,6 @@ fun SearchScreen(
                     painter = painterResource(id = R.drawable.easyjob_logo_main_color),
                     contentDescription = "Easyjob logo",
                     modifier = Modifier
-                        .clip(CircleShape)
                         .size(80.dp)
                         .padding(start = 25.dp),
                 )
@@ -94,7 +93,11 @@ fun SearchScreen(
 
             }
 
-            SearchBar("Encuentra un técnico a tu medida", navController = navController)
+            SearchBar(
+                "Encuentra un técnico a tu medida",
+                navController = navController,
+                modifier = Modifier.padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp)
+            )
 
             FlowRow(
                 modifier = Modifier
