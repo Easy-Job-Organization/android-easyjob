@@ -43,14 +43,27 @@ class ChatsRepositoryImpl @Inject constructor(
 
     override suspend fun sendMessage(message: String, chatRoomId: String) {
 
+        val roles = userPreferencesRepository.rolesFlow.first()
+        var sendMessageDTO: SendMessageDTO
+
         val userId = userPreferencesRepository.userIdFlow.first()
 
-        chatsService.sendMessage(SendMessageDTO(
-            chatroom_id = chatRoomId,
-            message = message,
-            client_id = userId,
-            professional_id = null
-        ))
+        if(roles[0] == "client") {
+            sendMessageDTO = SendMessageDTO(
+                chatroom_id = chatRoomId,
+                message = message,
+                client_id = userId,
+                professional_id = null
+            )
+        } else {
+            sendMessageDTO = SendMessageDTO(
+                chatroom_id = chatRoomId,
+                message = message,
+                client_id = null,
+                professional_id = userId
+            )
+        }
+        chatsService.sendMessage(sendMessageDTO)
     }
 
     override fun listen(event: String, callback: (Chat) -> Unit) {
@@ -70,7 +83,7 @@ class ChatsRepositoryImpl @Inject constructor(
         return chatsService.getGroupChatsByUser(userId)
     }
 
-    override suspend fun retrieveChatsClientProfessional(professionalId: String): Response<GroupChatChatsResponse> {
+    override suspend fun retrieveChatsClientProfessional(userMessageTo: String): Response<GroupChatChatsResponse> {
 
         val userId = userPreferencesRepository.userIdFlow.first()
         if(userId ==null) {
@@ -80,7 +93,17 @@ class ChatsRepositoryImpl @Inject constructor(
             )
             return Response.error(400, errorBody)
         }
-        return chatsService.getChatsClientProfessional(userId, professionalId)
+
+        val roles = userPreferencesRepository.rolesFlow.first()
+        if(roles[0] == "client") {
+            Log.e("The user is a Professional", "YEAHHH")
+            return chatsService.getChatsClientProfessional(userId, userMessageTo)
+        } else {
+            return chatsService.getChatsClientProfessional(userMessageTo, userId )
+        }
+
+
+
     }
 
 
