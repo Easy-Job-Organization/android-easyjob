@@ -3,8 +3,10 @@ package com.easyjob.jetpack.services
 import android.util.Log
 import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
+import com.google.gson.Gson
 import io.socket.client.IO
 import io.socket.client.Socket
+import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -38,7 +40,16 @@ data class GroupChatChatsResponse (
 data class SendMessageDTO (
     val chatroom_id: String,
     val message: String,
-    val professional_id: String
+    val professional_id: String?,
+    val client_id: String?
+)
+
+data class reciveMessageDTO (
+    val id: String,
+    val message: String,
+    val createdAt: Date,
+    val client: Client?,
+    val professional: Professional?
 )
 
 interface ChatsService {
@@ -88,14 +99,33 @@ class ChatsServiceImpl : ChatsService {
     }
 
     override fun sendMessage( message: SendMessageDTO ) {
-        socket.emit("message", message)
+        Log.e("SEND MESSAGE", "Sending message: $message")
+        if (socket.connected()) {
+            // Convert to JSON string using Gson
+            val jsonMessage = Gson().toJson(message)
+
+            // Convert JSON string to JSONObject
+            val jsonObject = JSONObject(jsonMessage)
+            socket.emit("message", jsonObject)
+            Log.e("NOse que poner", jsonMessage.toString())
+        } else {
+            Log.e("Socket", "Socket is not connected!")
+        }
     }
 
     override fun listen(event: String, callback: (Chat) -> Unit) {
         socket.on(event) { args ->
-            Log.e(">>>>>>>>>>>>", args.toString())
-            if (args.isNotEmpty() && args[0] is Chat) {
-                callback(args[0] as Chat)
+            if (args.isNotEmpty()) {
+                Log.e("LISTEN SERVICE", args.toString())
+                val json = args[0].toString() // Convert the first argument to a JSON string
+                Log.e("JSONNNN", json)
+                try {
+                    val chat = Gson().fromJson(json, Chat::class.java)
+                    Log.e("CHATTTTTT", chat.toString())
+                    callback(chat)
+                } catch (e: Exception) {
+                    Log.e("Socket Parsing Error", "Error parsing chat object", e)
+                }
             }
         }
     }

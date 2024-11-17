@@ -4,18 +4,11 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.repositories.ChatsRepository
 import com.easyjob.jetpack.repositories.ProfileRepository
-import com.easyjob.jetpack.repositories.SearchScreenRepository
-import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.Chat
-import com.easyjob.jetpack.services.GroupChatChatsResponse
-import com.easyjob.jetpack.services.GroupChatResponse
-import com.easyjob.jetpack.services.ProfessionalCardResponse
-import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
 import com.easyjob.jetpack.services.SendMessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +21,9 @@ class ChatViewModel @Inject constructor(
     private val chatRepository: ChatsRepository,
     private val profileRepository: ProfileRepository
 ): ViewModel() {
+
+    private var chatRoomId = "";
+
     val professional = MutableLiveData<Professional?>();
     val client = MutableLiveData<Client?>();
 
@@ -36,12 +32,12 @@ class ChatViewModel @Inject constructor(
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
 
     fun initializeSocket(professionalId: String) {
-
         chatRepository.initializeSocket()
-
         viewModelScope.launch(Dispatchers.IO) {
-            val chatroom = chatRepository.retrieveChatsClientProfessional(professionalId);
-
+            val chatroomResponse = chatRepository.retrieveChatsClientProfessional(professionalId);
+            chatRoomId = chatroomResponse?.body()?.id.toString()
+            connectSocket()
+            listenToMessages()
         }
     }
 
@@ -53,12 +49,17 @@ class ChatViewModel @Inject constructor(
         chatRepository.disconnect()
     }
 
-    fun sendMessage( message: SendMessageDTO) {
-        chatRepository.sendMessage( message)
+    fun sendMessage(message: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.e("ENVIANDO VIEWMODEL", message)
+            chatRepository.sendMessage(message, chatRoomId)
+        }
     }
 
-    fun listenToMessages(event: String, callback: (Chat) -> Unit) {
-        chatRepository.listen(event, callback)
+    fun listenToMessages() {
+        chatRepository.listen(chatRoomId) { newMessage ->
+            addMessage(newMessage)
+        }
     }
 
     override fun onCleared() {
@@ -82,6 +83,7 @@ class ChatViewModel @Inject constructor(
                         chats.value = listOf()
                     } else {
                         chats.value = chatsResponse.body()!!.chats
+
                         profileState.value = 3 // Success
                     }
 
@@ -100,6 +102,12 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun addMessage(message: Chat) {
+        val currentMessages = chats.value ?: emptyList()
+        val updatedMessages = currentMessages + message
+        chats.postValue(updatedMessages) // Use postValue here
     }
 
 

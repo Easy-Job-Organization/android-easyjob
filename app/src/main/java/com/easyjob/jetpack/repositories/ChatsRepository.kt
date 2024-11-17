@@ -18,7 +18,7 @@ interface ChatsRepository {
     fun initializeSocket()
     fun connect()
     fun disconnect()
-    fun sendMessage( message: SendMessageDTO )
+    suspend fun sendMessage(message: String, chatRoomId: String)
     fun listen(event: String, callback: (Chat) -> Unit)
     suspend fun retrieveGroupChats(): Response<List<GroupChatResponse>>
     suspend fun retrieveChatsClientProfessional(professionalId: String): Response<GroupChatChatsResponse>
@@ -30,7 +30,7 @@ class ChatsRepositoryImpl @Inject constructor(
 ) : ChatsRepository {
 
     override fun initializeSocket() {
-        chatsService.initializeSocket("https://api.easyjob.com.co")
+        chatsService.initializeSocket("wss://api.easyjob.com.co")
     }
 
     override fun connect() {
@@ -41,8 +41,16 @@ class ChatsRepositoryImpl @Inject constructor(
         chatsService.disconnect()
     }
 
-    override fun sendMessage( message: SendMessageDTO) {
-        chatsService.sendMessage(message)
+    override suspend fun sendMessage(message: String, chatRoomId: String) {
+
+        val userId = userPreferencesRepository.userIdFlow.first()
+
+        chatsService.sendMessage(SendMessageDTO(
+            chatroom_id = chatRoomId,
+            message = message,
+            client_id = userId,
+            professional_id = null
+        ))
     }
 
     override fun listen(event: String, callback: (Chat) -> Unit) {

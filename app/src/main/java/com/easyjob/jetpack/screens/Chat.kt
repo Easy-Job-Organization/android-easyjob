@@ -1,16 +1,20 @@
 package com.easyjob.jetpack.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,10 +29,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,10 +64,6 @@ fun Chat(
     idProfessional: String,
     chatsViewModel: ChatViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
-        chatsViewModel.loadMessages(idProfessional)
-        chatsViewModel.initializeSocket(idProfessional)
-    }
 
     val professional by chatsViewModel.professional.observeAsState()
     val client by chatsViewModel.client.observeAsState()
@@ -68,6 +71,23 @@ fun Chat(
 
     val messages by chatsViewModel.chats.observeAsState(emptyList())
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+    var sendMessageText by remember { mutableStateOf("") }
+
+    // Remember the LazyListState
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(Unit) {
+        chatsViewModel.loadMessages(idProfessional)
+        chatsViewModel.initializeSocket(idProfessional)
+    }
+
+    // Scroll to the end when new messages arrive
+    LaunchedEffect(messages) {
+        if (messages.isNotEmpty()) {
+            listState.animateScrollToItem(messages.size - 1)
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -114,13 +134,23 @@ fun Chat(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        reverseLayout = true
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        state = listState,
+
                     ) {
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                         items(messages?: emptyList()) { message ->
                             Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = if (message.client == null) Alignment.CenterEnd else Alignment.CenterStart // Right for professional, left for client
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        bottom = if (message == (messages
+                                                ?: emptyList()).lastOrNull()
+                                        ) 16.dp else 0.dp
+                                    ),
+                                contentAlignment = if (message.client != null) Alignment.CenterEnd else Alignment.CenterStart // Right for professional, left for client
                             ) {
                                 MessageBubble(
                                     message = message
@@ -129,16 +159,23 @@ fun Chat(
                         }
                     }
 
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextChatBar(
+                            prevText = sendMessageText,
+                            onValueChange = {sendMessageText = it },
                             hint = "Escribe aquí",
                             width = 290
                         )
 
-                        SendMessageButton()
+                        SendMessageButton( onClick = {
+                            chatsViewModel.sendMessage(sendMessageText)
+                            sendMessageText =""
+                        })
                     }
                 }
             }
@@ -170,18 +207,21 @@ fun MessageBubble(message: Chat) {
 
     Column(
         modifier = Modifier
-            .padding(vertical = 4.dp, horizontal = 8.dp)
+            .shadow(10.dp, RoundedCornerShape(8.dp))
             .background(
-                color = if (isProfessional) Color.Blue else Color.LightGray,
+                color = if (isProfessional) (Color.LightGray) else Color.White,
                 shape = RoundedCornerShape(8.dp)
             )
-            .padding(8.dp) // Padding inside the bubble
+            .padding(12.dp) // Padding inside the bubble
+    ,
     ) {
         Text(
             text = message.message,
-            color = if (isProfessional) Color.White else Color.Black
+            style = androidx.compose.ui.text.TextStyle(
+                fontWeight = FontWeight.Light,
+                fontSize = 16.sp
+            )
         )
-
         Text(
             text = formattedDate,
             color = Color.Gray,
