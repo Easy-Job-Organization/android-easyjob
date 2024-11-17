@@ -13,8 +13,6 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AppointmentScreen(navController: NavController = rememberNavController()) {
 
-
-
     Scaffold(
         modifier = Modifier
             .fillMaxSize()

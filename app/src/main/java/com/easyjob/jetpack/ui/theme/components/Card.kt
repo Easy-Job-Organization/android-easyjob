@@ -284,3 +284,8 @@ fun ChatCard(
     }
 
 }
+
+@Composable
+fun AppointmentCard(){
+
+}

@@ -74,8 +74,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthDateService(): DateService {
-        return DateServiceImpl();
+    fun provideAuthDateService(): AppointmentService {
+        return AppointmentServiceImpl();
     }
 
     // Provee las instancias de los servicios usando Retrofit
@@ -114,9 +114,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthDateRepository(
-        dateService: DateService
-    ): DateRepository {
-        return DateRepositoryImpl(dateService)
+        appointmentService: AppointmentService
+    ): AppointmentRepository {
+        return AppointmentRepositoryImpl(appointmentService)
     }
 
     @Provides
