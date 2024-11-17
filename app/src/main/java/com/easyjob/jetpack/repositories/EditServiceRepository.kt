@@ -10,6 +10,7 @@ interface EditServiceRepository {
     suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean
 
     suspend fun getService(id: String): Response<Service>
+
 }
 
 class EditServiceRepositoryImpl @Inject constructor(
@@ -35,4 +36,5 @@ class EditServiceRepositoryImpl @Inject constructor(
             return res
         }
     }
+
 }
