@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -89,4 +91,64 @@ fun Topbar(
         },
         scrollBehavior = scrollBehavior,
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopbarChat(
+    title: String,
+    onCallClick: () -> Unit = {},
+    onSettingClick: () -> Unit = {},
+    scrollBehavior: TopAppBarScrollBehavior,
+    navController: NavController = rememberNavController(),
+) {
+
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = Color(0xff3b82f6),
+            titleContentColor = Color.White,
+        ),
+        modifier = Modifier
+            .shadow(elevation = 4.dp)
+            .zIndex(1f),
+        title = {
+            Text(
+                title,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.White
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = {
+                navController.popBackStack()
+            }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Localized description",
+                    tint = Color.White
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = onCallClick) {
+                Icon(
+                    imageVector = Icons.Default.Phone,
+                    contentDescription = "Llamar",
+                    tint = Color.White
+                )
+            }
+            IconButton(onClick = onSettingClick) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Más",
+                    tint = Color.White
+                )
+            }
+        },
+        scrollBehavior = scrollBehavior,
+    )
+
 }

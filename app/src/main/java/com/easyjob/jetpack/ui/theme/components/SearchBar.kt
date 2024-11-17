@@ -21,27 +21,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-
 @Composable
 fun SearchBar(
-    hint : String,
-    prevText: String="",
-    navController: NavController = rememberNavController()
-){
+    hint: String,
+    prevText: String = "",
+    navController: NavController = rememberNavController(),
+    width: Int? = null,
+    modifier: Modifier = Modifier // Accept a Modifier as a parameter
+) {
     var searchQuery by remember { mutableStateOf(prevText) }
 
     Box(
-        modifier = Modifier
-            .padding(15.dp)
-            .shadow(10.dp, RoundedCornerShape(50)) // Sombra aplicada aquí
+        modifier = modifier
+            .shadow(10.dp, RoundedCornerShape(50)) // Apply external modifier here
     ) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            shape = RoundedCornerShape(50), // Bordes redondeados
+            shape = RoundedCornerShape(50), // Rounded borders
             singleLine = true,
             modifier = Modifier
-                .fillMaxWidth(),
+                .then(
+                    if (width != null) {
+                        Modifier.width(width.dp)
+                    } else {
+                        Modifier.fillMaxWidth()
+                    }
+                ),
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -59,7 +65,7 @@ fun SearchBar(
                 unfocusedContainerColor = Color.White
             ),
             keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Search // Define que el botón sea de búsqueda
+                imeAction = ImeAction.Search // Sets the action to "Search"
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
@@ -68,5 +74,4 @@ fun SearchBar(
             )
         )
     }
-
 }

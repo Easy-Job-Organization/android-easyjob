@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -44,6 +45,7 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import kotlin.math.roundToInt
@@ -53,7 +55,7 @@ import kotlin.math.roundToInt
 fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
     professionalViewModel: ProfessionalViewModel = viewModel(),
-    professionalProfileViewModel: ProfessionalProfileViewModel = viewModel(),
+    professionalProfileViewModel: ProfessionalClientViewModel = hiltViewModel(),
     id: String,
 ) {
 
@@ -165,8 +167,12 @@ fun ProfessionalClientScreen(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            PrimaryButton(text = "Agendar cita", onClick = { /*TODO*/ })
-                            SecondaryButton(text = "Enviar mensaje", onClick = { /*TODO*/ })
+                            PrimaryButton(
+                                text = "Agendar cita",
+                                onClick = {
+                                navController.navigate("registerDate/${id}")
+                            })
+                            SecondaryButton(text = "Enviar mensaje", onClick = { navController.navigate("chat/$id") })
 
                         }
 

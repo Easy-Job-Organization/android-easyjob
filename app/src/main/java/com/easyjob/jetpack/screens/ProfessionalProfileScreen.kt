@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
@@ -32,7 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.models.Professional
@@ -48,9 +49,9 @@ import kotlin.math.roundToInt
 @Composable
 fun ProfessionalProfileScreen(
     navController: NavController = rememberNavController(),
-    id: String? = "NO_ID",
-    viewModel: ProfessionalProfileViewModel = viewModel()
+    viewModel: ProfessionalProfileViewModel = hiltViewModel()
 ) {
+
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -61,13 +62,11 @@ fun ProfessionalProfileScreen(
     val profileState by viewModel.profileState.observeAsState(0)
 
 
-    LaunchedEffect(id) {
-        id?.let {
-            viewModel.loadProfessionalProfile(it)
+    LaunchedEffect(Unit) {
+            viewModel.loadProfessionalProfile()
             //viewModel.loadCity(it)
-            viewModel.loadCommentsCount(it)
-            viewModel.loadSpecialities(it)
-        }
+            viewModel.loadCommentsCount()
+            viewModel.loadSpecialities()
     }
 
     Scaffold(
@@ -78,11 +77,13 @@ fun ProfessionalProfileScreen(
         topBar = {
             Topbar(
                 title = "Perfil del profesional",
-                icon = Icons.Default.FavoriteBorder,
-                onEditClick = {},
+                icon = Icons.Default.Edit,
+                onEditClick = {
+                    navController.navigate("editServices")
+                },
                 scrollBehavior = scrollBehavior,
                 navController = navController,
-                isBack = true
+                isBack = false
             )
         },
     ) { innerPadding ->

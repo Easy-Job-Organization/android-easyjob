@@ -25,30 +25,3 @@ interface ProfessionalProfileService {
     suspend fun getReviews(@Path("id") id: String): Response<List<Review>>
 
 }
-
-class ProfessionalProfileServiceImpl : ProfessionalProfileService {
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.easyjob.com.co/")
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val apiService: ProfessionalProfileService = retrofit.create(ProfessionalProfileService::class.java)
-
-    override suspend fun getProfessionalProfile(id: String): Response<Professional> {
-        return apiService.getProfessionalProfile(id)
-    }
-
-    override suspend fun getSpecialities(id: String): Response<List<SpecialitiesResponse>> {
-        return apiService.getSpecialities(id)
-    }
-
-    override suspend fun getCities(id: String): Response<List<CitiesResponse>> {
-        return apiService.getCities(id)
-    }
-
-    override suspend fun getReviews(id: String): Response<List<Review>> {
-        return apiService.getReviews(id)
-    }
-
-}

@@ -119,7 +119,7 @@ fun ProfileSection(
                 ) {
 
                     Box(modifier = Modifier) {
-                        if (stars > -1) RatingStars(rating = stars, iconSize = iconSize)
+                        if (stars > -1) RatingStars(rating = stars.toDouble(), iconSize = iconSize)
                     }
 
                     Text(
@@ -236,7 +236,7 @@ fun ActionCard(image: Int = R.drawable.ic_launcher_background, descriptionImage:
 }
 
 @Composable
-fun RatingStars(rating: Int, iconSize: Int) {
+fun RatingStars(rating: Double, iconSize: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         val totalStars = 5
         for (i in 1..totalStars) {
