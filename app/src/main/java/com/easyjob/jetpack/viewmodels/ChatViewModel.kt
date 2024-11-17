@@ -4,17 +4,12 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.repositories.ChatsRepository
-import com.easyjob.jetpack.repositories.SearchScreenRepository
-import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
+import com.easyjob.jetpack.repositories.ProfileRepository
 import com.easyjob.jetpack.services.Chat
-import com.easyjob.jetpack.services.GroupChatChatsResponse
-import com.easyjob.jetpack.services.GroupChatResponse
-import com.easyjob.jetpack.services.ProfessionalCardResponse
-import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
+import com.easyjob.jetpack.services.SendMessageDTO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,29 +18,81 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val repo: ChatsRepository,
+    private val chatRepository: ChatsRepository,
+    private val profileRepository: ProfileRepository
 ): ViewModel() {
+
+    private var chatRoomId = "";
+
     val professional = MutableLiveData<Professional?>();
-    val client = MutableLiveData<Client>();
+    val client = MutableLiveData<Client?>();
+
     val chats = MutableLiveData<List<Chat>>();
 
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
+
+    fun initializeSocket(professionalId: String) {
+        chatRepository.initializeSocket()
+        viewModelScope.launch(Dispatchers.IO) {
+            val chatroomResponse = chatRepository.retrieveChatsClientProfessional(professionalId);
+            chatRoomId = chatroomResponse?.body()?.id.toString()
+            connectSocket()
+            listenToMessages()
+        }
+    }
+
+    fun connectSocket() {
+        chatRepository.connect()
+    }
+
+    fun disconnectSocket() {
+        chatRepository.disconnect()
+    }
+
+    fun sendMessage(message: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            Log.e("ENVIANDO VIEWMODEL", message)
+            chatRepository.sendMessage(message, chatRoomId)
+        }
+    }
+
+    fun listenToMessages() {
+        chatRepository.listen(chatRoomId) { newMessage ->
+            addMessage(newMessage)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disconnectSocket()
+    }
+
 
     fun loadMessages(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 profileState.value = 1 // Loading
             }
-            val response = repo.retrieveChatsClientProfessional(id);
-            val client = repo
+            val chatsResponse = chatRepository.retrieveChatsClientProfessional(id);
+            val clientResponse = profileRepository.fetchProfileClient(id);
+            val professionalResponse = profileRepository.fetchProfileProfessional(id);
 
-            if (response.isSuccessful) {
+            if (chatsResponse.isSuccessful) {
                 withContext(Dispatchers.Main) {
-                    if(response.body() == null) {
+                    if(chatsResponse.body() == null) {
                         chats.value = listOf()
                     } else {
-                        chats.value = response.body()!!.chats
+                        chats.value = chatsResponse.body()!!.chats
+
                         profileState.value = 3 // Success
+                    }
+
+                    if(clientResponse.isSuccessful) {
+                        client.value = clientResponse.body();
+                    }
+
+                    if(professionalResponse.isSuccessful) {
+                        professional.value = professionalResponse.body();
                     }
 
                 }
@@ -55,6 +102,12 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun addMessage(message: Chat) {
+        val currentMessages = chats.value ?: emptyList()
+        val updatedMessages = currentMessages + message
+        chats.postValue(updatedMessages) // Use postValue here
     }
 
 
