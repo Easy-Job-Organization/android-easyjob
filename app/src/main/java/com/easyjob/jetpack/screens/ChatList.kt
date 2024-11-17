@@ -170,6 +170,14 @@ fun ChatList(
                                     score = groupChat.professional.score ,
                                     navController = navController
                                 )
+                            } else if(groupChat.client != null) {
+                                GroupChatCard(
+                                    id = groupChat.client.id,
+                                    image = groupChat.client.photo_url,
+                                    descriptionImage = "Profile photo of ${groupChat.client.name} ${groupChat.client.last_name}",
+                                    name = "${groupChat.client.name  } ${groupChat.client.last_name}",
+                                    navController = navController
+                                )
                             }
                         }
                     }

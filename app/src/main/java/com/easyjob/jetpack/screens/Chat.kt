@@ -150,7 +150,7 @@ fun Chat(
                                                 ?: emptyList()).lastOrNull()
                                         ) 16.dp else 0.dp
                                     ),
-                                contentAlignment = if (message.client != null) Alignment.CenterEnd else Alignment.CenterStart // Right for professional, left for client
+                                contentAlignment = if ((message.client != null && professional != null) || (message.professional != null && client != null)) Alignment.CenterEnd else Alignment.CenterStart // Right for professional, left for client
                             ) {
                                 MessageBubble(
                                     message = message

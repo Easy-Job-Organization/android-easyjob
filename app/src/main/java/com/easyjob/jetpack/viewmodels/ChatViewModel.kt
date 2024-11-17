@@ -16,6 +16,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+data class UserBasicInfo (
+    val userName: String,
+    val imageUrl: String
+)
+
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val chatRepository: ChatsRepository,
