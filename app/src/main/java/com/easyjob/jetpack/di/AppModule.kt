@@ -115,7 +115,23 @@ object AppModule {
         return ChatsServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideProfileService(): ProfileService {
+        return ProfileServiceImpl()
+    }
+
+
+
     // Repositories
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(
+        profileService: ProfileService
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(profileService)
+    }
 
     @Provides
     @Singleton
