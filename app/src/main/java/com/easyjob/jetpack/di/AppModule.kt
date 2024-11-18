@@ -122,6 +122,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideCreateServiceService(retrofit: Retrofit): CreateServiceService {
+        return retrofit.create(CreateServiceService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideChatService(): ChatsService {
         return ChatsServiceImpl()
     }
@@ -211,6 +217,14 @@ object AppModule {
         editServiceService: EditServiceService
     ): EditServiceRepository {
         return EditServiceRepositoryImpl(editServiceService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCreateServiceRepository(
+        createServiceService: CreateServiceService
+    ):  CreateServiceRepository {
+        return  CreateServiceRepositoryImpl(createServiceService)
     }
 
     @Provides

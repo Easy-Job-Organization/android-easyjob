@@ -26,6 +26,8 @@ import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.EditServicesViewModel
 import kotlin.math.floor
 
+import androidx.compose.material.icons.filled.Add
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditServicesScreen(
@@ -43,19 +45,6 @@ fun EditServicesScreen(
         viewModel.fetchServicesOfProfessional()
     }
 
-    // Mostrar mensaje de éxito en caso de eliminación
-    if (deleteSuccess) {
-        LaunchedEffect(deleteSuccess) {
-            // Resetear el estado después de mostrarlo
-            viewModel._deleteSuccess.value = false
-        }
-        SnackbarHost(hostState = SnackbarHostState()) {
-            Snackbar {
-                Text("Servicio eliminado correctamente.")
-            }
-        }
-    }
-
     Scaffold(
         topBar = {
             Topbar(
@@ -64,6 +53,14 @@ fun EditServicesScreen(
                 navController = navController,
                 isBack = true
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("createService") },
+                backgroundColor = MaterialTheme.colors.primary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Añadir servicio")
+            }
         }
     ) { padding ->
         Box(
@@ -73,10 +70,7 @@ fun EditServicesScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                loading -> {
-                    CircularProgressIndicator()
-                }
-
+                loading -> CircularProgressIndicator()
                 (errorMessage.isNotEmpty() && !deleteSuccess) -> {
                     Text(
                         text = "Error: $errorMessage",
@@ -84,14 +78,12 @@ fun EditServicesScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-
                 services.isEmpty() -> {
                     Text(
                         text = "No hay servicios disponibles",
                         textAlign = TextAlign.Center
                     )
                 }
-
                 else -> {
                     ServiceList(
                         services = services,

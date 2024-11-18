@@ -104,7 +104,8 @@ fun EditServiceScreen(
             )
 
             Button(
-                onClick = { viewModel.updateService(serviceId) },
+                onClick = { viewModel.updateService(serviceId)
+                    navController.popBackStack()},
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Guardar cambios")
