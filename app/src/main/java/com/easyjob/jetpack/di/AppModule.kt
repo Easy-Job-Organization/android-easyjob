@@ -14,7 +14,6 @@ import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.AuthService
 import com.easyjob.jetpack.services.AuthServiceImpl
 import com.easyjob.jetpack.services.ReviewService
-import com.easyjob.jetpack.services.ReviewServiceImpl
 import com.easyjob.jetpack.services.SearchScreenService
 import com.easyjob.jetpack.services.SearchScreenServiceImpl
 import dagger.Module
@@ -129,8 +128,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideReviewService(): ReviewService {
-        return ReviewServiceImpl()
+    fun provideReviewService(retrofit: Retrofit): ReviewService {
+        return retrofit.create(ReviewService::class.java)
     }
 
     // Repositories
