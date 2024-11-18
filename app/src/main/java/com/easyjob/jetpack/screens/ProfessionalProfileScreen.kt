@@ -11,12 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ContactSupport
+import androidx.compose.material.icons.filled.ContactSupport
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.RateReview
+import androidx.compose.material.icons.rounded.Plumbing
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material.icons.sharp.Lock
 import androidx.compose.material3.CircularProgressIndicator
@@ -56,7 +60,9 @@ fun ProfessionalProfileScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val profile by viewModel.professionalProfile.observeAsState()
+
     //val city by viewModel.city.observeAsState()
+
     val commentsCount by viewModel.commentsCount.observeAsState(0)
     val specialities by viewModel.specialities.observeAsState(emptyList())
     val profileState by viewModel.profileState.observeAsState(0)
@@ -77,10 +83,6 @@ fun ProfessionalProfileScreen(
         topBar = {
             Topbar(
                 title = "Perfil del profesional",
-                icon = Icons.Default.Edit,
-                onEditClick = {
-                    navController.navigate("editServices")
-                },
                 scrollBehavior = scrollBehavior,
                 navController = navController,
                 isBack = false
@@ -120,6 +122,31 @@ fun ProfessionalProfileScreen(
                         )
                     }
 
+                    Column(modifier = Modifier
+                        .padding(vertical = 14.dp)
+                        .wrapContentHeight(),
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Row(modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            profile?.specialities?.forEach { speciality ->
+                                FilterCard(
+                                    descriptionIcon = speciality.speciality_name ?: "NO_SPECIALTY_NAME",
+                                    iconSize = 16,
+                                    text = speciality.speciality_name?: "NO_SPECIALTY_NAME",
+                                    color = Color(0xff133c55),
+                                    backgroundColor = Color(0x32133c55),
+                                    click = false
+                                )
+                            }
+                        }
+                    }
+
                     Box(modifier = Modifier.height(15.dp))
 
                     Row(
@@ -147,7 +174,6 @@ fun ProfessionalProfileScreen(
                     }
 
                     Box(modifier = Modifier.height(15.dp))
-
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.SpaceBetween
@@ -160,10 +186,12 @@ fun ProfessionalProfileScreen(
                             color = Color.Black
                         )
                         ButtonIconLink(
-                            icon = Icons.Rounded.ShoppingCart,
-                            descriptionIcon = "Mis medios de pago",
-                            onClick = { /*TODO*/ },
-                            text = "Mis medios de pago",
+                            icon = Icons.Rounded.Plumbing,
+                            descriptionIcon = "Mis Servicios",
+                            onClick = {
+                                navController.navigate("editServices")
+                            },
+                            text = "Mis Servicios",
                             color = Color.Black
                         )
                         ButtonIconLink(
@@ -174,17 +202,17 @@ fun ProfessionalProfileScreen(
                             color = Color.Black
                         )
                         ButtonIconLink(
-                            icon = Icons.Outlined.Person,
-                            descriptionIcon = "Administrar cuenta",
+                            icon = Icons.Outlined.RateReview,
+                            descriptionIcon = "Reseñas sobre mi",
                             onClick = { /*TODO*/ },
-                            text = "Administrar cuenta",
+                            text = "Reseñas sobre mi",
                             color = Color.Black
                         )
                         ButtonIconLink(
-                            icon = Icons.Default.LocationOn,
-                            descriptionIcon = "Legal",
+                            icon = Icons.AutoMirrored.Filled.ContactSupport,
+                            descriptionIcon = "Preguntas",
                             onClick = { /*TODO*/ },
-                            text = "Legal",
+                            text = "Preguntas",
                             color = Color.Black
                         )
                         ButtonIconLink(
@@ -198,32 +226,7 @@ fun ProfessionalProfileScreen(
                 }
             }
 
-            Column(modifier = Modifier
-                .padding(vertical = 14.dp)
-                .wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(14.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
 
-                Row(modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-
-                    specialities.forEach { speciality ->
-                        FilterCard(
-                            icon = Icons.Sharp.Lock, // Cambiar por un ícono relevante si es necesario
-                            descriptionIcon = speciality.name ?: "NO_SPECIALTY_NAME",
-                            iconSize = 16,
-                            text = speciality.name?: "NO_SPECIALTY_NAME",
-                            color = Color(0xff133c55),
-                            backgroundColor = Color(0x32133c55),
-                            click = false
-                        )
-                    }
-                }
-            }
         }
     }
 }
