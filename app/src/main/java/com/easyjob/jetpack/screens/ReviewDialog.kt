@@ -29,11 +29,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.viewmodels.ReviewViewModel
 
 @Composable
 fun ReviewScreen(
-    professionalId: String,
+    professional: Professional,
     viewModel: ReviewViewModel = hiltViewModel(),
     onCancel: () -> Unit,
     onReviewSubmitted: () -> Unit
@@ -48,7 +49,11 @@ fun ReviewScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Califica el servicio", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = "Califica el servicio de ${professional.name}",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -93,7 +98,11 @@ fun ReviewScreen(
             }
             Button(onClick = {
                 // Llama a submitReview del ViewModel
-                viewModel.submitReview(professionalId, score, comment)
+                viewModel.submitReview(
+                    professionalId = professional.id,
+                    score = score,
+                    comment = comment
+                )
                 onReviewSubmitted() // Callback para indicar que se ha enviado la reseña
             }) {
                 Text("Aceptar")
