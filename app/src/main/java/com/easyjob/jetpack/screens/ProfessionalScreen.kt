@@ -1,6 +1,7 @@
 package com.easyjob.jetpack.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,6 +50,7 @@ import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
+import com.easyjob.jetpack.viewmodels.ReviewViewModel
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,8 +59,10 @@ fun ProfessionalClientScreen(
     navController: NavController = rememberNavController(),
     professionalViewModel: ProfessionalViewModel = viewModel(),
     professionalProfileViewModel: ProfessionalClientViewModel = hiltViewModel(),
+    reviewViewModel: ReviewViewModel = hiltViewModel(),
     id: String,
 ) {
+    var showReviewDialog by remember { mutableStateOf(false) }
 
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
@@ -69,6 +74,22 @@ fun ProfessionalClientScreen(
     val error by professionalViewModel.errorMessage.observeAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+    val reviewState by reviewViewModel.state.observeAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(reviewState) {
+        when (reviewState) {
+            2 -> {
+                Toast.makeText(context, "¡Reseña enviada con éxito!", Toast.LENGTH_SHORT).show()
+                showReviewDialog = false
+            }
+            3 -> {
+                Toast.makeText(context, "Error al enviar la reseña. Inténtalo nuevamente.", Toast.LENGTH_SHORT).show()
+                showReviewDialog = false
+            }
+        }
+    }
 
     LaunchedEffect(id) {
         professionalViewModel.fetchProfessional(id)
@@ -106,6 +127,14 @@ fun ProfessionalClientScreen(
                 .padding(horizontal = 17.dp, vertical = 8.dp),
         ) {
 
+            if (showReviewDialog) {
+                ReviewDialog(
+                    professionalId = id,
+                    onDismissRequest = { showReviewDialog = false },
+                    onReviewSubmitted = {  }
+                )
+            }
+
             when {
                 loading == true -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -126,14 +155,16 @@ fun ProfessionalClientScreen(
                             phoneNumber = professional.phone_number,
                             cities = professional.cities ?: listOf(),
                             iconSize = 16,
-                            stars = professional.score?.toDouble()?.roundToInt() ?: 0, //ajustar para el score del tecnico
+                            stars = professional.score?.toDouble()?.roundToInt()
+                                ?: 0, //ajustar para el score del tecnico
                             comments = commentsCount.toString(),
                         )
                     }
 
-                    Column(modifier = Modifier
-                        .padding(vertical = 14.dp)
-                        .wrapContentHeight(),
+                    Column(
+                        modifier = Modifier
+                            .padding(vertical = 14.dp)
+                            .wrapContentHeight(),
                         verticalArrangement = Arrangement.spacedBy(14.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -169,9 +200,14 @@ fun ProfessionalClientScreen(
                             PrimaryButton(
                                 text = "Agendar cita",
                                 onClick = {
-                                navController.navigate("registerDate/${id}")
-                            })
-                            SecondaryButton(text = "Enviar mensaje", onClick = { navController.navigate("chat/$id") })
+                                    navController.navigate("registerDate/${id}")
+                                })
+                            SecondaryButton(
+                                text = "Enviar mensaje",
+                                onClick = { navController.navigate("chat/$id") })
+                            SecondaryButton(
+                                text = "Escribir una opinión",
+                                onClick = { showReviewDialog = true })
 
                         }
 
@@ -180,8 +216,18 @@ fun ProfessionalClientScreen(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        ButtonSection(active = activeSection, text = "Información", onClick = { activeSection = !activeSection }, width = 200)
-                        ButtonSection(active = !activeSection, text = "Opiniones", onClick = { activeSection = !activeSection }, width = 200)
+                        ButtonSection(
+                            active = activeSection,
+                            text = "Información",
+                            onClick = { activeSection = !activeSection },
+                            width = 200
+                        )
+                        ButtonSection(
+                            active = !activeSection,
+                            text = "Opiniones",
+                            onClick = { activeSection = !activeSection },
+                            width = 200
+                        )
                     }
                     Box(modifier = Modifier.height(10.dp))
                     Column(modifier = Modifier.fillMaxWidth()) {

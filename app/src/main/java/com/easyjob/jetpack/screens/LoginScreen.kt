@@ -83,15 +83,31 @@ fun LoginScreen(
         ) {
 
             Input(value = email, label = "Correo", onValueChange = { email = it })
-            Input(value = password, label = "Contraseña", onValueChange = { password = it }, visualTransformation = PasswordVisualTransformation())
+            Input(
+                value = password,
+                label = "Contraseña",
+                onValueChange = { password = it },
+                visualTransformation = PasswordVisualTransformation()
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start),
+            ) {
+                TextButton(
+                    text = "¿Olvidaste tu contraseña?",
+                    onClick = { navController.navigate("recover") })
+            }
 
             Box(modifier = Modifier.height(48.dp))
 
-            PrimaryButton(text = "Iniciar sesión",
+            PrimaryButton(
+                text = "Iniciar sesión",
                 onClick = {
                     loginViewModel.signIn(email, password);
                 },
-                width = 250) //revisar que haya cumplido la condicion
+                width = 250
+            ) //revisar que haya cumplido la condicion
 
         }
 
