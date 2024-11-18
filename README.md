@@ -5,5 +5,5 @@
 * contrasena: SecurePassword.789
 
 **Credenciales profesional:** 
-* johndoe@example.com
-* Password.123
+* email: johndoe@example.com
+* password: Password.123
