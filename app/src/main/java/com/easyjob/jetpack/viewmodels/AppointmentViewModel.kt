@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Appointment
+import com.easyjob.jetpack.models.AppointmentGet
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.repositories.AppointmentRepository
 import javax.inject.Inject;
@@ -22,6 +23,8 @@ class AppointmentViewModel @Inject constructor(
 ): ViewModel(){
     val professionalServices = MutableLiveData<List<Service?>>()
 
+    val clientAppointments = MutableLiveData<List<AppointmentGet?>>()
+
     suspend fun getUserId(): String? {
         return userPreferencesRepository.userIdFlow.firstOrNull()
     }
@@ -32,6 +35,17 @@ class AppointmentViewModel @Inject constructor(
             withContext(Dispatchers.Main){
                 professionalServices.value = results
             }
+        }
+    }
+
+    fun loadClientAppointments(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = getUserId()
+            val res = repo.getCLientAppointments(id?:"")
+            withContext(Dispatchers.Main){
+                clientAppointments.value = res
+            }
+            Log.e("HOLII", "XX ${res}")
         }
     }
 

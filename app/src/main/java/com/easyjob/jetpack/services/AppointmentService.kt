@@ -41,8 +41,9 @@ class AppointmentServiceImpl : AppointmentService {
     }
 
     override suspend fun getClientAppointments(id: String): Response<ClientAppointment> {
+        Log.e("HOLII", "mandao")
         val res = apiService.getClientAppointments(id)
-        Log.e("APPPPPP", "mandao  ${res.body()}")
+        Log.e("HOLII", "mandao  ${res.body()}")
         return res
     }
 

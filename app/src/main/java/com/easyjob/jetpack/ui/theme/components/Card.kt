@@ -283,6 +283,107 @@ fun GroupChatCard(
 }
 
 @Composable
-fun AppointmentCard(){
+fun AppointmentCard(
+    id: String,
+    name: String,
+    service: String,
+    date: String,
+    hour: String,
+    photo_url: String
+){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .shadow(10.dp, RoundedCornerShape(18.dp)) // Sombra aplicada al Box
+            .background(Color.White, RoundedCornerShape(18.dp))
 
+
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .border(
+                    0.5.dp,
+                    Color.LightGray,
+                    RoundedCornerShape(18.dp)
+                )
+                .padding(horizontal = 15.dp, vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+        ) {
+
+            AsyncImage(
+                model = photo_url,
+                contentDescription = name,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(80.dp),
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+
+            Box(modifier = Modifier.width(7.dp))
+
+            Column(
+                modifier = Modifier
+                    .width(220.dp)
+                    .wrapContentHeight()
+                    .padding(vertical = 10.dp, horizontal = 5.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 17.sp,
+                    color = Color(0xFF133c55),
+                    text = name,
+                    lineHeight = 30.sp
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    //horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = service,
+                        lineHeight = 30.sp
+                    )
+                }
+            }
+
+            Box(modifier = Modifier.weight(1f))
+
+            Column(
+                modifier = Modifier
+                    .width(220.dp)
+                    .wrapContentHeight()
+                    .padding(vertical = 10.dp, horizontal = 5.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                    color = Color(0xFF133c55),
+                    text = date,
+                    lineHeight = 30.sp
+                )
+
+                Text(
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 12.sp,
+                    color = Color(0xFF133c55),
+                    text = hour,
+                    lineHeight = 30.sp
+                )
+
+            }
+
+
+        }
+    }
 }

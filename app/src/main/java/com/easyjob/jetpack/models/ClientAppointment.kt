@@ -8,5 +8,5 @@ data class ClientAppointment(
     val phone_number: String,
     val photo_url: String,
     val roles: List<String>,
-    val appointments: List<Appointment>
+    val appointments: List<AppointmentGet>
 )
