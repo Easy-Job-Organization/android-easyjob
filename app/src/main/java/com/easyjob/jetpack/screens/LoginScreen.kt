@@ -1,6 +1,7 @@
 package com.easyjob.jetpack.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -122,11 +123,17 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .weight(1f),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
 
-            Text(text = "¿Aún no tienes cuenta?")
-            TextButton(text = "Regístrate", onClick = { navController.navigate("register") })
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(text = "¿Aún no tienes cuenta?")
+                TextButton(text = "Regístrate", onClick = { navController.navigate("register") })
+            }
 
         }
 

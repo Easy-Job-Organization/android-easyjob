@@ -56,28 +56,20 @@ fun Input(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
+        modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .background(Color.White)
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp)),
         value = value,
         placeholder = { Text(modifier = Modifier.background(Color.Transparent), text = label) },
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(4.dp),
         onValueChange = onValueChange,
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = if (visualTransformation is PasswordVisualTransformation) KeyboardType.Password else KeyboardType.Text,
             imeAction = ImeAction.Done
-        ),
-        modifier = Modifier
-            .wrapContentHeight()
-            .then(
-                if (width != null) {
-                    Modifier
-                        .width(width.dp)
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                }
-            )
-            .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-            .background(Color.Transparent)
+        )
     )
 }
 
