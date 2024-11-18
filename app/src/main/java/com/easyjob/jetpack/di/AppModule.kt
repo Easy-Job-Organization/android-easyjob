@@ -138,6 +138,11 @@ object AppModule {
         return ProfileServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideRecoverPassService(retrofit: Retrofit): RecoverPassService {
+        return retrofit.create(RecoverPassService::class.java)
+    }
 
 
     // Repositories
@@ -215,5 +220,13 @@ object AppModule {
         userPreferencesRepository: UserPreferencesRepository
     ): ChatsRepository {
         return ChatsRepositoryImpl(chatsService, userPreferencesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecoverPassRepository(
+        recoverPassService: RecoverPassService
+    ): RecoverPassRepository {
+        return RecoverPassRepositoryImpl(recoverPassService)
     }
 }
