@@ -85,7 +85,6 @@ fun SearchScreen(
                     painter = painterResource(id = R.drawable.easyjob_logo_main_color),
                     contentDescription = "Easyjob logo",
                     modifier = Modifier
-                        .clip(CircleShape)
                         .size(80.dp)
                         .padding(start = 25.dp),
                 )
