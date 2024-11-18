@@ -8,15 +8,18 @@ import com.easyjob.jetpack.models.Client
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.repositories.ProfileRepository
 import com.easyjob.jetpack.repositories.ProfileRepositoryImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ProfileViewModel(
-    private val repo: ProfileRepository = ProfileRepositoryImpl()
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
+    private val repo: ProfileRepository
 ) : ViewModel() {
 
-    val profile = MutableLiveData<Professional>()
+    val profile = MutableLiveData<Client>()
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
 
     fun loadProfile(id: String) {
@@ -25,7 +28,7 @@ class ProfileViewModel(
                 profileState.value = 1 // Loading
             }
 
-            val response = repo.fetchProfile(id)
+            val response = repo.fetchProfileClient(id)
 
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {

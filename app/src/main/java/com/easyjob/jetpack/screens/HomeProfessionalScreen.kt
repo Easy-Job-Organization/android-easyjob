@@ -45,6 +45,14 @@ fun HomeProfessionalScreen(navController: NavController = rememberNavController(
                 val id = backStackEntry.arguments?.getString("id") ?: ""
                 EditServiceScreen(nestedNavController, serviceId = id)
             }
+            composable("listChat") { ChatList(nestedNavController) }
+            composable(
+                "chat/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.StringType })
+            ) { entry ->
+                val id = entry.arguments?.getString("id") ?: ""
+                Chat(nestedNavController, idProfessional = id)
+            }
         }
     }
 

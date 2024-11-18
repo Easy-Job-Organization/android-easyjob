@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Create
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -59,6 +60,7 @@ fun ChatList(
     }
 
     val groupChats by chatsViewModel.groupChats.observeAsState(emptyList())
+    val profileState by chatsViewModel.profileState.observeAsState(0)
     var searchText by remember { mutableStateOf("") }
 
 
@@ -144,20 +146,40 @@ fun ChatList(
                 modifier = Modifier.padding(vertical = 14.dp)
             )
 
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxSize(),
-            ) {
-                items(filteredProfessionals) { groupChat ->
-                    if(groupChat.professional != null) {
-                        GroupChatCard(
-                            id = groupChat.professional.id,
-                            image = groupChat.professional.photo_url,
-                            descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
-                            name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
-                            score = groupChat.professional.score ,
-                            navController = navController
-                        )
+            when (profileState) {
+                1 -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                2 -> {
+                    Text("Hubo un error al los chats del perfil", color = Color.Red)
+                }
+                3 -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxSize(),
+                    ) {
+                        items(filteredProfessionals) { groupChat ->
+                            if(groupChat.professional != null) {
+                                GroupChatCard(
+                                    id = groupChat.professional.id,
+                                    image = groupChat.professional.photo_url,
+                                    descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
+                                    name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
+                                    score = groupChat.professional.score ,
+                                    navController = navController
+                                )
+                            } else if(groupChat.client != null) {
+                                GroupChatCard(
+                                    id = groupChat.client.id,
+                                    image = groupChat.client.photo_url,
+                                    descriptionImage = "Profile photo of ${groupChat.client.name} ${groupChat.client.last_name}",
+                                    name = "${groupChat.client.name  } ${groupChat.client.last_name}",
+                                    navController = navController
+                                )
+                            }
+                        }
                     }
                 }
             }

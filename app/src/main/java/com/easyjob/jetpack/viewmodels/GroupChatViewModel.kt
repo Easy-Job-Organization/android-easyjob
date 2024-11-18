@@ -32,6 +32,7 @@ class ChatsViewModel @Inject constructor(
             }
 
             val response = repo.retrieveGroupChats()
+            Log.e("response Group chats", response.body().toString())
 
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {

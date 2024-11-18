@@ -45,6 +45,7 @@ import com.easyjob.jetpack.screens.MakeAppointmentScreen
 import com.easyjob.jetpack.screens.MessageScreen
 import com.easyjob.jetpack.screens.ProfessionalProfileScreen
 import com.easyjob.jetpack.screens.ProfileScreen
+import com.easyjob.jetpack.screens.RecoverPasswordScreen
 import com.easyjob.jetpack.screens.RegisterScreen
 import com.easyjob.jetpack.screens.SearchScreen
 import com.easyjob.jetpack.screens.SplashScreen
@@ -79,10 +80,11 @@ fun EasyJobApp() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "splash") {
-        composable("splash") { SplashScreen(navController)}
-        composable("login"){ LoginScreen(navController) }
-        composable("register"){ RegisterScreen(navController) }
-        composable("home"){ HomeScreen() }
-        composable("homeProfessional"){ HomeProfessionalScreen() }
+        composable("splash") { SplashScreen(navController) }
+        composable("login") { LoginScreen(navController) }
+        composable("register") { RegisterScreen(navController) }
+        composable("recover") { RecoverPasswordScreen(navController) }
+        composable("home") { HomeScreen() }
+        composable("homeProfessional") { HomeProfessionalScreen() }
     }
 }

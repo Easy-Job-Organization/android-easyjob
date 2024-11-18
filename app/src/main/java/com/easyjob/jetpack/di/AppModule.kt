@@ -5,6 +5,17 @@ import android.util.Log
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.*
 import com.easyjob.jetpack.services.*
+import com.easyjob.jetpack.repositories.AuthRepository
+import com.easyjob.jetpack.repositories.AuthRepositoryImpl
+import com.easyjob.jetpack.repositories.ReviewRepository
+import com.easyjob.jetpack.repositories.ReviewRepositoryImpl
+import com.easyjob.jetpack.repositories.SearchScreenRepository
+import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
+import com.easyjob.jetpack.services.AuthService
+import com.easyjob.jetpack.services.AuthServiceImpl
+import com.easyjob.jetpack.services.ReviewService
+import com.easyjob.jetpack.services.SearchScreenService
+import com.easyjob.jetpack.services.SearchScreenServiceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -74,8 +85,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthDateService(): DateService {
-        return DateServiceImpl();
+    fun provideAuthDateService(): AppointmentService {
+        return AppointmentServiceImpl();
     }
 
     // Provee las instancias de los servicios usando Retrofit
@@ -115,14 +126,41 @@ object AppModule {
         return ChatsServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideReviewService(retrofit: Retrofit): ReviewService {
+        return retrofit.create(ReviewService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileService(): ProfileService {
+        return ProfileServiceImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecoverPassService(retrofit: Retrofit): RecoverPassService {
+        return retrofit.create(RecoverPassService::class.java)
+    }
+
+
     // Repositories
 
     @Provides
     @Singleton
+    fun provideProfileRepository(
+        profileService: ProfileService
+    ): ProfileRepository {
+        return ProfileRepositoryImpl(profileService)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthDateRepository(
-        dateService: DateService
-    ): DateRepository {
-        return DateRepositoryImpl(dateService)
+        appointmentService: AppointmentService
+    ): AppointmentRepository {
+        return AppointmentRepositoryImpl(appointmentService)
     }
 
     @Provides
@@ -140,6 +178,14 @@ object AppModule {
         searchScreenService: SearchScreenService
     ): SearchScreenRepository {
         return SearchScreenRepositoryImpl(searchScreenService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReviewRepository(
+        reviewService: ReviewService
+    ): ReviewRepository {
+        return ReviewRepositoryImpl(reviewService)
     }
 
     @Provides
@@ -174,5 +220,13 @@ object AppModule {
         userPreferencesRepository: UserPreferencesRepository
     ): ChatsRepository {
         return ChatsRepositoryImpl(chatsService, userPreferencesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecoverPassRepository(
+        recoverPassService: RecoverPassService
+    ): RecoverPassRepository {
+        return RecoverPassRepositoryImpl(recoverPassService)
     }
 }

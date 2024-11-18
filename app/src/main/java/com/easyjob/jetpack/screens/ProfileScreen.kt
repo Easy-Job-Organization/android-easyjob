@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -69,12 +70,14 @@ fun ProfileScreen(
                 isBack = false
             )
         },
+        containerColor = Color.White
     ) { innerPadding ->
 
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(horizontal = 15.dp, vertical = 5.dp)
+                .fillMaxSize()
         ) {
             when (profileState) {
                 1 -> {
@@ -92,7 +95,7 @@ fun ProfileScreen(
                             descriptionImage = "profile image",
                             name = profile.name ?: "Nombre no disponible",
                             phoneNumber = profile.phone_number ?: "Numero no disponible",
-                            cities = profile.cities ?: listOf(),
+                            cities =  listOf(),
                             iconSize = 14,
                             stars = -1,
                             comments = ""

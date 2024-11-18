@@ -1,6 +1,6 @@
 package com.easyjob.jetpack.models
 
-data class CreateAppointment(
+data class Appointment(
     var date: String,
     val location: String,
     val hour: String,
