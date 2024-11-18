@@ -12,6 +12,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.easyjob.jetpack.ui.theme.components.BottomNavBar
+import com.easyjob.jetpack.ui.theme.components.BottomProfessionalNavBar
+import com.easyjob.jetpack.ui.theme.components.Topbar
 
 @Composable
 fun HomeProfessionalScreen(navController: NavController = rememberNavController()) {
@@ -20,7 +22,9 @@ fun HomeProfessionalScreen(navController: NavController = rememberNavController(
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
-        bottomBar = { BottomNavBar(nestedNavController = nestedNavController) }
+        bottomBar = {
+            BottomProfessionalNavBar(nestedNavController = nestedNavController)
+        }
     ) { innerPadding ->
 
         NavHost(

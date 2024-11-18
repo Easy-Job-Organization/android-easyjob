@@ -17,6 +17,18 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.sharp.CarRepair
+import androidx.compose.material.icons.sharp.Carpenter
+import androidx.compose.material.icons.sharp.CleaningServices
+import androidx.compose.material.icons.sharp.Construction
+import androidx.compose.material.icons.sharp.ElectricBolt
+import androidx.compose.material.icons.sharp.Engineering
+import androidx.compose.material.icons.sharp.Grass
+import androidx.compose.material.icons.sharp.Hardware
+import androidx.compose.material.icons.sharp.ImagesearchRoller
+import androidx.compose.material.icons.sharp.LocalFireDepartment
+import androidx.compose.material.icons.sharp.Lock
+import androidx.compose.material.icons.sharp.Plumbing
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -141,10 +153,22 @@ fun CardSearch(
 
 }
 
+val iconMapSpecialities = mapOf(
+    "Carpintero" to Icons.Sharp.Carpenter,
+    "Plomero" to Icons.Sharp.Plumbing,
+    "Electricista" to Icons.Sharp.ElectricBolt,
+    "Limpiador" to Icons.Sharp.CleaningServices,
+    "Albañil" to Icons.Sharp.Engineering,
+    "Cerrajero" to Icons.Sharp.Lock,
+    "Jardinero" to Icons.Sharp.Grass,
+    "Mecánico" to Icons.Sharp.CarRepair,
+    "Fontanero" to Icons.Sharp.Plumbing,
+    "Pintor" to Icons.Sharp.ImagesearchRoller,
+    "Soldador" to Icons.Sharp.LocalFireDepartment,
+)
 
 @Composable
 fun FilterCard(
-    icon: ImageVector,
     descriptionIcon: String,
     iconSize: Int,
     text: String,
@@ -175,7 +199,7 @@ fun FilterCard(
 
             Box(modifier = Modifier) {
                 Icon(
-                    imageVector = icon,
+                    imageVector = iconMapSpecialities[text]?: Icons.Sharp.Construction,
                     contentDescription = descriptionIcon,
                     tint = color,
                     modifier = Modifier.size(iconSize.dp)

@@ -36,8 +36,14 @@ import androidx.compose.ui.platform.LocalContext
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -229,19 +235,29 @@ fun RegisterScreen(
             2 -> Text("Hubo un error", color = Color.Red)
         }
 
+        Box(modifier = Modifier.height(32.dp))
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .weight(1f),
-            verticalAlignment = Alignment.Bottom
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.Top
         ) {
-            Text(text = "¿Ya tienes cuenta?")
-            TextButton(
-                text = "Inicia sesión",
-                onClick = { navController.navigate("login") }
-            )
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(text = "¿Ya tienes cuenta?")
+                TextButton(
+                    text = "Inicia sesión",
+                    onClick = { navController.navigate("login") }
+                )
+            }
         }
+        Box(modifier = Modifier.height(48.dp))
     }
 }
 
@@ -268,27 +284,41 @@ fun SinglePhotoPicker(uri: Uri?, onUriChange: (Uri?) -> Unit) {
         painter = painter,
         contentDescription = null,
         modifier = Modifier
-            .size(128.dp)
+            .size(100.dp)
             .clip(CircleShape)
     )
 
-    Button(onClick = {
-        // Verifica si los permisos han sido otorgados
-        if (ContextCompat.checkSelfPermission(
-                context,
-                Manifest.permission.READ_MEDIA_IMAGES
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            singlePhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        } else {
-            Toast.makeText(
-                context,
-                "Se necesitan permisos para acceder a la galería.",
-                Toast.LENGTH_SHORT
-            ).show()
-            Log.d("SinglePhotoPicker", "Se necesitan permisos para acceder a la galería.")
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xff3b82f6),
+            contentColor = Color.White
+        ),
+        modifier = Modifier
+            .wrapContentHeight(Alignment.CenterVertically)
+            .height(38.dp),
+        shape = RoundedCornerShape(16.dp),
+        elevation = ButtonDefaults.elevatedButtonElevation(
+            defaultElevation = 4.dp, // Elevación normal
+            pressedElevation = 8.dp // Elevación cuando se presiona
+        ),
+        onClick = {
+            // Verifica si los permisos han sido otorgados
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                singlePhotoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            } else {
+                Toast.makeText(
+                    context,
+                    "Se necesitan permisos para acceder a la galería.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.d("SinglePhotoPicker", "Se necesitan permisos para acceder a la galería.")
+            }
         }
-    }) {
+    ) {
         Text(text = "Selecciona una foto")
     }
 }
