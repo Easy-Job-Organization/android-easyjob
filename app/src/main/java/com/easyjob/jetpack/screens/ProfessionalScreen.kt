@@ -138,20 +138,19 @@ fun ProfessionalClientScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        servicesState?.let { services ->
+                        professionalState?.specialities?.let { specialities ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                services.forEach { service ->
-                                    service?.let {
+                                specialities.forEach { speciality ->
+                                    speciality?.let {
                                         FilterCard(
-                                            icon = Icons.Sharp.Lock,
-                                            descriptionIcon = service.title,
+                                            descriptionIcon = speciality.speciality_name,
                                             iconSize = 16,
-                                            text = service.title,
+                                            text = speciality.speciality_name,
                                             color = Color(0xff133c55),
                                             backgroundColor = Color(0x32133c55),
                                             click = false

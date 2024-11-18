@@ -9,13 +9,14 @@ data class Professional(
     val photo_url: String,
     val roles: List<String>,
     val cities: List<City>,
+    val specialities: List<SpecialitiesResponse>,
     val score: Double,
     val description: String,
 )
 
 data class SpecialitiesResponse(
     val id: String,
-    val name: String
+    val speciality_name: String
 )
 
 data class CitiesResponse(
