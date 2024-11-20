@@ -21,8 +21,8 @@ class AppointmentViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val repo: AppointmentRepository
 ): ViewModel(){
-    val professionalServices = MutableLiveData<List<Service?>>()
 
+    val professionalServices = MutableLiveData<List<Service?>>()
     val clientAppointments = MutableLiveData<List<AppointmentGet?>>()
 
     suspend fun getUserId(): String? {

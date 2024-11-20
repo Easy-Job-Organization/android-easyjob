@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
@@ -36,14 +37,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.easyjob.jetpack.R
 import com.easyjob.jetpack.ui.theme.components.GroupChatCard
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ChatsViewModel
@@ -118,7 +125,7 @@ fun ChatList(
                 ) {
 
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        /*TODO*/
                     }) {
                         Icon(
                             Icons.Rounded.Create,
@@ -128,7 +135,7 @@ fun ChatList(
                     }
 
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        /*TODO*/
                     }) {
                         Icon(
                             Icons.Default.Settings,
@@ -140,7 +147,7 @@ fun ChatList(
             }
 
             Text(
-                text = "Técnicos disponibles",
+                text = "Conversaciónes abiertas",
                 fontSize = 20.sp,
                 color = Color(0xff424242),
                 modifier = Modifier.padding(vertical = 14.dp)
@@ -156,31 +163,54 @@ fun ChatList(
                     Text("Hubo un error al los chats del perfil", color = Color.Red)
                 }
                 3 -> {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        items(filteredProfessionals) { groupChat ->
-                            if(groupChat.professional != null) {
-                                GroupChatCard(
-                                    id = groupChat.professional.id,
-                                    image = groupChat.professional.photo_url,
-                                    descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
-                                    name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
-                                    score = groupChat.professional.score ,
-                                    navController = navController
-                                )
-                            } else if(groupChat.client != null) {
-                                GroupChatCard(
-                                    id = groupChat.client.id,
-                                    image = groupChat.client.photo_url,
-                                    descriptionImage = "Profile photo of ${groupChat.client.name} ${groupChat.client.last_name}",
-                                    name = "${groupChat.client.name  } ${groupChat.client.last_name}",
-                                    navController = navController
-                                )
+                    if (filteredProfessionals.isEmpty()) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            AsyncImage(
+                                model = R.drawable.easyjob_logo_main_color,
+                                contentDescription = "Easyjob logo",
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .alpha(0.4f),
+                            )
+                            Text(
+                                text = "No tienes conversaciones abiertas",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Light,
+                                color = Color(0xff424242),
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            items(filteredProfessionals) { groupChat ->
+                                if(groupChat.professional != null) {
+                                    GroupChatCard(
+                                        id = groupChat.professional.id,
+                                        image = groupChat.professional.photo_url,
+                                        descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
+                                        name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
+                                        score = groupChat.professional.score ,
+                                        navController = navController
+                                    )
+                                } else if(groupChat.client != null) {
+                                    GroupChatCard(
+                                        id = groupChat.client.id,
+                                        image = groupChat.client.photo_url,
+                                        descriptionImage = "Profile photo of ${groupChat.client.name} ${groupChat.client.last_name}",
+                                        name = "${groupChat.client.name  } ${groupChat.client.last_name}",
+                                        navController = navController
+                                    )
+                                }
                             }
                         }
                     }
+
                 }
             }
         }

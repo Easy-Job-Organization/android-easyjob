@@ -35,9 +35,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
+import com.easyjob.jetpack.ui.theme.components.ProfileSectionClient
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfileViewModel
 import kotlin.math.roundToInt
@@ -45,8 +47,8 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController = rememberNavController(),
-    profileViewModel: ProfileViewModel = hiltViewModel()
+    navController: NavController,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -54,7 +56,7 @@ fun ProfileScreen(
     val profileData by profileViewModel.profile.observeAsState()
 
     LaunchedEffect(Unit) {
-        profileViewModel.loadProfile("d53096cc-b538-41fd-9e6d-fd98b22a2765")
+        profileViewModel.loadProfile()
     }
 
     Scaffold(
@@ -90,15 +92,12 @@ fun ProfileScreen(
                 }
                 3 -> {
                     profileData?.let { profile ->
-                        ProfileSection(
+                        ProfileSectionClient(
                             image = profile.photo_url ?: "https://example.com/default_profile.jpg",
                             descriptionImage = "profile image",
                             name = profile.name ?: "Nombre no disponible",
                             phoneNumber = profile.phone_number ?: "Numero no disponible",
-                            cities =  listOf(),
-                            iconSize = 14,
-                            stars = -1,
-                            comments = ""
+                            email = profile.email ?: "Correo no disponible",
                         )
 
                         Box(modifier = Modifier.height(15.dp))
@@ -171,7 +170,15 @@ fun ProfileScreen(
                             ButtonIconLink(
                                 icon = Icons.Default.ExitToApp,
                                 descriptionIcon = "Cerrar sesión",
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    profileViewModel.logOut()
+                                    navController.navigate("splash"){
+                                        //Dont let the user go back to the previous screens
+                                        popUpTo("splash") {
+                                            inclusive = true
+                                        }
+                                    }
+                                },
                                 text = "Cerrar sesión",
                                 color = Color.Red
                             )
