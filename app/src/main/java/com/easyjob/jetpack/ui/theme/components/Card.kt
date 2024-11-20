@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -335,7 +336,7 @@ fun AppointmentCard(
                 )
                 .padding(horizontal = 15.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start,
+            //horizontalArrangement = Arrangement.SpaceBetween,
         ) {
 
             AsyncImage(
@@ -349,26 +350,21 @@ fun AppointmentCard(
 
             Box(modifier = Modifier.width(7.dp))
 
-            Column(
+            Row(
                 modifier = Modifier
-                    .width(220.dp)
-                    .wrapContentHeight()
+                    .fillMaxWidth()
                     .padding(vertical = 10.dp, horizontal = 5.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 17.sp,
-                    color = Color(0xFF133c55),
-                    text = name,
-                    lineHeight = 30.sp
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    //horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Column {
+                    Text(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 17.sp,
+                        color = Color(0xFF133c55),
+                        text = name,
+                        lineHeight = 30.sp
+                    )
 
                     Text(
                         fontWeight = FontWeight.Normal,
@@ -378,34 +374,31 @@ fun AppointmentCard(
                         lineHeight = 30.sp
                     )
                 }
+                //Spacer(modifier = Modifier.width(5.dp))
+                Column(
+                    modifier = Modifier
+                        .padding(vertical = 10.dp, horizontal = 5.dp)
+                ) {
+                    Text(
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.sp,
+                        color = Color(0xFF133c55),
+                        text = date,
+                        lineHeight = 30.sp
+                    )
+
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 12.sp,
+                        color = Color(0xFF133c55),
+                        text = hour,
+                        lineHeight = 30.sp
+                    )
+
+                }
             }
 
-            Box(modifier = Modifier.weight(1f))
 
-            Column(
-                modifier = Modifier
-                    .width(220.dp)
-                    .wrapContentHeight()
-                    .padding(vertical = 10.dp, horizontal = 5.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp,
-                    color = Color(0xFF133c55),
-                    text = date,
-                    lineHeight = 30.sp
-                )
-
-                Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
-                    color = Color(0xFF133c55),
-                    text = hour,
-                    lineHeight = 30.sp
-                )
-
-            }
 
 
         }

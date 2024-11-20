@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -24,17 +25,41 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.viewmodels.SplashViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavController = rememberNavController()) {
+fun SplashScreen(
+    navController: NavController = rememberNavController(),
+    splashViewModel: SplashViewModel = hiltViewModel()
+) {
 
-    LaunchedEffect(true) {
-        delay(2000)
-        navController.navigate("login")
+    val authState by splashViewModel.authState.observeAsState()
+
+    LaunchedEffect(Unit) {
+        splashViewModel.checkLoggedIn()
+    }
+
+    LaunchedEffect(authState) {
+        if(authState == 1) {
+            splashViewModel.updateAuthState(0)
+            navController.navigate("home") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else if (authState == 2 ) {
+            navController.navigate("homeProfessional") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else if(authState == 3) {
+            navController.navigate("login") {
+                splashViewModel.updateAuthState(0)
+                popUpTo("splash") { inclusive = true }
+            }
+        }
     }
 
     // State to control the visibility

@@ -10,13 +10,15 @@ import com.easyjob.jetpack.repositories.AuthRepositoryImpl
 import com.easyjob.jetpack.services.AuthServiceImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
 
     //0. Idle
