@@ -48,6 +48,7 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     val authState by loginViewModel.authState.observeAsState()
 
+
     // Log authState changes in the composable to track updates
     LaunchedEffect(authState) {
         Log.d("LoginScreen", "authState changed to $authState")
@@ -113,9 +114,11 @@ fun LoginScreen(
         }
 
         // Layout UI con botones y elementos según authState.
-        when (authState) {
-            1 -> CircularProgressIndicator()
-            2 -> Text("Hubo un error", color = Color.Red)
+        Box(modifier = Modifier.padding(10.dp) ){
+            when (authState) {
+                1 -> CircularProgressIndicator()
+                2 -> Text("Las credenciales con incorrectas", color = Color.Red)
+            }
         }
 
         Row(
