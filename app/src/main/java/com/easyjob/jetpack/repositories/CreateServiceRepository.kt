@@ -9,6 +9,8 @@ import javax.inject.Inject
 interface CreateServiceRepository {
     suspend fun createService(id: String, serviceID : String): Response<Unit>
 
+    suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean
+
     suspend fun getAllServices(): List<Service>
 }
 
@@ -16,7 +18,14 @@ class CreateServiceRepositoryImpl @Inject constructor(
     private val createServiceService: CreateServiceService
 ) : CreateServiceRepository {
 
-
+    override suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean {
+        val updates = mapOf<String, Any>(
+            "name" to name,
+            "description" to description,
+            "price" to price
+        )
+        return createServiceService.updateService(id, updates).isSuccessful
+    }
 
     override suspend fun createService(id: String, serviceID : String): Response<Unit> {
         val res = createServiceService.createService(id, serviceID)
