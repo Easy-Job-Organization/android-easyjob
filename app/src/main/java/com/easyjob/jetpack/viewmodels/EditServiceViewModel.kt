@@ -21,10 +21,6 @@ class EditServiceViewModel  @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
-    suspend fun getToken(): String? {
-        return userPreferencesRepository.jwtFlow.firstOrNull()
-    }
-
     private val _serviceName = MutableLiveData("")
     val serviceName: LiveData<String> get() = _serviceName
 
