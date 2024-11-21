@@ -6,40 +6,54 @@ import javax.inject.Inject
 import android.util.Log
 import com.easyjob.jetpack.models.Appointment
 import com.easyjob.jetpack.models.AppointmentGet
+import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 
 interface AppointmentRepository {
     suspend fun fetchDateServicesPick(id: String): List<Service?>
-    suspend fun createAppointment(appointment: Appointment)
-    suspend fun getCLientAppointments(id: String): List<AppointmentGet>
+    suspend fun createAppointment(appointment: CreateAppointmentDTO)
+    suspend fun getCLientAppointments(id: String): List<Appointment>
+    suspend fun getProfessionalAppointments(id: String): List<Appointment>
+
 }
 
 
 class AppointmentRepositoryImpl @Inject constructor(
     private val appointmentService: AppointmentService
 ): AppointmentRepository {
+
+
+
     override suspend fun fetchDateServicesPick(id: String): List<Service?> {
         val res = appointmentService.getServicesOfProfessional(id)
         Log.e(">>>", "The response is: ${res}")
         return res
     }
 
-    override suspend fun createAppointment(appointment: Appointment) {       try {
+    override suspend fun createAppointment(appointment: CreateAppointmentDTO) {
+        try {
             val response = appointmentService.createAppointment(appointment.client, appointment.professional?:"", appointment)
         } catch (e: Exception) {
             throw e
         }
     }
 
-    override suspend fun getCLientAppointments(id: String): List<AppointmentGet> {
+    override suspend fun getCLientAppointments(id: String): List<Appointment> {
         val res = appointmentService.getClientAppointments(id)
-        if (res.body()!!.appointments.isEmpty()){
-            Log.e("HOLII", "VACIO")
+        res.body()?.let {
+            return it
+        } ?: run {
             return emptyList()
-        }else{
-            Log.e("HOLII", "aaaa ${res.body()!!.appointments}")
-            return res.body()!!.appointments
         }
 
+    }
+
+    override suspend fun getProfessionalAppointments(id: String): List<Appointment> {
+        val res = appointmentService.getProfessionalAppointments(id)
+        res.body()?.let {
+            return it
+        } ?: run {
+            return emptyList()
+        }
     }
 
 }

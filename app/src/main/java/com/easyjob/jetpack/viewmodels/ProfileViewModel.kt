@@ -33,9 +33,10 @@ class ProfileViewModel @Inject constructor(
             }
 
             val userId = userPreferencesRepository.userIdFlow.first()
+            Log.e(">>>", "The user id is: ${userId}")
 
             val response = repo.fetchProfileClient(userId?: "")
-
+            Log.e(">>>", "The response is: ${response}")
             if (response.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     profile.value = response.body()

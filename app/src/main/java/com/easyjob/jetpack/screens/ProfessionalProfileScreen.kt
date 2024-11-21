@@ -218,7 +218,15 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Default.ExitToApp,
                             descriptionIcon = "Cerrar sesión",
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                viewModel.logOut()
+                                navController.navigate("splash"){
+                                    //Dont let the user go back to the previous screens
+                                    popUpTo("splash") {
+                                        inclusive = true
+                                    }
+                                }
+                            },
                             text = "Cerrar sesión",
                             color = Color.Red
                         )

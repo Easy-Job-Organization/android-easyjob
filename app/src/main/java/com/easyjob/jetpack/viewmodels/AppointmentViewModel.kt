@@ -23,7 +23,13 @@ class AppointmentViewModel @Inject constructor(
 ): ViewModel(){
 
     val professionalServices = MutableLiveData<List<Service?>>()
-    val clientAppointments = MutableLiveData<List<AppointmentGet?>>()
+    val appointments = MutableLiveData<List<Appointment>>()
+    val role = MutableLiveData<String>()
+
+
+    suspend fun getRole(): String? {
+        return userPreferencesRepository.rolesFlow.firstOrNull()?.get(0)
+    }
 
     suspend fun getUserId(): String? {
         return userPreferencesRepository.userIdFlow.firstOrNull()
@@ -32,25 +38,34 @@ class AppointmentViewModel @Inject constructor(
     fun loadProfessionalServices(id:String){
         viewModelScope.launch(Dispatchers.IO) {
             val results = repo.fetchDateServicesPick(id)
+            val userRole = getRole()
             withContext(Dispatchers.Main){
+                role.value = userRole?:""
                 professionalServices.value = results
             }
         }
     }
 
-    fun loadClientAppointments(){
+    fun loadAppointments() {
         viewModelScope.launch(Dispatchers.IO) {
             val id = getUserId()
-            val res = repo.getCLientAppointments(id?:"")
-            withContext(Dispatchers.Main){
-                clientAppointments.value = res
+            if (getRole().equals("client")) {
+                val res = repo.getCLientAppointments(id?:"")
+                withContext(Dispatchers.Main){
+                    appointments.value = res
+                }
+            } else {
+                val res = repo.getProfessionalAppointments(id?:"")
+                withContext(Dispatchers.Main){
+                    appointments.value = res
+                }
             }
-            Log.e("HOLII", "XX ${res}")
         }
     }
 
 
-    fun createDate(nwAppointment: Appointment){
+    fun createDate(nwAppointment: CreateAppointmentDTO){
+        Log.e("AYUDAMEEEEEEEEEEEEE", nwAppointment.toString())
         viewModelScope.launch(Dispatchers.IO) {
             val id = getUserId()
             nwAppointment.client = id?:""
@@ -59,4 +74,14 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 }
+
+data class CreateAppointmentDTO (
+    var client: String,
+    var professional: String,
+    var date: String,
+    val location: String,
+    val hour: String,
+    val service: String,
+    val paymentMethod: String? = null
+)
 

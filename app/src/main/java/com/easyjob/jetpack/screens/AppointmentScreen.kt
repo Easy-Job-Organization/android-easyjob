@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
@@ -38,14 +40,14 @@ fun AppointmentScreen(
 ) {
 
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
-    val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(Unit) {
-        appointmentViewModel.loadClientAppointments()
+        appointmentViewModel.loadAppointments()
     }
 
-    val clientAppointments by appointmentViewModel.clientAppointments.observeAsState(emptyList())
+    val appointments by appointmentViewModel.appointments.observeAsState(emptyList())
+    val role by appointmentViewModel.role.observeAsState("")
 
     Scaffold(
         modifier = Modifier
@@ -62,32 +64,36 @@ fun AppointmentScreen(
         },
     ) { innerPadding ->
 
-        Column(
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(top = 25.dp)
-                .verticalScroll(scrollState), // Make this column scrollable
+                .padding(top = 25.dp, start = 15.dp, end = 15.dp)
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp)
-                    .fillMaxWidth()
-            ) {
-                clientAppointments?.forEach { appointment ->
-                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            items(appointments) { appointment ->
+                val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-                    val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
-                    val formattedDate = parsedDate.format(outputFormatter)
+                val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
+                val formattedDate = parsedDate.format(outputFormatter)
+                if (role.equals("client")) {
                     AppointmentCard(
-                        id = appointment!!.id,
+                        id = appointment.id,
                         name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
                         service = appointment.service,
                         date = formattedDate,
                         hour = appointment.hour,
                         photo_url = appointment.professional?.photo_url ?: ""
+                    )
+                } else {
+                    AppointmentCard(
+                        id = appointment.id,
+                        name = "${appointment.client?.name} ${appointment.client?.last_name}",
+                        service = appointment.service,
+                        date = formattedDate,
+                        hour = appointment.hour,
+                        photo_url = appointment.client?.photo_url ?: ""
                     )
                 }
             }
