@@ -44,7 +44,7 @@ fun HomeProfessionalScreen(
             startDestination = "profile",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("profile") { ProfessionalProfileScreen(nestedNavController) }
+            composable("profile") { ProfessionalProfileScreen( navController, nestedNavController) }
             composable("search") { SearchScreen(nestedNavController) }
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }

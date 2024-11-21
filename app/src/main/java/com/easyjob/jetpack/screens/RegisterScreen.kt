@@ -104,7 +104,7 @@ fun RegisterScreen(
     // Navegación al home si el registro es exitoso
     LaunchedEffect(authState) {
         if (authState == 3) {
-            navController.navigate("home") {
+            navController.navigate("splash") {
                 popUpTo("register") { inclusive = true }
             }
         }
@@ -253,7 +253,9 @@ fun RegisterScreen(
                 Text(text = "¿Ya tienes cuenta?")
                 TextButton(
                     text = "Inicia sesión",
-                    onClick = { navController.navigate("login") }
+                    onClick = {
+                        navController.navigate("login")
+                    }
                 )
             }
         }
