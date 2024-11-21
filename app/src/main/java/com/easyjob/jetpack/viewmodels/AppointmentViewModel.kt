@@ -12,6 +12,7 @@ import com.easyjob.jetpack.repositories.AppointmentRepository
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,9 +43,7 @@ class AppointmentViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
 
             val results = repo.fetchDateServicesPick(id)
-            val userRole = getRole()
             withContext(Dispatchers.Main){
-                role.value = userRole?:""
                 professionalServices.value = results
                 profileState.value = 3 // Success
             }
@@ -55,12 +54,15 @@ class AppointmentViewModel @Inject constructor(
 
         profileState.value = 1
 
+
         viewModelScope.launch(Dispatchers.IO) {
+            val userRole = getRole()
             val id = getUserId()
             if (getRole().equals("client")) {
                 val res = repo.getCLientAppointments(id?:"")
                 withContext(Dispatchers.Main) {
                     appointments.value = res
+                    role.value = userRole?:""
                     profileState.value = 3 // Success
                 }
             } else {

@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -137,7 +138,6 @@ fun AppointmentScreen(
 
                             val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
                             val formattedDate = parsedDate.format(outputFormatter)
-
                             if (role.equals("client")) {
                                 AppointmentCard(
                                     id = appointment.id,
