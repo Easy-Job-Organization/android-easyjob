@@ -25,6 +25,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -80,8 +81,17 @@ fun ResultsScreen(
                 SearchBar("Encuentra un técnico a tu medida", searchText, navController= navController)
             }
 
-            Text("${searchResults?.total.toString()} resultados encontrados", fontSize = 32.sp, modifier = Modifier.padding(start = 15.dp, bottom = 15.dp))
+            Column(modifier = Modifier.padding(top = 20.dp, start = 15.dp, end = 15.dp)) {
 
+                Text(
+                    text = "${searchResults?.total.toString()} resultados encontrados",
+                    fontSize = 24.sp,
+                    modifier = Modifier
+                        .padding(start = 15.dp, bottom = 15.dp),
+                    fontWeight = FontWeight.Bold
+                )
+
+            }
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier

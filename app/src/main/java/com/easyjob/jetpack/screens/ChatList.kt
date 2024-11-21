@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -165,22 +166,32 @@ fun ChatList(
                 3 -> {
                     if (filteredProfessionals.isEmpty()) {
                         Column(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 30.dp, start = 15.dp, end = 15.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            verticalArrangement = Arrangement.Center,
                         ) {
                             AsyncImage(
-                                model = R.drawable.easyjob_logo_main_color,
+                                model = R.drawable.backpack_icon,
                                 contentDescription = "Easyjob logo",
                                 modifier = Modifier
                                     .size(120.dp)
                                     .alpha(0.4f),
                             )
                             Text(
-                                text = "No tienes conversaciones abiertas",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Light,
+                                text = "Todavia no tienes chats abiertos",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
                                 color = Color(0xff424242),
+                            )
+                            Text(
+                                text = "Cuando tengas una conversacion abierta, aparecerá aquí",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Light,
+                                textAlign = TextAlign.Center,
+                                color = Color(0xff96989e),
                             )
                         }
                     } else {

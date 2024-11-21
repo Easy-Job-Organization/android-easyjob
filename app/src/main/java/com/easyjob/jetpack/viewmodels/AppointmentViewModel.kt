@@ -12,6 +12,7 @@ import com.easyjob.jetpack.repositories.AppointmentRepository
 import javax.inject.Inject;
 import dagger.hilt.android.lifecycle.HiltViewModel;
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,6 +26,8 @@ class AppointmentViewModel @Inject constructor(
     val professionalServices = MutableLiveData<List<Service?>>()
     val appointments = MutableLiveData<List<Appointment>>()
     val role = MutableLiveData<String>()
+    val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
+
 
 
     suspend fun getRole(): String? {
@@ -36,28 +39,37 @@ class AppointmentViewModel @Inject constructor(
     }
 
     fun loadProfessionalServices(id:String){
+
         viewModelScope.launch(Dispatchers.IO) {
+
             val results = repo.fetchDateServicesPick(id)
-            val userRole = getRole()
             withContext(Dispatchers.Main){
-                role.value = userRole?:""
                 professionalServices.value = results
+                profileState.value = 3 // Success
             }
         }
     }
 
     fun loadAppointments() {
+
+        profileState.value = 1
+
+
         viewModelScope.launch(Dispatchers.IO) {
+            val userRole = getRole()
             val id = getUserId()
             if (getRole().equals("client")) {
                 val res = repo.getCLientAppointments(id?:"")
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     appointments.value = res
+                    role.value = userRole?:""
+                    profileState.value = 3 // Success
                 }
             } else {
                 val res = repo.getProfessionalAppointments(id?:"")
                 withContext(Dispatchers.Main){
                     appointments.value = res
+                    profileState.value = 3 // Success
                 }
             }
         }

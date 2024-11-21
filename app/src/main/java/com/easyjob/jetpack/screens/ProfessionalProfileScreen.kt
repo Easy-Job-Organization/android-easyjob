@@ -52,7 +52,8 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalProfileScreen(
-    navController: NavController = rememberNavController(),
+    generalNavController: NavController = rememberNavController(),
+    innerNavController: NavController = rememberNavController(),
     viewModel: ProfessionalProfileViewModel = hiltViewModel()
 ) {
 
@@ -84,7 +85,7 @@ fun ProfessionalProfileScreen(
             Topbar(
                 title = "Perfil del profesional",
                 scrollBehavior = scrollBehavior,
-                navController = navController,
+                navController = innerNavController,
                 isBack = false
             )
         },
@@ -189,7 +190,7 @@ fun ProfessionalProfileScreen(
                             icon = Icons.Rounded.Plumbing,
                             descriptionIcon = "Mis Servicios",
                             onClick = {
-                                navController.navigate("editServices")
+                                innerNavController.navigate("editServices")
                             },
                             text = "Mis Servicios",
                             color = Color.Black
@@ -220,7 +221,7 @@ fun ProfessionalProfileScreen(
                             descriptionIcon = "Cerrar sesión",
                             onClick = {
                                 viewModel.logOut()
-                                navController.navigate("splash"){
+                                generalNavController.navigate("splash"){
                                     //Dont let the user go back to the previous screens
                                     popUpTo("splash") {
                                         inclusive = true
