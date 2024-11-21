@@ -37,6 +37,7 @@ import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.AppointmentViewModel
+import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +91,7 @@ fun RegisterDateScreen(
                     .padding(bottom = 15.dp)
             )
             DropdownMenu1(
-                options = professionalServices.map { it?.title ?: "-" },
+                options = professionalServices.map { it?.title ?: "" },
                 selectedOption = selectedOption,
                 onOptionSelected = {selectedOption = it}
             )
@@ -136,11 +137,11 @@ fun RegisterDateScreen(
                 PrimaryButton(
                     text = "Agendar",
                     onClick = {
-                        val nwAppointment = Appointment(
+                        val nwAppointment = CreateAppointmentDTO(
                             date = selectedDate,
                             location = "Cali",
                             hour = selectedTime,
-                            service = selectedOption,
+                            service = professionalServices.find { it?.title == selectedOption }?.id.toString(),
                             client = "",
                             professional = id
                             )
