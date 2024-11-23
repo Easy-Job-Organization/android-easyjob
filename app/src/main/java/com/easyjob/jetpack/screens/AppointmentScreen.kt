@@ -93,11 +93,9 @@ fun AppointmentScreen(
             3 -> {
 
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(top = 25.dp, start = 15.dp, end = 15.dp)
                 ) {
                     if( appointments.isEmpty() ) {
                         item {
