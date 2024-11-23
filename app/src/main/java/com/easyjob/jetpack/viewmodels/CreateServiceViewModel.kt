@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
+import com.easyjob.jetpack.models.CreateServiceDTO
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.repositories.CreateServiceRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,8 +33,12 @@ class CreateServiceViewModel @Inject constructor(
     private val _servicePrice = MutableLiveData(0.0)
     val servicePrice: LiveData<Double> get() = _servicePrice
 
-    private val _updateResult = MutableLiveData<Result<Boolean>>()
-    val updateResult: LiveData<Result<Boolean>> get() = _updateResult
+    private val _updateResult = MutableLiveData<Boolean>()
+    val updateResult: LiveData<Boolean> get() = _updateResult
+
+    fun setUpdateResult (value: Boolean){
+        _updateResult.value = value
+    }
 
     fun onServiceNameChange(newName: String) {
         _serviceName.value = newName
@@ -47,26 +52,8 @@ class CreateServiceViewModel @Inject constructor(
         _servicePrice.value = newPrice
     }
 
-    fun updateService(serviceId: String) {
-        viewModelScope.launch {
-            val name = serviceName.value ?: ""
-            val description = serviceDescription.value ?: ""
-            val price = servicePrice.value ?: 0.0
-
-            Log.d("CreateServiceViewModel", "Intentando actualizar el servicio con ID: $serviceId")
-            _updateResult.value = try {
-                val success = repository.updateService(serviceId, name, description, price)
-                Log.d("CreateServiceViewModel", "Actualización exitosa: $success")
-                Result.success(success)
-            } catch (e: Exception) {
-                Log.e("CreateServiceViewModel", "Error al actualizar el servicio", e)
-                Result.failure(e)
-            }
-        }
-    }
-
     private val _allServices = MutableLiveData<List<Service>>()
-    val allServices: LiveData<List<Service>> get() = _allServices
+
 
     private val _currentService = MutableStateFlow<Service?>(null)
     val currentService: StateFlow<Service?> = _currentService.asStateFlow()
@@ -75,17 +62,10 @@ class CreateServiceViewModel @Inject constructor(
         fetchAllServices()
     }
 
-    fun fetchAllServices() {
+    private fun fetchAllServices() {
         viewModelScope.launch {
             _allServices.value = repository.getAllServices()
         }
-    }
-
-    fun setCurrentService(service: Service) {
-        _currentService.value = service
-        // Actualiza los valores de descripción y precio
-        _serviceDescription.value = service.description ?: ""
-        _servicePrice.value = service.price ?: 0.0
     }
 
     suspend fun getUserId(): String? {
@@ -94,11 +74,48 @@ class CreateServiceViewModel @Inject constructor(
 
     fun createServiceForProfessional() {
         viewModelScope.launch {
-            val professionalId = getUserId()
-            val selectedService = _currentService.value
-            if (selectedService != null) {
-                repository.createService(professionalId!!, selectedService.id)
+            val selectedService = _serviceName.value?.let { name ->
+                _serviceDescription.value?.let { description ->
+                    _servicePrice.value?.let { price ->
+                        CreateServiceDTO(name, description, price)
+                    }
+                }
+            }
+
+            if (selectedService == null) {
+                _updateResult.value = false
+                return@launch
+            }
+
+            try {
+                val res = repository.createService(selectedService)
+
+                if (res.isSuccessful) {
+                    val createdService = res.body()
+                    val serviceId = createdService?.id
+
+                    if (serviceId != null) {
+                        val professionalId = getUserId()
+                        if (professionalId != null) {
+                            repository.linkServiceProfessional(professionalId, serviceId)
+                            _updateResult.value = true
+                        } else {
+                            _updateResult.value = false
+                            Log.e("CreateServiceViewModel", "El ID del profesional no está disponible.")
+                        }
+                    } else {
+                        _updateResult.value = false
+                        Log.e("CreateServiceViewModel", "El ID del servicio no se encontró en la respuesta.")
+                    }
+                } else {
+                    _updateResult.value = false
+                    Log.e("CreateServiceViewModel", "Error al crear el servicio: ${res.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                _updateResult.value = false
+                Log.e("CreateServiceViewModel", "Excepción al crear el servicio", e)
             }
         }
     }
+
 }

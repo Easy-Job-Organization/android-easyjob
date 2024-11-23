@@ -1,13 +1,17 @@
 package com.easyjob.jetpack.repositories
 
 import android.util.Log
+import com.easyjob.jetpack.models.CreateServiceDTO
 import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.services.CreateServiceService
 import retrofit2.Response
 import javax.inject.Inject
 
 interface CreateServiceRepository {
-    suspend fun createService(id: String, serviceID : String): Response<Unit>
+
+    suspend fun linkServiceProfessional(id: String, serviceID : String): Response<Unit>
+
+    suspend fun createService(selectedService: CreateServiceDTO): Response<Service>
 
     suspend fun updateService(id: String, name: String, description: String, price: Double): Boolean
 
@@ -27,8 +31,18 @@ class CreateServiceRepositoryImpl @Inject constructor(
         return createServiceService.updateService(id, updates).isSuccessful
     }
 
-    override suspend fun createService(id: String, serviceID : String): Response<Unit> {
-        val res = createServiceService.createService(id, serviceID)
+    override suspend fun createService(selectedService: CreateServiceDTO): Response<Service> {
+        val res = createServiceService.createService(selectedService)
+        Log.e(">>>", "<<<The response is: ${res}")
+        if (res != null) {
+            return res
+        } else {
+            return res
+        }
+    }
+
+    override suspend fun linkServiceProfessional(id: String, serviceID : String): Response<Unit> {
+        val res = createServiceService.linkServiceProfessional(id, serviceID)
         Log.e(">>>", "<<<The response is: ${res}")
         if (res != null) {
             return res

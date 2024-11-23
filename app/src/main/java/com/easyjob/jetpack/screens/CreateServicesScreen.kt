@@ -26,16 +26,11 @@ fun CreateServiceScreen(
     navController: NavController,
     viewModel: CreateServiceViewModel = hiltViewModel()
 ) {
-    val services by viewModel.allServices.observeAsState(emptyList())
-    val currentService by viewModel.currentService.collectAsState()
+    val serviceName by viewModel.serviceName.observeAsState("")
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val serviceDescription by viewModel.serviceDescription.observeAsState("")
     val servicePrice by viewModel.servicePrice.observeAsState(0.0)
-    val updateResult by viewModel.updateResult.observeAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.fetchAllServices()
-    }
+    val updateResult by viewModel.updateResult.observeAsState(false)
 
     Scaffold(
         topBar = {
@@ -54,38 +49,17 @@ fun CreateServiceScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Elige un servicio", style = MaterialTheme.typography.h6)
-
-            var expanded by remember { mutableStateOf(false) }
-
-            Box(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = currentService?.title ?: "Selecciona un servicio",
-                    onValueChange = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
-                    trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
-                        }
-                    }
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    services.forEach { service ->
-                        DropdownMenuItem(
-                            onClick = {
-                                viewModel.setCurrentService(service)
-                                expanded = false
-                            }
-                        ) {
-                            Text(service.title)
-                        }
-                    }
-                }
-            }
+            Text(
+                text = "Nombre del servicio",
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+            TextField(
+                value = serviceName,
+                onValueChange = viewModel::onServiceNameChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Nombre del servicio") }
+            )
 
             Text(
                 text = "Descripción del servicio",
@@ -119,25 +93,29 @@ fun CreateServiceScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
+            // Botón de guardar cambios
             Button(
                 onClick = {
-                    viewModel.createServiceForProfessional()
-                    currentService?.let { viewModel.updateService(it.id) }
-                    navController.popBackStack()
+                    if (serviceName != "" && serviceDescription != "" && servicePrice != 0.0) {
+                        viewModel.createServiceForProfessional()
+                        if (updateResult) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        viewModel.setUpdateResult(false)
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Guardar Cambios")
             }
 
-            // Mostrar el resultado de la actualización
-            updateResult?.let { result ->
+            if (!updateResult) {
                 Spacer(modifier = Modifier.height(8.dp))
-                if (result.isSuccess && result.getOrNull() == true) {
-                    Text("Servicio actualizado exitosamente", color = MaterialTheme.colors.primary)
-                } else if (result.isFailure) {
-                    Text("Error al actualizar el servicio", color = MaterialTheme.colors.error)
-                }
+                Text(
+                    text = "Error al crear el servicio",
+                    color = MaterialTheme.colors.error
+                )
             }
         }
     }

@@ -1,16 +1,23 @@
 package com.easyjob.jetpack.services
 
+import com.easyjob.jetpack.models.CreateServiceDTO
 import com.easyjob.jetpack.models.Service
 import retrofit2.http.GET
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface CreateServiceService {
 
-    @GET("/professionals/service/{id}/{serviceId}")
+    @POST("/services/")
     suspend fun createService(
+        @Body selectedService : CreateServiceDTO
+    ): Response<Service>
+
+    @GET("/services/")
+    suspend fun linkServiceProfessional(
         @Path("id") id: String,
         @Path("serviceId") serviceId : String
     ): Response<Unit>
