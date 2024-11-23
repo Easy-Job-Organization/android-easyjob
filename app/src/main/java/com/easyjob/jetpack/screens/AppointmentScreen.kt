@@ -42,8 +42,10 @@ fun AppointmentScreen(
 
     LaunchedEffect(Unit) {
         appointmentViewModel.loadClientAppointments()
+        appointmentViewModel.loadUserRole()
     }
 
+    val userRole by appointmentViewModel.userFirstRole.observeAsState("")
     val clientAppointments by appointmentViewModel.clientAppointments.observeAsState(emptyList())
 
     Scaffold(
@@ -73,21 +75,27 @@ fun AppointmentScreen(
                     .padding(start = 15.dp, end = 15.dp)
                     .fillMaxWidth()
             ) {
-                clientAppointments?.forEach { appointment ->
-                    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                if(userRole == "Client"){
+                    clientAppointments?.forEach { appointment ->
+                        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
-                    val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
-                    val formattedDate = parsedDate.format(outputFormatter)
-                    AppointmentCard(
-                        id = appointment!!.id,
-                        name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
-                        service = appointment.service,
-                        date = formattedDate,
-                        hour = appointment.hour,
-                        photo_url = appointment.professional?.photo_url?:""
-                    )
+                        val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
+                        val formattedDate = parsedDate.format(outputFormatter)
+                        AppointmentCard(
+                            id = appointment!!.id,
+                            name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
+                            service = appointment.service,
+                            date = formattedDate,
+                            hour = appointment.hour,
+                            photo_url = appointment.professional?.photo_url?:""
+                        )
+                    }
+                }else if(userRole == "Professional"){
+                    // Uso de las cards e info recibidas del appointment de un profesional
+
                 }
+
             }
 
         }

@@ -25,8 +25,14 @@ class AppointmentViewModel @Inject constructor(
 
     val clientAppointments = MutableLiveData<List<AppointmentGet?>>()
 
+    val userFirstRole = MutableLiveData<String>()
+
     suspend fun getUserId(): String? {
         return userPreferencesRepository.userIdFlow.firstOrNull()
+    }
+
+    suspend fun getUserRoles(): List<String> {
+        return userPreferencesRepository.rolesFlow.firstOrNull()?: emptyList()
     }
 
     fun loadProfessionalServices(id:String){
@@ -40,12 +46,33 @@ class AppointmentViewModel @Inject constructor(
 
     fun loadClientAppointments(){
         viewModelScope.launch(Dispatchers.IO) {
+            val roles = getUserRoles()
+            Log.e("ROLE", "ROLEEEES ${roles}")
             val id = getUserId()
-            val res = repo.getCLientAppointments(id?:"")
-            withContext(Dispatchers.Main){
-                clientAppointments.value = res
+            if(roles[0]=="client"){
+                val res = repo.getCLientAppointments(id?:"")
+                withContext(Dispatchers.Main){
+                    clientAppointments.value = res
+                }
+                Log.e("HOLII", "XX ${res}")
+            }else{
+                val res = repo.getCLientAppointments(id?:"") //Cambiar cuando haya para profesional
+                withContext(Dispatchers.Main){
+                    clientAppointments.value = res
+                }
+                Log.e("HOLII", "XX ${res}")
             }
-            Log.e("HOLII", "XX ${res}")
+        }
+    }
+
+    fun loadUserRole(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val roles = getUserRoles()
+            if(roles.isEmpty()){
+                userFirstRole.value = ""
+            }else{
+                userFirstRole.value  = roles[0]
+            }
         }
     }
 
