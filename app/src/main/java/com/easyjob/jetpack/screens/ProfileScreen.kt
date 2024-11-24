@@ -10,11 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.RateReview
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -140,31 +143,24 @@ fun ProfileScreen(
                                 color = Color.Black
                             )
                             ButtonIconLink(
-                                icon = Icons.Rounded.ShoppingCart,
-                                descriptionIcon = "Mis medios de pago",
+                                icon = Icons.Rounded.Favorite,
+                                descriptionIcon = "Mis profesionales favoritos",
                                 onClick = { /*TODO*/ },
-                                text = "Mis medios de pago",
+                                text = "Favoritos",
                                 color = Color.Black
                             )
                             ButtonIconLink(
-                                icon = Icons.Default.Settings,
-                                descriptionIcon = "Configuración",
+                                icon = Icons.Outlined.RateReview,
+                                descriptionIcon = "Mis reseñas",
                                 onClick = { /*TODO*/ },
-                                text = "Configuración",
+                                text = "Mis reseñas",
                                 color = Color.Black
                             )
                             ButtonIconLink(
-                                icon = Icons.Outlined.Person,
-                                descriptionIcon = "Administrar cuenta",
+                                icon = Icons.AutoMirrored.Filled.ContactSupport,
+                                descriptionIcon = "Mis preguntas",
                                 onClick = { /*TODO*/ },
-                                text = "Administrar cuenta",
-                                color = Color.Black
-                            )
-                            ButtonIconLink(
-                                icon = Icons.Default.LocationOn,
-                                descriptionIcon = "Legal",
-                                onClick = { /*TODO*/ },
-                                text = "Legal",
+                                text = "Mis preguntas",
                                 color = Color.Black
                             )
                             ButtonIconLink(

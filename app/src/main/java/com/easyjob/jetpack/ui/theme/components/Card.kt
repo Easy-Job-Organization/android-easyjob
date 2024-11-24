@@ -312,7 +312,7 @@ fun GroupChatCard(
 fun AppointmentCard(
     id: String,
     name: String,
-    service: Service,
+    service: Service?,
     date: String,
     hour: String,
     photo_url: String
@@ -367,13 +367,15 @@ fun AppointmentCard(
                         lineHeight = 30.sp
                     )
 
-                    Text(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        color = Color(0xFF133c55),
-                        text = service.title,
-                        lineHeight = 30.sp
-                    )
+                    if (service != null) {
+                        Text(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            color = Color(0xFF133c55),
+                            text = service.title,
+                            lineHeight = 30.sp
+                        )
+                    }
                 }
                 //Spacer(modifier = Modifier.width(5.dp))
                 Column(
