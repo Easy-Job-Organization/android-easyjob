@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,7 +104,16 @@ fun SearchScreen(
                         .padding(start = 25.dp),
                 )
 
-                Text("Hola $userName", fontSize = 32.sp, modifier = Modifier.padding(start = 20.dp))
+                Row( modifier = Modifier.padding(start = 20.dp)) {
+                    Text("Hola ", fontSize = 28.sp)
+                    Text(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xff3B82F6),
+                        text ="$userName",
+                        fontSize = 28.sp)
+                }
+
+
 
             }
 
