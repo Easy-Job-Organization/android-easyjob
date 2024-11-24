@@ -16,7 +16,7 @@ interface CreateServiceService {
         @Body selectedService : CreateServiceDTO
     ): Response<Service>
 
-    @GET("/services/")
+    @GET("professionals/service/{id}/{serviceId}")
     suspend fun linkServiceProfessional(
         @Path("id") id: String,
         @Path("serviceId") serviceId : String

@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -31,6 +32,11 @@ fun CreateServiceScreen(
     val serviceDescription by viewModel.serviceDescription.observeAsState("")
     val servicePrice by viewModel.servicePrice.observeAsState(0.0)
     val updateResult by viewModel.updateResult.observeAsState(false)
+    // Flag para campos vacíos
+    var empty by remember { mutableStateOf(false) }
+    var firstLoad by remember {
+        mutableStateOf((true))
+    }
 
     Scaffold(
         topBar = {
@@ -95,14 +101,15 @@ fun CreateServiceScreen(
 
             // Botón de guardar cambios
             Button(
+
                 onClick = {
-                    if (serviceName != "" && serviceDescription != "" && servicePrice != 0.0) {
+                    firstLoad = false
+
+                    if (serviceName.isNotEmpty() && serviceDescription.isNotEmpty() && servicePrice != 0.0) {
+                        empty = false
                         viewModel.createServiceForProfessional()
-                        if (updateResult) {
-                            navController.popBackStack()
-                        }
                     } else {
-                        viewModel.setUpdateResult(false)
+                        empty = true
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -110,12 +117,31 @@ fun CreateServiceScreen(
                 Text("Guardar Cambios")
             }
 
-            if (!updateResult) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "Error al crear el servicio",
-                    color = MaterialTheme.colors.error
-                )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            if (!firstLoad){
+                // Mostrar mensaje de error si los campos están vacíos
+                if (empty) {
+                    Text(
+                        text = "Por favor, completa todos los campos antes de continuar.",
+                        color = MaterialTheme.colors.error
+                    )
+                }
+
+                // Mostrar mensaje de error si falla la creación del servicio
+                if (!updateResult) {
+                    Text(
+                        text = "Error al crear el servicio. Inténtalo de nuevo.",
+                        color = MaterialTheme.colors.error
+                    )
+                }
+            }
+        }
+
+        // Navegación cuando la creación del servicio sea exitosa
+        LaunchedEffect(updateResult) {
+            if (updateResult) {
+                navController.popBackStack()
             }
         }
     }

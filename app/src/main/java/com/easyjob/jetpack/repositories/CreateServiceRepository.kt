@@ -33,7 +33,7 @@ class CreateServiceRepositoryImpl @Inject constructor(
 
     override suspend fun createService(selectedService: CreateServiceDTO): Response<Service> {
         val res = createServiceService.createService(selectedService)
-        Log.e(">>>", "<<<The response is: ${res}")
+        Log.e("CreateServiceRepository", "<<<The response is: ${res}")
         if (res != null) {
             return res
         } else {
@@ -43,7 +43,7 @@ class CreateServiceRepositoryImpl @Inject constructor(
 
     override suspend fun linkServiceProfessional(id: String, serviceID : String): Response<Unit> {
         val res = createServiceService.linkServiceProfessional(id, serviceID)
-        Log.e(">>>", "<<<The response is: ${res}")
+        Log.e("CreateServiceRepository", ">>>The response is: ${res}")
         if (res != null) {
             return res
         } else {

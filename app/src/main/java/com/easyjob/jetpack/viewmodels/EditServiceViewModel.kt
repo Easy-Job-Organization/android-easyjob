@@ -78,7 +78,7 @@ class EditServiceViewModel  @Inject constructor(
                         _servicePrice.value = service.price
                     }
                 } else {
-                    Log.e("EditServiceViewModel", "Error al cargar el servicio: ${response.errorBody()?.string()}")
+                    Log.e("EditServiceViewModel", "Error al cargar el servicio: $response")
                 }
             } catch (e: Exception) {
                 Log.e("EditServiceViewModel", "Excepción al cargar el servicio", e)
