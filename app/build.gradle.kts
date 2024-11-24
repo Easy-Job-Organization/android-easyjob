@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -50,6 +52,18 @@ android {
 }
 
 dependencies {
+
+    //Socket io
+    implementation ("io.socket:socket.io-client:2.1.0")
+
+    // Dagger Hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+    //DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.compose.material:material-icons-extended:1.7.5")
     implementation(libs.androidx.material.v105)
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
@@ -88,4 +102,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

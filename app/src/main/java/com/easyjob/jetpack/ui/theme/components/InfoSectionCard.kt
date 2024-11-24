@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,11 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.easyjob.jetpack.Comment
-import com.easyjob.jetpack.Service
+import com.easyjob.jetpack.models.Review
+import com.easyjob.jetpack.models.Service
+import kotlin.math.roundToInt
 
 @Composable
-fun InformationCard(services: List<Service>) {
+fun InformationCard(services: List<Service?>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,16 +40,15 @@ fun InformationCard(services: List<Service>) {
                     .padding(horizontal = 2.dp, vertical = 4.dp)
             ) {
 
-                Text(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 22.sp,
-                    color = Color(0xFF133c55),
-                    text = service.title,
-                    lineHeight = 26.sp,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-
-                for (i in service.descriptions.indices) {
+                if (service != null) {
+                    Text(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 22.sp,
+                        color = Color(0xFF133c55),
+                        text = service.title,
+                        lineHeight = 26.sp,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
 
                     Column(
                         modifier = Modifier.fillMaxWidth(),
@@ -61,7 +59,7 @@ fun InformationCard(services: List<Service>) {
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp,
                             color = Color(0xff444444),
-                            text = service.descriptions[i],
+                            text = service.description,
                             lineHeight = 22.sp,
                             modifier = Modifier.padding(bottom = 0.dp)
                         )
@@ -70,13 +68,12 @@ fun InformationCard(services: List<Service>) {
                             fontWeight = FontWeight.Bold,
                             fontSize = 14.sp,
                             color = Color(0xff444444),
-                            text = "$${service.prices[i]}",
+                            text = "$${service.price}",
                             lineHeight = 22.sp,
                             modifier = Modifier.padding(bottom = 10.dp)
                         )
 
                     }
-
                 }
 
             }
@@ -86,13 +83,13 @@ fun InformationCard(services: List<Service>) {
 
 
 @Composable
-fun CommentsCard(comments: List<Comment>) {
+fun CommentsCard(reviews: List<Review?>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        items(comments) { comment ->
+        items(reviews) { review ->
             Row(
                 modifier = Modifier
                     .padding(vertical = 6.dp)
@@ -100,64 +97,60 @@ fun CommentsCard(comments: List<Comment>) {
                     .wrapContentHeight(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                Column(
-                    modifier = Modifier
-                        .wrapContentWidth()
-                ) {
-                    Box(
+                if (review != null) {
+                    Column(
                         modifier = Modifier
-                            .background(Color(0xff1498D5), RoundedCornerShape(50.dp))
-                            .size(30.dp),
-                        contentAlignment = Alignment.Center
+                            .wrapContentWidth()
                     ) {
-                        Text(
-                            text = comment.name.substring(0, 1),
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 16.sp
-                        )
+
+                        Box(
+                            modifier = Modifier
+                                .background(Color(0xff1498D5), RoundedCornerShape(50.dp))
+                                .size(30.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = review.client.name.substring(0, 1),
+                                color = Color.White,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
-                }
 
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 24.sp,
-                        color = Color(0xFF133c55),
-                        text = comment.name,
-                        lineHeight = 26.sp,
-                    )
-
-                    Row(
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize = 24.sp,
+                                color = Color(0xFF133c55),
+                                text = review.client.name,
+                                lineHeight = 26.sp,
+                            )
+                            RatingStars(rating = review.score, iconSize = 16)
+                        }
+
                         Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight(),
                             fontWeight = FontWeight.Normal,
                             fontSize = 16.sp,
-                            color = Color(0xFF5F5F5F),
-                            text = comment.date,
+                            color = Color.Black,
+                            text = review.comment,
+                            lineHeight = 20.sp,
                         )
-                        RatingStars(rating = comment.starts, iconSize = 16)
                     }
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight(),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 16.sp,
-                        color = Color.Black,
-                        text = comment.description,
-                        lineHeight = 20.sp,
-                    )
                 }
             }
         }

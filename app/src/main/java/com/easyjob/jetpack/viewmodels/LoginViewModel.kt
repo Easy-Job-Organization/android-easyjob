@@ -4,14 +4,21 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
 import com.easyjob.jetpack.repositories.AuthRepositoryImpl
+import com.easyjob.jetpack.services.AuthServiceImpl
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class LoginViewModel(
-    val repo: AuthRepository = AuthRepositoryImpl()
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repo: AuthRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ): ViewModel() {
 
     //0. Idle
@@ -31,10 +38,15 @@ class LoginViewModel(
             val response = repo.signIn(email, password)
             Log.e("LoginViewModel", "$response")
 
-            if(response.isSuccessful) {
+            if(response.isSuccessful && response.body()?.roles?.get(0).equals("client")) {
                 withContext(Dispatchers.Main) {
                     authState.value = 3
-                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success.")
+                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success as a client.")
+                }
+            } else if(response.isSuccessful && response.body()?.roles?.get(0).equals("professional")) {
+                withContext(Dispatchers.Main) {
+                    authState.value = 4
+                    Log.d("LoginViewModel", "Sign-in successful. Auth state set to success as a professional.")
                 }
             } else {
                 withContext(Dispatchers.Main) {

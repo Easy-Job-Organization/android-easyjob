@@ -1,6 +1,7 @@
 package com.easyjob.jetpack.screens
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
@@ -39,18 +41,24 @@ import com.easyjob.jetpack.viewmodels.LoginViewModel
 @Composable
 fun LoginScreen(
     navController: NavController = rememberNavController(),
-    loginViewModel: LoginViewModel = viewModel()
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val authState by loginViewModel.authState.observeAsState()
 
+
     // Log authState changes in the composable to track updates
     LaunchedEffect(authState) {
         Log.d("LoginScreen", "authState changed to $authState")
         if (authState == 3) { // Trigger navigation on success
             navController.navigate("home") {
+                popUpTo("login") { inclusive = true } // Remove login from back stack
+            }
+        }
+        if (authState == 4) { // Trigger navigation on success
+            navController.navigate("homeProfessional") {
                 popUpTo("login") { inclusive = true } // Remove login from back stack
             }
         }
@@ -77,22 +85,40 @@ fun LoginScreen(
         ) {
 
             Input(value = email, label = "Correo", onValueChange = { email = it })
-            Input(value = password, label = "Contraseña", onValueChange = { password = it }, visualTransformation = PasswordVisualTransformation())
+            Input(
+                value = password,
+                label = "Contraseña",
+                onValueChange = { password = it },
+                visualTransformation = PasswordVisualTransformation()
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Start),
+            ) {
+                TextButton(
+                    text = "¿Olvidaste tu contraseña?",
+                    onClick = { navController.navigate("recover") })
+            }
 
             Box(modifier = Modifier.height(48.dp))
 
-            PrimaryButton(text = "Iniciar sesión",
+            PrimaryButton(
+                text = "Iniciar sesión",
                 onClick = {
                     loginViewModel.signIn(email, password);
                 },
-                width = 250) //revisar que haya cumplido la condicion
+                width = 250
+            ) //revisar que haya cumplido la condicion
 
         }
 
         // Layout UI con botones y elementos según authState.
-        when (authState) {
-            1 -> CircularProgressIndicator()
-            2 -> Text("Hubo un error", color = Color.Red)
+        Box(modifier = Modifier.padding(10.dp) ){
+            when (authState) {
+                1 -> CircularProgressIndicator()
+                2 -> Text("Las credenciales con incorrectas", color = Color.Red)
+            }
         }
 
         Row(
@@ -100,11 +126,17 @@ fun LoginScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp)
                 .weight(1f),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.Bottom
         ) {
 
-            Text(text = "¿Aún no tienes cuenta?")
-            TextButton(text = "Regístrate", onClick = { navController.navigate("register") })
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Text(text = "¿Aún no tienes cuenta?")
+                TextButton(text = "Regístrate", onClick = { navController.navigate("register") })
+            }
 
         }
 
