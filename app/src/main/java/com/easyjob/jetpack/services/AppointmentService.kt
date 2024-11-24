@@ -6,6 +6,7 @@ import com.easyjob.jetpack.models.ClientAppointment
 import retrofit2.Response
 import retrofit2.Retrofit
 import com.easyjob.jetpack.models.Service
+import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,12 +21,16 @@ interface AppointmentService {
     @GET("/professionals/services/{id}")
     suspend fun getServicesOfProfessional(@Path("id") id: String): List<Service?>
 
-    @GET("clients/{id}")
-    suspend fun getClientAppointments(@Path("id") id: String): Response<ClientAppointment>
+    @GET("/appointment/client/{id}")
+    suspend fun getClientAppointments(@Path("id") id: String): Response<List<Appointment>>
+
+    @GET("/appointment/professional/{id}")
+    suspend fun getProfessionalAppointments(@Path("id") id: String): Response<List<Appointment>>
+
 
     @Headers("Content-Type: application/json")
     @POST("/appointment/{cid}/{pid}")
-    suspend fun createAppointment(@Path("cid") cid: String, @Path("pid") pid: String, @Body date: Appointment): Response<Any>
+    suspend fun createAppointment(@Path("cid") cid: String, @Path("pid") pid: String, @Body date: CreateAppointmentDTO): Response<Any>
 }
 
 class AppointmentServiceImpl : AppointmentService {
@@ -35,22 +40,26 @@ class AppointmentServiceImpl : AppointmentService {
         .build()
 
     private val apiService: AppointmentService = retrofit.create(AppointmentService::class.java)
+
     override suspend fun getServicesOfProfessional(id: String): List<Service?> {
         val res = apiService.getServicesOfProfessional(id)
         return res
     }
 
-    override suspend fun getClientAppointments(id: String): Response<ClientAppointment> {
-        Log.e("HOLII", "mandao")
+    override suspend fun getClientAppointments(id: String): Response<List<Appointment>> {
         val res = apiService.getClientAppointments(id)
-        Log.e("HOLII", "mandao  ${res.body()}")
+        return res
+    }
+
+    override suspend fun getProfessionalAppointments(id: String): Response<List<Appointment>> {
+        val res = apiService.getProfessionalAppointments(id)
         return res
     }
 
     override suspend fun createAppointment(
         cid: String,
         pid: String,
-        appointmentDto: Appointment
+        appointmentDto: CreateAppointmentDTO
     ) :Response<Any> {
         val formattedDate = formatDate(appointmentDto.date)
         appointmentDto.date = formattedDate

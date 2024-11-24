@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfessionalClientViewModel @Inject constructor(
-    private val repo: ProfessionalProfileRepository
+    private val repo: ProfessionalProfileRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     val professionalProfile = MutableLiveData<Professional>()
@@ -25,6 +26,10 @@ class ProfessionalClientViewModel @Inject constructor(
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
     val commentsCount = MutableLiveData<Int>()
     val specialities = MutableLiveData<List<SpecialitiesResponse>>()
+
+    suspend fun getUserId(): String? {
+        return userPreferencesRepository.userIdFlow.firstOrNull()
+    }
 
     fun loadProfessionalProfile(id: String) {
 
@@ -49,15 +54,12 @@ class ProfessionalClientViewModel @Inject constructor(
         }
     }
 
-//    fun loadCity(id: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val cityResponse = repo.fetchCities(id)
-//
-//            withContext(Dispatchers.Main) {
-//                city.value = cityResponse. ?: "Ciudad desconocida"
-//            }
-//        }
-//    }
+    fun likeProfessional(professionalId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = getUserId()
+            repo.likeProfessional(id?:"", professionalId)
+        }
+    }
 
     fun loadCommentsCount(id: String) {
         viewModelScope.launch(Dispatchers.IO) {

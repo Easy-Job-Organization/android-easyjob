@@ -52,7 +52,8 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalProfileScreen(
-    navController: NavController = rememberNavController(),
+    generalNavController: NavController = rememberNavController(),
+    innerNavController: NavController = rememberNavController(),
     viewModel: ProfessionalProfileViewModel = hiltViewModel()
 ) {
 
@@ -84,7 +85,7 @@ fun ProfessionalProfileScreen(
             Topbar(
                 title = "Perfil del profesional",
                 scrollBehavior = scrollBehavior,
-                navController = navController,
+                navController = innerNavController,
                 isBack = false
             )
         },
@@ -189,7 +190,7 @@ fun ProfessionalProfileScreen(
                             icon = Icons.Rounded.Plumbing,
                             descriptionIcon = "Mis Servicios",
                             onClick = {
-                                navController.navigate("editServices")
+                                innerNavController.navigate("editServices")
                             },
                             text = "Mis Servicios",
                             color = Color.Black
@@ -218,7 +219,15 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Default.ExitToApp,
                             descriptionIcon = "Cerrar sesión",
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                viewModel.logOut()
+                                generalNavController.navigate("splash"){
+                                    //Dont let the user go back to the previous screens
+                                    popUpTo("splash") {
+                                        inclusive = true
+                                    }
+                                }
+                            },
                             text = "Cerrar sesión",
                             color = Color.Red
                         )

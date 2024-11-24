@@ -48,6 +48,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 
 @Composable
@@ -311,7 +312,7 @@ fun GroupChatCard(
 fun AppointmentCard(
     id: String,
     name: String,
-    service: String,
+    service: Service?,
     date: String,
     hour: String,
     photo_url: String
@@ -366,13 +367,15 @@ fun AppointmentCard(
                         lineHeight = 30.sp
                     )
 
-                    Text(
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 14.sp,
-                        color = Color(0xFF133c55),
-                        text = service,
-                        lineHeight = 30.sp
-                    )
+                    if (service != null) {
+                        Text(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 14.sp,
+                            color = Color(0xFF133c55),
+                            text = service.title,
+                            lineHeight = 30.sp
+                        )
+                    }
                 }
                 //Spacer(modifier = Modifier.width(5.dp))
                 Column(

@@ -63,6 +63,7 @@ fun ProfessionalClientScreen(
     id: String,
 ) {
     var showReviewDialog by remember { mutableStateOf(false) }
+    var showLikeDialog by remember { mutableStateOf(false) }
 
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
@@ -112,7 +113,9 @@ fun ProfessionalClientScreen(
             Topbar(
                 title = "Perfil del profesional",
                 icon = Icons.Default.FavoriteBorder,
-                onEditClick = {},
+                onEditClick = {
+                    showLikeDialog = true
+                },
                 scrollBehavior = scrollBehavior,
                 navController = navController,
                 isBack = true
@@ -132,6 +135,14 @@ fun ProfessionalClientScreen(
                     professionalId = id,
                     onDismissRequest = { showReviewDialog = false },
                     onReviewSubmitted = {  }
+                )
+            }
+
+            if (showLikeDialog) {
+                LikeDialog(
+                    professionalId = id,
+                    onDismissRequest = { showLikeDialog = false },
+                    onLikeSubmitted = { showLikeDialog = false }
                 )
             }
 

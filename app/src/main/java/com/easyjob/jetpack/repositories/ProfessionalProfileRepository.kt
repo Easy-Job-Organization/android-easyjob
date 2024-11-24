@@ -15,6 +15,8 @@ interface ProfessionalProfileRepository {
     suspend fun fetchReviews(id: String): Int
 
     suspend fun fetchSpecialities(id: String): List<SpecialitiesResponse>
+
+    suspend fun likeProfessional(clientId: String, professionalId: String)
 }
 
 class ProfessionalProfileRepositoryImpl @Inject constructor(
@@ -22,6 +24,10 @@ class ProfessionalProfileRepositoryImpl @Inject constructor(
 ) : ProfessionalProfileRepository {
     override suspend fun fetchProfessionalProfile(id: String): Response<Professional> {
         return professionalProfileService.getProfessionalProfile(id)
+    }
+
+    override suspend fun likeProfessional(clientId: String, professionalId: String) {
+        professionalProfileService.likeProfessional(clientId, professionalId)
     }
 
     override suspend fun fetchCities(id: String): CitiesResponse? {
