@@ -32,7 +32,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -212,14 +214,13 @@ fun ProfessionalClientScreen(
                                 text = "Agendar cita",
                                 onClick = {
                                     navController.navigate("registerDate/${id}")
-                                })
+                                }
+                            )
+
                             SecondaryButton(
                                 text = "Enviar mensaje",
-                                onClick = { navController.navigate("chat/$id") })
-                            SecondaryButton(
-                                text = "Escribir una opinión",
-                                onClick = { showReviewDialog = true })
-
+                                onClick = { navController.navigate("chat/$id") }
+                            )
                         }
 
                     }
@@ -231,21 +232,47 @@ fun ProfessionalClientScreen(
                             active = activeSection,
                             text = "Información",
                             onClick = { activeSection = !activeSection },
-                            width = 200
+                            width = 220
                         )
                         ButtonSection(
                             active = !activeSection,
                             text = "Opiniones",
                             onClick = { activeSection = !activeSection },
-                            width = 200
+                            width = 220
                         )
                     }
                     Box(modifier = Modifier.height(10.dp))
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp)
+                    ) {
                         if (activeSection) {
                             servicesState?.let { InformationCard(services = it) }
                         } else {
-                            reviewsState?.let { CommentsCard(reviews = it) }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+
+                                Text (
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 22.sp,
+                                    color = Color(0xFF133c55),
+                                    text = "Opiniones totales: ${reviewsState?.size ?: 0}",
+                                )
+
+                                /*SecondaryButton(
+                                    text = "Escribir una opinión",
+                                    onClick = { showReviewDialog = true }
+                                )*/
+
+                                reviewsState?.let {
+                                    CommentsCard(reviews = it)
+                                }
+
+                            }
+
                         }
                     }
                 }
