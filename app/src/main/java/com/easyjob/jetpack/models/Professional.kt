@@ -14,6 +14,15 @@ data class Professional(
     val description: String,
 )
 
+data class ProfessionalUpdateDTO(
+    val name: String,
+    val last_name: String,
+    val phone_number: String,
+    val photo_url: String,
+    val city: City,
+    val speciality: SpecialitiesResponse
+)
+
 data class SpecialitiesResponse(
     val id: String,
     val speciality_name: String

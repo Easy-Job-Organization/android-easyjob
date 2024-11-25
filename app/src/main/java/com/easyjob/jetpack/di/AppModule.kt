@@ -150,6 +150,12 @@ object AppModule {
         return retrofit.create(RecoverPassService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideEditProfessionalProfileService(retrofit: Retrofit): EditProfessionalProfileService {
+        return retrofit.create(EditProfessionalProfileService::class.java)
+    }
+
 
     // Repositories
 
@@ -242,5 +248,13 @@ object AppModule {
         recoverPassService: RecoverPassService
     ): RecoverPassRepository {
         return RecoverPassRepositoryImpl(recoverPassService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditProfessionalProfileRepository(
+        editProfessionalProfileService: EditProfessionalProfileService
+    ): EditProfessionalProfileRepository {
+        return EditProfessionalProfileRepositoryImpl(editProfessionalProfileService)
     }
 }

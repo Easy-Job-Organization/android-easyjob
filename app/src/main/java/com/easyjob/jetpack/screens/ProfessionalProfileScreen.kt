@@ -198,8 +198,8 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Default.Settings,
                             descriptionIcon = "Configuración",
-                            onClick = { /*TODO*/ },
-                            text = "Configuración",
+                            onClick = { innerNavController.navigate("editProfile") },
+                            text = "Editar perfil",
                             color = Color.Black
                         )
                         ButtonIconLink(
