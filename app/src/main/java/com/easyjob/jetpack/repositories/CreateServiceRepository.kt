@@ -30,9 +30,13 @@ class CreateServiceRepositoryImpl @Inject constructor(
 
     override suspend fun createService(userId: String, createServiceDTO: CreateServiceDTO): Response<Service> {
         val res = createServiceService.createService(createServiceDTO)
+        Log.e("CreateServiceRepository", "--- $res")
         val serviceId = res.body()?.id
+        Log.e("CreateServiceRepository", "--- ID $serviceId")
         if (serviceId != null) {
-            createServiceService.linkProfessionalToService(userId, serviceId)
+            val res2= createServiceService.linkProfessionalToService(userId, serviceId)
+
+            Log.e("CreateServiceRepository", "--- RES2 $res2")
         }
         return res
     }
