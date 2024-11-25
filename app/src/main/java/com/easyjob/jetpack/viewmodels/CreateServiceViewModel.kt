@@ -16,6 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 
+
+data class CreateServiceDTO(
+    val title: String,
+    val description: String,
+    val price: Double
+)
+
 @HiltViewModel
 class CreateServiceViewModel @Inject constructor(
     private val repository: CreateServiceRepository,
@@ -68,37 +75,17 @@ class CreateServiceViewModel @Inject constructor(
     private val _allServices = MutableLiveData<List<Service>>()
     val allServices: LiveData<List<Service>> get() = _allServices
 
-    private val _currentService = MutableStateFlow<Service?>(null)
-    val currentService: StateFlow<Service?> = _currentService.asStateFlow()
-
-    init {
-        fetchAllServices()
-    }
-
-    fun fetchAllServices() {
-        viewModelScope.launch {
-            _allServices.value = repository.getAllServices()
-        }
-    }
-
-    fun setCurrentService(service: Service) {
-        _currentService.value = service
-        // Actualiza los valores de descripción y precio
-        _serviceDescription.value = service.description ?: ""
-        _servicePrice.value = service.price ?: 0.0
-    }
+    /*private val _currentService = MutableStateFlow<Service?>(null)
+    val currentService: StateFlow<Service?> = _currentService.asStateFlow()*/
 
     suspend fun getUserId(): String? {
         return userPreferencesRepository.userIdFlow.firstOrNull()
     }
 
-    fun createServiceForProfessional() {
+    fun createServiceForProfessional(createServiceDTO: CreateServiceDTO) {
         viewModelScope.launch {
             val professionalId = getUserId()
-            val selectedService = _currentService.value
-            if (selectedService != null) {
-                repository.createService(professionalId!!, selectedService.id)
-            }
+            repository.createService(professionalId?:"", createServiceDTO)
         }
     }
 }

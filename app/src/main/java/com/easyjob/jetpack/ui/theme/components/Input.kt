@@ -59,8 +59,14 @@ fun Input(
         modifier = Modifier
             .wrapContentHeight()
             .fillMaxWidth()
-            .background(Color.White)
+            //.background(Color.Green)
             .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp)),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
         value = value,
         placeholder = { Text(modifier = Modifier.background(Color.Transparent), text = label) },
         shape = RoundedCornerShape(4.dp),
@@ -97,15 +103,21 @@ fun DropdownMenu1(
                         .wrapContentWidth()
                 }
             )
-            .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-            .background(Color.Transparent)
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
+            .background(Color.White),
+
     ) {
         TextField(
             value = selectedOption,
             onValueChange = onOptionSelected,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
             modifier = Modifier.fillMaxWidth()
         )
         
