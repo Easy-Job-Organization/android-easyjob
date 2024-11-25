@@ -50,7 +50,7 @@ import com.easyjob.jetpack.models.City
 @Composable
 fun ProfileSection(
     image: String?,
-    descriptionImage: String,
+    descriptionImage: String?,
     name: String = "Cargando",
     cities: List<City>,
     phoneNumber: String,
@@ -71,7 +71,7 @@ fun ProfileSection(
         ) {
             AsyncImage(
                 model = image,
-                contentDescription = descriptionImage,
+                contentDescription = descriptionImage?:"",
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(100.dp),

@@ -1,11 +1,16 @@
 package com.easyjob.jetpack.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.TextField
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.*
@@ -14,9 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import com.easyjob.jetpack.ui.theme.components.Input
+import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.CreateServiceDTO
 import com.easyjob.jetpack.viewmodels.CreateServiceViewModel
 
 
@@ -27,15 +38,19 @@ fun CreateServiceScreen(
     viewModel: CreateServiceViewModel = hiltViewModel()
 ) {
     val services by viewModel.allServices.observeAsState(emptyList())
-    val currentService by viewModel.currentService.collectAsState()
+    //val currentService by viewModel.currentService.collectAsState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-    val serviceDescription by viewModel.serviceDescription.observeAsState("")
-    val servicePrice by viewModel.servicePrice.observeAsState(0.0)
+    //val serviceDescription by viewModel.serviceDescription.observeAsState("")
+    //val servicePrice by viewModel.servicePrice.observeAsState(0.0)
     val updateResult by viewModel.updateResult.observeAsState()
 
-    LaunchedEffect(Unit) {
+    var serviceName by remember { mutableStateOf("") }
+    var serviceDescription by remember { mutableStateOf("") }
+    var servicePrice by remember { mutableDoubleStateOf(0.0) }
+
+    /*LaunchedEffect(Unit) {
         viewModel.fetchAllServices()
-    }
+    }*/
 
     Scaffold(
         topBar = {
@@ -54,37 +69,14 @@ fun CreateServiceScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(text = "Elige un servicio", style = MaterialTheme.typography.h6)
-
-            var expanded by remember { mutableStateOf(false) }
+            Text(text = "Nombre del Servicio", fontWeight = FontWeight.Bold)
 
             Box(modifier = Modifier.fillMaxWidth()) {
-                OutlinedTextField(
-                    value = currentService?.title ?: "Selecciona un servicio",
-                    onValueChange = {},
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false,
-                    trailingIcon = {
-                        IconButton(onClick = { expanded = !expanded }) {
-                            Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
-                        }
-                    }
+                Input(
+                    value = serviceName,
+                    onValueChange = { serviceName = it },
+                    label = "Nombre del servicio"
                 )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    services.forEach { service ->
-                        DropdownMenuItem(
-                            onClick = {
-                                viewModel.setCurrentService(service)
-                                expanded = false
-                            }
-                        ) {
-                            Text(service.title)
-                        }
-                    }
-                }
             }
 
             Text(
@@ -94,11 +86,18 @@ fun CreateServiceScreen(
             )
             TextField(
                 value = serviceDescription,
-                onValueChange = viewModel::onServiceDescriptionChange,
+                onValueChange = { serviceDescription = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
-                placeholder = { Text("Descripción breve del servicio") }
+                    .height(120.dp)
+                    .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp)),
+                placeholder = { Text("Descripción breve del servicio") },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
             )
 
             Text(
@@ -106,29 +105,31 @@ fun CreateServiceScreen(
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold
             )
-            TextField(
+            Input(
                 value = servicePrice.toString(),
                 onValueChange = { newValue: String ->
                     val price = newValue.toDoubleOrNull()
                     if (price != null) {
-                        viewModel.onServicePriceChange(price)
+                        servicePrice = price
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Precio en COP") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                label = "Precio en COP",
+                //keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
-            Button(
+            PrimaryButton(
                 onClick = {
-                    viewModel.createServiceForProfessional()
-                    currentService?.let { viewModel.updateService(it.id) }
+                    viewModel.createServiceForProfessional(
+                        CreateServiceDTO(
+                            title = serviceName,
+                            description = serviceDescription,
+                            price = servicePrice
+                        )
+                    )
                     navController.popBackStack()
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Guardar Cambios")
-            }
+                text = "Guardar Servicio"
+            )
 
             // Mostrar el resultado de la actualización
             updateResult?.let { result ->

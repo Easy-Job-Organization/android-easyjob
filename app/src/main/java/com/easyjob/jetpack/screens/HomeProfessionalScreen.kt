@@ -44,11 +44,16 @@ fun HomeProfessionalScreen(
             startDestination = "profile",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("profile") { ProfessionalProfileScreen( navController, nestedNavController) }
+            composable("profile") { ProfessionalProfileScreen(navController, nestedNavController) }
             composable("search") { SearchScreen(nestedNavController) }
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
             composable("editServices") { EditServicesScreen(nestedNavController) }
+            composable("editProfile") {
+                EditProfessionalProfileScreen(
+                    nestedNavController
+                )
+            }
             composable("createService") { CreateServiceScreen(nestedNavController) }
             composable("editService/{id}") { backStackEntry ->
                 val id = backStackEntry.arguments?.getString("id") ?: ""

@@ -27,6 +27,7 @@ import com.easyjob.jetpack.viewmodels.EditServicesViewModel
 import kotlin.math.floor
 
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,9 +58,13 @@ fun EditServicesScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { navController.navigate("createService") },
-                backgroundColor = MaterialTheme.colors.primary
+                backgroundColor = Color(0xff3b82f6)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Añadir servicio")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Añadir servicio",
+                    tint = Color.White
+                )
             }
         }
     ) { padding ->
