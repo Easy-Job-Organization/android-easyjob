@@ -136,7 +136,7 @@ fun ProfileScreen(
                             ButtonIconLink(
                                 icon = Icons.Default.Settings,
                                 descriptionIcon = "Configuración",
-                                onClick = { innerNavController.navigate("editProfile") },
+                                onClick = { clientNavController.navigate("editProfile") },
                                 text = "Editar perfil",
                                 color = Color.Black
                             )

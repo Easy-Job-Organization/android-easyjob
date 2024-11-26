@@ -51,6 +51,11 @@ fun HomeScreen(
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
             composable("profile") { ProfileScreen(generalNavController =  navController, clientNavController = nestedNavController) }
+            composable("editProfile") {
+                EditClientProfileScreen(
+                    nestedNavController
+                )
+            }
             composable("registerDate/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.StringType }
             )) { entry ->
