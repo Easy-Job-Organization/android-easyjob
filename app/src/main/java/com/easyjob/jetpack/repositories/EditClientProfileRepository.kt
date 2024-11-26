@@ -44,7 +44,7 @@ class EditClientProfileRepositoryImpl @Inject constructor(
         val lastNamePart = RequestBody.create("text/plain".toMediaTypeOrNull(), last_name)
         val phoneNumberPart = RequestBody.create("text/plain".toMediaTypeOrNull(), phone_number)
 
-        val imageName = "professional_image"
+        val imageName = "client_image"
 
         val imageStream = contentResolver.openInputStream(client_image)
         val imagePart = imageStream?.let {
