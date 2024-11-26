@@ -152,7 +152,9 @@ fun ProfileScreen(
                             ButtonIconLink(
                                 icon = Icons.Outlined.RateReview,
                                 descriptionIcon = "Mis reseñas",
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    clientNavController.navigate("reviews")
+                                },
                                 text = "Mis reseñas",
                                 color = Color.Black
                             )
