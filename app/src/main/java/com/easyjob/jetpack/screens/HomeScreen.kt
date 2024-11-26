@@ -50,12 +50,7 @@ fun HomeScreen(
             composable("search") { SearchScreen(navController) }
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
-            composable("profile") { ProfileScreen(navController, nestedNavController) }
-            composable("editProfile") {
-                EditClientProfileScreen(
-                    nestedNavController
-                )
-            }
+            composable("profile") { ProfileScreen(generalNavController =  navController, clientNavController = nestedNavController) }
             composable("registerDate/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.StringType }
             )) { entry ->
@@ -81,6 +76,7 @@ fun HomeScreen(
                 val id = entry.arguments?.getString("id") ?: ""
                 Chat(nestedNavController, idProfessional = id)
             }
+            composable("likes") { LikesProfessionalScreen(nestedNavController) }
         }
     }
 }

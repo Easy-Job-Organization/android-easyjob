@@ -42,8 +42,8 @@ import com.easyjob.jetpack.viewmodels.ProfileViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    innerNavController: NavController = rememberNavController(),
+    generalNavController: NavController,
+    clientNavController: NavController,
     profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -143,7 +143,9 @@ fun ProfileScreen(
                             ButtonIconLink(
                                 icon = Icons.Rounded.Favorite,
                                 descriptionIcon = "Mis profesionales favoritos",
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    clientNavController.navigate("likes")
+                                },
                                 text = "Favoritos",
                                 color = Color.Black
                             )
@@ -166,7 +168,7 @@ fun ProfileScreen(
                                 descriptionIcon = "Cerrar sesión",
                                 onClick = {
                                     profileViewModel.logOut()
-                                    navController.navigate("splash"){
+                                    generalNavController.navigate("splash"){
                                         //Dont let the user go back to the previous screens
                                         popUpTo("splash") {
                                             inclusive = true

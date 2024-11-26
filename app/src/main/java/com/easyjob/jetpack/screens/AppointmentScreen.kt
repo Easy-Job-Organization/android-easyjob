@@ -136,24 +136,26 @@ fun AppointmentScreen(
 
                             val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
                             val formattedDate = parsedDate.format(outputFormatter)
-                            if (role.equals("client")) {
-                                AppointmentCard(
-                                    id = appointment.id,
-                                    name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
-                                    service = appointment.service,
-                                    date = formattedDate,
-                                    hour = appointment.hour,
-                                    photo_url = appointment.professional?.photo_url ?: ""
-                                )
-                            } else {
-                                AppointmentCard(
-                                    id = appointment.id,
-                                    name = "${appointment.client?.name} ${appointment.client?.last_name}",
-                                    service = appointment.service,
-                                    date = formattedDate,
-                                    hour = appointment.hour,
-                                    photo_url = appointment.client?.photo_url ?: ""
-                                )
+                            Box(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 14.dp)) {
+                                if (role.equals("client")) {
+                                    AppointmentCard(
+                                        id = appointment.id,
+                                        name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
+                                        service = appointment.service,
+                                        date = formattedDate,
+                                        hour = appointment.hour,
+                                        photo_url = appointment.professional?.photo_url ?: ""
+                                    )
+                                } else {
+                                    AppointmentCard(
+                                        id = appointment.id,
+                                        name = "${appointment.client?.name} ${appointment.client?.last_name}",
+                                        service = appointment.service,
+                                        date = formattedDate,
+                                        hour = appointment.hour,
+                                        photo_url = appointment.client?.photo_url ?: ""
+                                    )
+                                }
                             }
                         }
                     }
