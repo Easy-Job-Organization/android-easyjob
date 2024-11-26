@@ -90,7 +90,7 @@ fun ChatList(
             Topbar(
                 title = "Chats",
                 scrollBehavior = scrollBehavior,
-                isBack = true,
+                isBack = false,
             )
         }
     ) { innerPadding ->
