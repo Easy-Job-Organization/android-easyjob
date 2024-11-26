@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor(
@@ -24,7 +26,9 @@ class AppointmentViewModel @Inject constructor(
 ): ViewModel(){
 
     val professionalServices = MutableLiveData<List<Service?>>()
-    val appointments = MutableLiveData<List<Appointment>>()
+    val pendingAppointments = MutableLiveData<List<Appointment>>()
+    val acceptedAppointments = MutableLiveData<List<Appointment>>()
+    val cancelledAppointments = MutableLiveData<List<Appointment>>()
     val role = MutableLiveData<String>()
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
 
@@ -60,19 +64,52 @@ class AppointmentViewModel @Inject constructor(
             val id = getUserId()
             if (getRole().equals("client")) {
                 val res = repo.getCLientAppointments(id?:"")
-
+                organizeAppointments(res)
                 withContext(Dispatchers.Main) {
-                    appointments.value = res
                     role.value = userRole?:""
                     profileState.value = 3 // Success
                 }
             } else {
                 val res = repo.getProfessionalAppointments(id?:"")
+                organizeAppointments(res)
                 withContext(Dispatchers.Main){
-                    appointments.value = res
+                    role.value = userRole?:""
                     profileState.value = 3 // Success
                 }
             }
+        }
+    }
+
+    suspend fun organizeAppointments(appointments: List<Appointment>) {
+
+        val sortedAppointments = appointments.sortedBy { it.date + it.hour }
+
+        val currentDate = Date()
+
+        val (passed, nPassed) = sortedAppointments.partition {
+            val appointmentDate = SimpleDateFormat("yyyy-MM-dd").parse(it.date)
+            appointmentDate.before(currentDate)
+        }
+
+        val (pending, nPending) = nPassed.partition {
+            it.appointmentStatus.status == "pendiente"
+        }
+
+        val  (accepted, cancelled) = nPending.partition {
+            it.appointmentStatus.status == "aceptada"
+        }
+
+        val joined = cancelled + passed
+
+        val pendingSorted = pending.sortedBy { it.date + it.hour }
+        val acceptedSorted = accepted.sortedBy { it.date + it.hour }
+        val pastSorted = joined.sortedBy { it.date + it.hour }.reversed()
+
+
+        withContext(Dispatchers.Main){
+            pendingAppointments.value = pendingSorted
+            acceptedAppointments.value = acceptedSorted
+            cancelledAppointments.value = pastSorted
         }
     }
 
