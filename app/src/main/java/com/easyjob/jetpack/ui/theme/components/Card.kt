@@ -50,6 +50,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -71,7 +72,8 @@ fun CardSearch(
     stars: Int = 0,
     comment: String = "0",
     professionalViewModel: ProfessionalProfileViewModel = hiltViewModel(),
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    cities: List<String> = emptyList()
 ) {
 
     Box(
@@ -94,7 +96,7 @@ fun CardSearch(
                     Color.LightGray,
                     RoundedCornerShape(18.dp)
                 )
-                .padding(horizontal = 15.dp, vertical = 16.dp),
+                .padding(horizontal = 15.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
         ) {
@@ -105,6 +107,7 @@ fun CardSearch(
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(80.dp),
+                contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.ic_launcher_background)
             )
 
@@ -151,6 +154,11 @@ fun CardSearch(
                     )*/
 
                 }
+                Text(
+                    fontWeight = FontWeight.Light,
+                    fontSize = 14.sp,
+                    text = cities.joinToString(separator = ", "),
+                )
             }
 
             Box(modifier = Modifier.weight(1f))
@@ -331,60 +339,73 @@ fun AppointmentCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.White)
-            .border(
-                BorderStroke(1.dp, Color.Gray),
-                RectangleShape
-            )
+            .wrapContentHeight()
+            .shadow(10.dp, RoundedCornerShape(12.dp)) // Sombra aplicada al Box
+            .background(Color.White, RoundedCornerShape(12.dp))
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                .padding(horizontal = 20.dp, vertical = 24.dp)
+            ,
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            AsyncImage(
-                model = photo_url,
-                contentDescription = name,
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(100.dp)
-                    .padding(start = 12.dp),
-                error = painterResource(R.drawable.ic_launcher_background)
-            )
+
 
             Column(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.Start
             ) {
 
-                Column(
-                    modifier = Modifier.width(210.dp),
-                    verticalArrangement = Arrangement.spacedBy((-5).dp)
-                ) {
+               Row(
+                   modifier = Modifier
+                       .fillMaxWidth()
+                   ,
+                   horizontalArrangement = Arrangement.SpaceBetween
+               ) {
+                   Column(
+                       modifier = Modifier.width(210.dp),
+                       verticalArrangement = Arrangement.spacedBy((-5).dp)
+                   ) {
 
-                    Text(
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 22.sp,
-                        color = Color(0xFF133c55),
-                        text = name,
-                        lineHeight = 30.sp
-                    )
+                       Text(
+                           fontWeight = FontWeight.Medium,
+                           fontSize = 22.sp,
+                           color = Color.Black,
+                           text = name,
+                           lineHeight = 30.sp
+                       )
 
-                    if (service != null) {
-                        Text(
-                            fontWeight = FontWeight.Normal,
-                            fontSize = 15.sp,
-                            color = Color(0xFF133c55),
-                            text = service.title,
-                            lineHeight = 30.sp
-                        )
-                    }
-                }
+                       if (service != null) {
+                           Text(
+                               fontWeight = FontWeight.Normal,
+                               fontSize = 12.sp,
+                               color = Color.Gray,
+                               text = service.title,
+                               lineHeight = 30.sp
+                           )
+                       }
+                   }
+                   AsyncImage(
+                       model = photo_url,
+                       contentDescription = name,
+                       modifier = Modifier
+                           .clip(CircleShape)
+                           .size(50.dp),
+                       contentScale = ContentScale.Crop,
+                       error = painterResource(R.drawable.ic_launcher_background)
+                   )
+               }
+
+                Box(modifier = Modifier
+                    .height(1.dp)
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+                )
 
                 Column(
                     modifier = Modifier,
@@ -399,12 +420,14 @@ fun AppointmentCard(
                             imageVector = Icons.Rounded.Event,
                             contentDescription = "Calendar Icon",
                             tint = Color(0xFF636363),
-                            modifier = Modifier.size(28.dp).padding(end = 8.dp)
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
                         )
 
                         Text(
                             fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
+                            fontSize = 12.sp,
                             color = Color(0xFF636363),
                             text = date,
                             lineHeight = 30.sp
@@ -421,12 +444,14 @@ fun AppointmentCard(
                             imageVector = Icons.Outlined.AccessTime,
                             contentDescription = "Clock Icon",
                             tint = Color(0xFF636363),
-                            modifier = Modifier.size(28.dp).padding(end = 8.dp)
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
                         )
 
                         Text(
                             fontWeight = FontWeight.Normal,
-                            fontSize = 16.sp,
+                            fontSize = 12.sp,
                             color = Color(0xFF636363),
                             text = hour,
                             lineHeight = 30.sp
@@ -437,7 +462,8 @@ fun AppointmentCard(
 
             }
 
-            IconButton(
+
+            /*IconButton(
                 onClick = {},
                 modifier = Modifier
                     .background(Color.Transparent)
@@ -448,10 +474,12 @@ fun AppointmentCard(
                     imageVector = Icons.Rounded.ChevronRight,
                     contentDescription = "Calendar Icon",
                     tint = Color(0xFF9B9B9B),
-                    modifier = Modifier.size(42.dp).padding(end = 12.dp)
+                    modifier = Modifier
+                        .size(42.dp)
+                        .padding(end = 12.dp)
                 )
 
-            }
+            }*/
 
         }
 

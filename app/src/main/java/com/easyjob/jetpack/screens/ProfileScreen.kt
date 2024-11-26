@@ -1,6 +1,5 @@
 package com.easyjob.jetpack.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +13,8 @@ import androidx.compose.material.icons.automirrored.filled.ContactSupport
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -35,22 +31,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
-import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.ProfileSectionClient
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfileViewModel
-import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController,
+    generalNavController: NavController,
+    clientNavController: NavController,
     profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -145,7 +137,9 @@ fun ProfileScreen(
                             ButtonIconLink(
                                 icon = Icons.Rounded.Favorite,
                                 descriptionIcon = "Mis profesionales favoritos",
-                                onClick = { /*TODO*/ },
+                                onClick = {
+                                    clientNavController.navigate("likes")
+                                },
                                 text = "Favoritos",
                                 color = Color.Black
                             )
@@ -168,7 +162,7 @@ fun ProfileScreen(
                                 descriptionIcon = "Cerrar sesión",
                                 onClick = {
                                     profileViewModel.logOut()
-                                    navController.navigate("splash"){
+                                    generalNavController.navigate("splash"){
                                         //Dont let the user go back to the previous screens
                                         popUpTo("splash") {
                                             inclusive = true
