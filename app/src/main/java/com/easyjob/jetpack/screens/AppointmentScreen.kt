@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +50,7 @@ import com.easyjob.jetpack.viewmodels.AppointmentViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun AppointmentScreen(
     navController: NavController = rememberNavController(),
@@ -60,9 +65,20 @@ fun AppointmentScreen(
     LaunchedEffect(Unit) {
         appointmentViewModel.loadAppointments()
     }
-
-    val appointments by appointmentViewModel.appointments.observeAsState(emptyList())
+    val pendingAppointments by appointmentViewModel.pendingAppointments.observeAsState(emptyList())
+    val acceptedAppointments by appointmentViewModel.acceptedAppointments.observeAsState(emptyList())
+    val cancelledAppointments by appointmentViewModel.cancelledAppointments.observeAsState(emptyList())
     val role by appointmentViewModel.role.observeAsState("")
+
+    var selectedFilter by remember { mutableStateOf("Pendientes") }
+
+    // Determinar la lista actual en función del filtro seleccionado
+    val filteredAppointments = when (selectedFilter) {
+        "Pendientes" -> pendingAppointments
+        "Aceptadas" -> acceptedAppointments
+        "Terminadas" -> cancelledAppointments
+        else -> pendingAppointments
+    }
 
     Scaffold(
         modifier = Modifier
@@ -91,70 +107,104 @@ fun AppointmentScreen(
             }
 
             3 -> {
-
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    if( appointments.isEmpty() ) {
-                        item {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(top = 30.dp, start = 15.dp, end = 15.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                AsyncImage(
-                                    model = R.drawable.screwdriver_icon,
-                                    contentDescription = "Easyjob logo",
-                                    modifier = Modifier
-                                        .size(120.dp)
-                                        .alpha(0.4f),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        listOf("Pendientes", "Aceptadas", "Terminadas").forEach { filter ->
+                            Chip(
+                                onClick = { selectedFilter = filter },
+                                colors = ChipDefaults.chipColors(
+                                    backgroundColor = if (selectedFilter == filter) Color(0xff3b82f6) else Color(0x32133c55),
                                 )
+                            ){
                                 Text(
-                                    text = "Todavia no tienes ninguna cita",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    color = Color(0xff424242),
-                                )
-                                Text(
-                                    text = "Cuando tengas una cita programada, aparecerá aquí",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.Light,
-                                    textAlign = TextAlign.Center,
-                                    color = Color(0xff96989e),
+                                    text = filter,
+                                    color = if (selectedFilter == filter) Color.White else Color(0xff133c55),
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                                    fontWeight = if (selectedFilter == filter) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                         }
-                    } else {
-                        items(appointments) { appointment ->
-                            val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                            val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    }
 
-                            val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
-                            val formattedDate = parsedDate.format(outputFormatter)
-                            Box(modifier = Modifier.padding(start = 14.dp, end = 14.dp, top = 14.dp)) {
-                                if (role.equals("client")) {
-                                    AppointmentCard(
-                                        id = appointment.id,
-                                        name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
-                                        service = appointment.service,
-                                        date = formattedDate,
-                                        hour = appointment.hour,
-                                        photo_url = appointment.professional?.photo_url ?: ""
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        if (filteredAppointments.isEmpty()) {
+                            item {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(top = 30.dp, start = 15.dp, end = 15.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center,
+                                ) {
+                                    AsyncImage(
+                                        model = R.drawable.screwdriver_icon,
+                                        contentDescription = "Easyjob logo",
+                                        modifier = Modifier
+                                            .size(120.dp)
+                                            .alpha(0.4f),
                                     )
-                                } else {
-                                    AppointmentCard(
-                                        id = appointment.id,
-                                        name = "${appointment.client?.name} ${appointment.client?.last_name}",
-                                        service = appointment.service,
-                                        date = formattedDate,
-                                        hour = appointment.hour,
-                                        photo_url = appointment.client?.photo_url ?: ""
+                                    Text(
+                                        text = "Todavia no tienes ninguna cita",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xff424242),
                                     )
+                                    Text(
+                                        text = "Cuando tengas una cita programada, aparecerá aquí",
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Light,
+                                        textAlign = TextAlign.Center,
+                                        color = Color(0xff96989e),
+                                    )
+                                }
+                            }
+                        } else {
+                            items(filteredAppointments) { appointment ->
+                                val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                                val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+                                val parsedDate = LocalDate.parse(appointment!!.date, inputFormatter)
+                                val formattedDate = parsedDate.format(outputFormatter)
+                                Box(
+                                    modifier = Modifier.padding(
+                                        start = 14.dp,
+                                        end = 14.dp,
+                                        top = 14.dp
+                                    )
+                                ) {
+                                    if (role.equals("client")) {
+                                        AppointmentCard(
+                                            id = appointment.id,
+                                            name = "${appointment.professional?.name} ${appointment.professional?.last_name}",
+                                            service = appointment.service,
+                                            date = formattedDate,
+                                            hour = appointment.hour,
+                                            photo_url = appointment.professional?.photo_url ?: ""
+                                        )
+                                    } else {
+                                        AppointmentCard(
+                                            id = appointment.id,
+                                            name = "${appointment.client?.name} ${appointment.client?.last_name}",
+                                            service = appointment.service,
+                                            date = formattedDate,
+                                            hour = appointment.hour,
+                                            photo_url = appointment.client?.photo_url ?: ""
+                                        )
+                                    }
                                 }
                             }
                         }
