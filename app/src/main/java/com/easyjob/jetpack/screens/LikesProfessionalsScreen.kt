@@ -140,7 +140,7 @@ fun LikesProfessionalScreen(
                                 items(it) { professional ->
                                     Row(
                                         modifier = Modifier
-
+                                            .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
                                             .shadow(6.dp, RoundedCornerShape(8.dp))
                                             .background(Color.White, RoundedCornerShape(8.dp))
                                             .clickable {
@@ -164,7 +164,7 @@ fun LikesProfessionalScreen(
                                                     contentDescription = professional?.name,
                                                     modifier = Modifier
                                                         .clip(CircleShape)
-                                                        .size(32.dp),
+                                                        .size(40.dp),
                                                     contentScale = ContentScale.Crop,
                                                     error = painterResource(R.drawable.ic_launcher_background)
                                                 )
@@ -186,8 +186,8 @@ fun LikesProfessionalScreen(
                                         Icon(
                                             imageVector = Icons.Rounded.Favorite,
                                             contentDescription = "Eliminar de favoritos",
-                                            tint = Color.Black,
-                                            modifier = Modifier.size(16.dp)
+                                            tint = Color(0xFFd2963d),
+                                            modifier = Modifier.size(24.dp)
                                         )
                                     }
                                 }

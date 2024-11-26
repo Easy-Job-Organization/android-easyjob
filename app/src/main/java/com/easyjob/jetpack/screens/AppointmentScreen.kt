@@ -145,7 +145,7 @@ fun AppointmentScreen(
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
-                                        .padding(top = 30.dp, start = 15.dp, end = 15.dp),
+                                        .padding(top = 30.dp, start = 24.dp, end = 24.dp),
                                     horizontalAlignment = Alignment.CenterHorizontally,
                                     verticalArrangement = Arrangement.Center,
                                 ) {

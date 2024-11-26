@@ -129,6 +129,7 @@ data class CreateAppointmentDTO (
     var client: String,
     var professional: String,
     var date: String,
+    var description: String? = null,
     val location: String,
     val hour: String,
     val service: String,

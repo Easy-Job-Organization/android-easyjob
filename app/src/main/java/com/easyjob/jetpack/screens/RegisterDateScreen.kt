@@ -56,6 +56,7 @@ fun RegisterDateScreen(
 
     val professionalServices by registerAppointmentViewModel.professionalServices.observeAsState(emptyList())
 
+    var descriptionService by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
 
@@ -85,7 +86,7 @@ fun RegisterDateScreen(
         ) {
             Text(
                 "Seleccionar un Servicio",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
@@ -100,23 +101,23 @@ fun RegisterDateScreen(
 
             Text(
                 "Descripción de la solicitud",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
             )
 
             DescriptionTextArea(
-                description = "Describe tu avería o inconveniente a solucionar"
-            ) {
-
-            }
+                value = descriptionService,
+                onValueChange = { descriptionService = it },
+                label = "Describe tu avería o inconveniente a solucionar"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 "Selecciona fecha y hora",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
@@ -141,6 +142,7 @@ fun RegisterDateScreen(
                             date = selectedDate,
                             location = "Cali",
                             hour = selectedTime,
+                            description = descriptionService,
                             service = professionalServices.find { it?.title == selectedOption }?.id.toString(),
                             client = "",
                             professional = id
