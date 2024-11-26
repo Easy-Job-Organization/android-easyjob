@@ -41,6 +41,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.easyjob.jetpack.R
+import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.EditProfessionalProfileViewModel
 
@@ -59,17 +60,46 @@ fun EditProfessionalProfileScreen(
     val professionalImage by viewModel.professionalImage.observeAsState(null)
     val specialities by viewModel.specialities.observeAsState(emptyList())
     val cities by viewModel.cities.observeAsState(emptyList())
-    val updateResult by viewModel.updateResult.observeAsState(null) // Manejar éxito o error
+    val updateResult by viewModel.updateResult.observeAsState(null)
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(professionalImage) }
     var expandedCities by remember { mutableStateOf(false) }
     var expandedSpecialities by remember { mutableStateOf(false) }
 
+    var permissionsGranted by remember { mutableStateOf(false) }
+
+    RequestMediaPermissions(
+        onPermissionsGranted = {
+            permissionsGranted = true
+            Log.d("RegisterScreen", "Permisos de medios otorgados")
+        },
+        onPermissionsDenied = {
+            Log.d("RegisterScreen", "Permisos de medios denegados")
+        }
+    )
+
+    // Muestra el Toast si la actualización fue exitosa
+    LaunchedEffect(updateResult) {
+        updateResult?.let { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(context, "Perfil actualizado con éxito", Toast.LENGTH_SHORT).show()
+                navController.popBackStack() // Navegar hacia atrás al guardar
+            } else {
+                Toast.makeText(context, "Error al actualizar el perfil", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentProfessional()
         viewModel.fetchSpecialities()
         viewModel.fetchCities()
-        selectedImageUri = professionalImage
+    }
+
+    LaunchedEffect(professionalImage) {
+        if (professionalImage != null) {
+            selectedImageUri = professionalImage
+        }
     }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -89,7 +119,8 @@ fun EditProfessionalProfileScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Selección de foto
             SinglePhotoPickerA(uri = selectedImageUri) { newUri ->
@@ -146,23 +177,17 @@ fun EditProfessionalProfileScreen(
                 onExpandedChange = { expandedSpecialities = it }
             )
 
+            // Separador
+            Spacer(modifier = Modifier.height(16.dp))
+
             // Botón para guardar cambios
-            Button(
+            PrimaryButton(
+                text = "Guardar Cambios",
                 onClick = {
                     viewModel.editProfessionalProfile(selectedImageUri, context.contentResolver)
                 },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Guardar Cambios")
-            }
-
-            // Mostrar mensaje según el resultado de la actualización
-            updateResult?.let { isSuccess ->
-                Text(
-                    text = if (isSuccess) "Perfil actualizado con éxito" else "Error al actualizar el perfil",
-                    color = if (isSuccess)  MaterialTheme.colors.primary else MaterialTheme.colors.error
-                )
-            }
+                width = 250
+            )
         }
     }
 }

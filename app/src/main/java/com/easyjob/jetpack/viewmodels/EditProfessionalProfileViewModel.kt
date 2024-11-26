@@ -48,8 +48,8 @@ class EditProfessionalProfileViewModel @Inject constructor(
     private val _cities = MutableLiveData<List<City>>()
     val cities: LiveData<List<City>> get() = _cities
 
-    private val _updateResult = MutableLiveData<Boolean>()
-    val updateResult: LiveData<Boolean> get() = _updateResult
+    private val _updateResult = MutableLiveData<Boolean?>(null)
+    val updateResult: LiveData<Boolean?> get() = _updateResult
 
     // Obtener el ID del usuario desde UserPreferencesRepository
     private suspend fun getUserId(): String? {
@@ -166,6 +166,10 @@ class EditProfessionalProfileViewModel @Inject constructor(
                 _updateResult.value = false
             }
         }
+    }
+
+    fun resetUpdateResult() {
+        _updateResult.value = null
     }
 
 }
