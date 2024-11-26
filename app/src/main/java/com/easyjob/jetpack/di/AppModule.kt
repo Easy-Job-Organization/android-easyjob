@@ -156,6 +156,13 @@ object AppModule {
         return retrofit.create(EditProfessionalProfileService::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideEditClientProfileService(retrofit: Retrofit): EditClientProfileService {
+        return retrofit.create(EditClientProfileService::class.java)
+    }
+
+
 
     // Repositories
 
@@ -256,5 +263,14 @@ object AppModule {
         editProfessionalProfileService: EditProfessionalProfileService
     ): EditProfessionalProfileRepository {
         return EditProfessionalProfileRepositoryImpl(editProfessionalProfileService)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideEditClientProfileRepository(
+        editClientProfileService: EditClientProfileService
+    ): EditClientProfileRepository {
+        return EditClientProfileRepositoryImpl(editClientProfileService)
     }
 }

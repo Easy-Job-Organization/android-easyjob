@@ -47,10 +47,15 @@ fun HomeScreen(
             startDestination = "search",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("search") { SearchScreen(nestedNavController) }
+            composable("search") { SearchScreen(navController) }
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
-            composable("profile") { ProfileScreen(navController) }
+            composable("profile") { ProfileScreen(navController, nestedNavController) }
+            composable("editProfile") {
+                EditClientProfileScreen(
+                    nestedNavController
+                )
+            }
             composable("registerDate/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.StringType }
             )) { entry ->
