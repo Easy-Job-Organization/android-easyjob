@@ -5,10 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
+import com.easyjob.jetpack.models.Review
 import com.easyjob.jetpack.repositories.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -19,38 +23,40 @@ class ReviewViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
-    // 0. Idle
-    // 1. Loading
-    // 2. Success
-    // 3. Error
-    val state = MutableLiveData(0)
+
+    sealed class ReviewState {
+        object Idle : ReviewState()
+        object Loading : ReviewState()
+        object Success : ReviewState()
+        data class Error(val message: String) : ReviewState()
+    }
+
+    private val _state = MutableStateFlow<ReviewState>(ReviewState.Idle)
+    val state: StateFlow<ReviewState> = _state
+
+    private val _oldReview = MutableStateFlow<Pair<Double, String>?>(null)
+    val oldReview: StateFlow<Pair<Double, String>?> = _oldReview
 
     fun submitReview(professional: String, score: Double, comment: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val clientId = userPreferencesRepository.userIdFlow.first()
-            clientId?.let { client ->
-                Log.d("ReviewViewModel", "Client ID: $client")
-                Log.d("ReviewViewModel", "Professional ID: $professional")
+            val clientId = userPreferencesRepository.userIdFlow.firstOrNull() ?: return@launch
+            _state.value = ReviewState.Loading
 
-                withContext(Dispatchers.Main) {
-                    state.value = 1
-                    Log.d("ReviewViewModel", "Submitting review...")
-                }
-
-                val response = repo.submitReview(client, professional, score, comment)
-
-                if (response.isSuccessful) {
-                    withContext(Dispatchers.Main) {
-                        state.value = 2
-                        Log.d("ReviewViewModel", "Review submitted successfully.")
-                    }
-                } else {
-                    withContext(Dispatchers.Main) {
-                        state.value = 3
-                        Log.e("ReviewViewModel", "Failed to submit review.")
-                    }
-                }
+            val response = repo.submitReview(clientId, professional, score, comment)
+            _state.value = if (response.isSuccessful) {
+                ReviewState.Success
+            } else {
+                ReviewState.Error("Error al enviar la reseña. Inténtalo nuevamente.")
             }
         }
     }
+
+    fun checkSubmittedReview(reviews: List<Review?>?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val clientId = userPreferencesRepository.userIdFlow.firstOrNull() ?: return@launch
+            val review = reviews?.firstOrNull { it?.client?.id == clientId }
+            _oldReview.value = review?.let { Pair(it.score, it.comment) }
+        }
+    }
+
 }

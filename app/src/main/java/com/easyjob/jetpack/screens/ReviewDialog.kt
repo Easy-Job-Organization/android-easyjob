@@ -39,12 +39,14 @@ import com.easyjob.jetpack.viewmodels.ReviewViewModel
 @Composable
 fun ReviewDialog(
     professionalId: String,
+    initialScore: Double = 0.0,
+    initialComment: String = "",
     viewModel: ReviewViewModel = hiltViewModel(),
     onDismissRequest: () -> Unit,
     onReviewSubmitted: () -> Unit
 ) {
-    var score by remember { mutableDoubleStateOf(0.0) }
-    var comment by remember { mutableStateOf("") }
+    var score by remember { mutableDoubleStateOf(initialScore) }
+    var comment by remember { mutableStateOf(initialComment) }
 
 
     AlertDialog(
