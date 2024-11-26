@@ -36,9 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -77,19 +75,20 @@ fun RegisterScreen(
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
 
     val cities by resourcesViewModel.cities.observeAsState(listOf())
-    val languages by resourcesViewModel.languages.observeAsState(listOf())
     val services by resourcesViewModel.services.observeAsState(listOf())
+    val languages by resourcesViewModel.languages.observeAsState(listOf())
     val specialities by resourcesViewModel.specialities.observeAsState(listOf())
 
+    var selectedCity by remember { mutableStateOf("") }
     var selectedService by remember { mutableStateOf("") }
     var selectedLanguage by remember { mutableStateOf("") }
-    var selectedCity by remember { mutableStateOf("") }
     var selectedSpeciality by remember { mutableStateOf("") }
 
     val authState by registerViewModel.authState.observeAsState()
 
     var uri by remember { mutableStateOf<Uri?>(null) }
     var permissionsGranted by remember { mutableStateOf(false) }
+    var photoError by remember { mutableStateOf(false) }
 
     RequestMediaPermissions(
         onPermissionsGranted = {
@@ -139,8 +138,20 @@ fun RegisterScreen(
             // Selección de foto
             SinglePhotoPicker(uri = uri) { newUri ->
                 uri = newUri
+                photoError = false
             }
 
+            if (photoError) {
+                Text(
+                    text = "Por favor selecciona una foto",
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Campos de registro
             Input(value = name, label = "Nombre", onValueChange = { name = it })
             Input(value = last_name, label = "Apellidos", onValueChange = { last_name = it })
             Input(value = email, label = "Correo", onValueChange = { email = it })
@@ -159,37 +170,48 @@ fun RegisterScreen(
 
             // Campos adicionales para profesionales
             if (selectedOption == "Profesional") {
+
                 DropdownMenu1(
-                    options = services.map { it.title },
-                    selectedOption = selectedService,
-                    onOptionSelected = { selectedService = it }
+                    options = cities.map { it.city_name },
+                    selectedOption = selectedCity,
+                    onOptionSelected = { selectedCity = it },
+                    placeholder = "Selecciona tu ciudad"
                 )
 
                 DropdownMenu1(
                     options = languages.map { it.language_name },
                     selectedOption = selectedLanguage,
-                    onOptionSelected = { selectedLanguage = it }
+                    onOptionSelected = { selectedLanguage = it },
+                    placeholder = "Selecciona tu idioma"
                 )
 
                 DropdownMenu1(
-                    options = cities.map { it.city_name },
-                    selectedOption = selectedCity,
-                    onOptionSelected = { selectedCity = it }
+                    options = services.map { it.title },
+                    selectedOption = selectedService,
+                    onOptionSelected = { selectedService = it },
+                    placeholder = "Selecciona un servicio"
                 )
 
                 DropdownMenu1(
                     options = specialities.map { it.speciality_name },
                     selectedOption = selectedSpeciality,
-                    onOptionSelected = { selectedSpeciality = it }
+                    onOptionSelected = { selectedSpeciality = it },
+                    placeholder = "Selecciona una especialidad"
                 )
+
             }
 
-            Box(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Registro con la URI de la imagen y datos de usuario
             PrimaryButton(
                 text = "Registrarse",
                 onClick = {
+                    if (uri == null) {
+                        photoError = true
+                        return@PrimaryButton
+                    }
+
                     uri?.let { photo ->
                         if (selectedOption == "Cliente") {
                             registerViewModel.signUpClient(
@@ -203,10 +225,15 @@ fun RegisterScreen(
                                 context.contentResolver
                             )
                         } else {
-                            val service_id = services.find { it.title == selectedService }?.id.toString()
-                            val language_id = languages.find { it.language_name == selectedLanguage }?.id.toString()
-                            val city_id = cities.find { it.city_name == selectedCity }?.id.toString()
-                            val speciality_id = specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
+                            val language_id =
+                                languages.find { it.language_name == selectedLanguage }?.id.toString()
+                            val speciality_id =
+                                specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
+                            val service_id =
+                                services.find { it.title == selectedService }?.id.toString()
+                            val city_id =
+                                cities.find { it.city_name == selectedCity }?.id.toString()
+
 
                             registerViewModel.signUpProfessional(
                                 name,
@@ -216,9 +243,9 @@ fun RegisterScreen(
                                 password,
                                 selectedOption,
                                 photo,
-                                service_id,
-                                language_id,
                                 city_id,
+                                language_id,
+                                service_id,
                                 speciality_id,
                                 context.contentResolver
                             )

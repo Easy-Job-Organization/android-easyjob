@@ -5,7 +5,6 @@ import android.net.Uri
 import android.util.Log
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.services.AuthService
-import com.easyjob.jetpack.services.AuthServiceImpl
 import com.easyjob.jetpack.services.LoginRequest
 import com.easyjob.jetpack.services.LoginResponse
 import com.easyjob.jetpack.services.RegisterResponse
@@ -19,8 +18,6 @@ import javax.inject.Inject
 
 
 interface AuthRepository {
-
-
     suspend fun signIn(email: String, password: String): Response<LoginResponse>
 
     suspend fun signUpClient(
@@ -42,9 +39,9 @@ interface AuthRepository {
         password: String,
         option: String,
         imageUri: Uri,
-        service_id: String,
-        language_id: String,
         city_id: String,
+        language_id: String,
+        service_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
     ): Response<RegisterResponse>
@@ -125,9 +122,9 @@ class AuthRepositoryImpl @Inject constructor(
         password: String,
         option: String,
         imageUri: Uri,
-        service_id: String,
-        language_id: String,
         city_id: String,
+        language_id: String,
+        service_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
     ): Response<RegisterResponse> {
@@ -138,11 +135,10 @@ class AuthRepositoryImpl @Inject constructor(
         val emailPart = RequestBody.create("text/plain".toMediaTypeOrNull(), email)
         val phoneNumberPart = RequestBody.create("text/plain".toMediaTypeOrNull(), phone_number)
         val passwordPart = RequestBody.create("text/plain".toMediaTypeOrNull(), password)
+        val cityPart = RequestBody.create("text/plain".toMediaTypeOrNull(), city_id)
+        val languagePart = RequestBody.create("text/plain".toMediaTypeOrNull(), language_id)
         val servicePart =
             RequestBody.create("text/plain".toMediaTypeOrNull(), service_id)
-        val languagePart =
-            RequestBody.create("text/plain".toMediaTypeOrNull(), language_id)
-        val cityPart = RequestBody.create("text/plain".toMediaTypeOrNull(), city_id)
         val specialityPart =
             RequestBody.create("text/plain".toMediaTypeOrNull(), speciality_id)
 
@@ -165,9 +161,9 @@ class AuthRepositoryImpl @Inject constructor(
                 phoneNumberPart,
                 passwordPart,
                 it,
-                servicePart,
-                languagePart,
                 cityPart,
+                languagePart,
+                servicePart,
                 specialityPart
             )
         }!!
