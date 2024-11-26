@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,10 +68,21 @@ fun SearchScreen(
     val professionalCards by searchScreenViewModel.professionalCards.observeAsState(emptyList())
     val userName by searchScreenViewModel.userName.observeAsState("")
 
+    val searchSpecialities = listOf(
+        "Carpintero",
+        "Plomero",
+        "Pintor",
+        "Electricista",
+        "Limpiador",
+        "Albañil",
+        "Cerrajero",
+        "Jardinero",
+    )
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-        ) { innerPadding ->
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
@@ -78,9 +91,11 @@ fun SearchScreen(
                 .padding(innerPadding),
         ) {
 
-            Column (modifier = Modifier
-                .padding(top = 50.dp)
-                .align(Alignment.Start)){
+            Column(
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .align(Alignment.Start)
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.easyjob_logo_main_color),
                     contentDescription = "Easyjob logo",
@@ -89,7 +104,16 @@ fun SearchScreen(
                         .padding(start = 25.dp),
                 )
 
-                Text("Hola $userName", fontSize = 32.sp, modifier = Modifier.padding(start = 20.dp))
+                Row( modifier = Modifier.padding(start = 20.dp)) {
+                    Text("Hola ", fontSize = 28.sp)
+                    Text(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xff3B82F6),
+                        text ="$userName",
+                        fontSize = 28.sp)
+                }
+
+
 
             }
 
@@ -102,99 +126,50 @@ fun SearchScreen(
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 15.dp)
-                ,
+                    .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 28.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Electrodomésticos",
-                    iconSize = 16,
-                    text = "Electrodomésticos",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-                )
-
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Plomero",
-                    iconSize = 16,
-                    text = "Plomería",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-                )
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Electricista",
-                    iconSize = 16,
-                    text = "Electricista",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-                )
-
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Limpiador",
-                    iconSize = 16,
-                    text = "Aseo",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-                )
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Pintor",
-                    iconSize = 16,
-                    text = "Pintura",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-                )
-
-                FilterCard(
-                    icon = Icons.Sharp.Lock,
-                    descriptionIcon = "Carpintero",
-                    iconSize = 16,
-                    text = "Carpinteria",
-                    color = Color(0xff133c55),
-                    backgroundColor = Color(0x32133c55),
-                    navController = navController,
-                    click = true
-
-                )
-            }
-
-            Text("Destacados", fontSize = 28.sp, modifier = Modifier.padding(start = 24.dp, bottom = 24.dp))
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp)
-                    .fillMaxWidth()
             ) {
-                professionalCards.forEach { card ->
-                    CardSearch(
-                        id = card.id,
-                        image = card.photo_url,
-                        descriptionImage = "Profile photo",
-                        name = card.name + " " + card.last_name,
-                        stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
-                        navController = navController
-
+                searchSpecialities.forEach { specialityName ->
+                    FilterCard(
+                        descriptionIcon = specialityName,
+                        iconSize = 16,
+                        text = specialityName,
+                        color = Color(0xff133c55),
+                        backgroundColor = Color(0x32133c55),
+                        navController = navController,
+                        click = true
                     )
                 }
             }
 
-        }
+                Text(
+                    "Destacados",
+                    fontSize = 28.sp,
+                    modifier = Modifier.padding(start = 24.dp, bottom = 24.dp)
+                )
 
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    modifier = Modifier
+                        .padding(start = 15.dp, end = 15.dp)
+                        .fillMaxWidth()
+                ) {
+                    professionalCards.forEach { card ->
+                        CardSearch(
+                            id = card.id,
+                            image = card.photo_url,
+                            descriptionImage = "Profile photo",
+                            name = card.name + " " + card.last_name,
+                            stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
+                            navController = navController,
+                            cities = card.cities.map { it.city_name }
+
+                        )
+                    }
+                }
+
+            }
+
+        }
     }
-}

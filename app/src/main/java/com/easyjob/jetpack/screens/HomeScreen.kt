@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
@@ -15,7 +16,17 @@ import androidx.navigation.navArgument
 import com.easyjob.jetpack.ui.theme.components.BottomNavBar
 
 @Composable
-fun HomeScreen(navController: NavController = rememberNavController()) {
+fun HomeScreen(
+    navController: NavController
+) {
+
+    LaunchedEffect(Unit) {
+        val navGraph = navController.graph
+        for (destination in navGraph) {
+            Log.d("Destination", "${destination.route}")
+        }
+    }
+
     val nestedNavController = rememberNavController()
 
     val currentBackStackEntry = nestedNavController.currentBackStackEntryAsState()
@@ -39,7 +50,12 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
             composable("search") { SearchScreen(nestedNavController) }
             composable("appointments") { AppointmentScreen(navController) }
             composable("messages") { MessageScreen(navController) }
-            composable("profile") { ProfileScreen(navController) }
+            composable("profile") { ProfileScreen(generalNavController =  navController, clientNavController = nestedNavController) }
+            composable("editProfile") {
+                EditClientProfileScreen(
+                    nestedNavController
+                )
+            }
             composable("registerDate/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.StringType }
             )) { entry ->
@@ -65,6 +81,8 @@ fun HomeScreen(navController: NavController = rememberNavController()) {
                 val id = entry.arguments?.getString("id") ?: ""
                 Chat(nestedNavController, idProfessional = id)
             }
+            composable("likes") { LikesProfessionalScreen(nestedNavController)}
+            composable("reviews") { ReviewsScreen(nestedNavController)}
         }
     }
 }

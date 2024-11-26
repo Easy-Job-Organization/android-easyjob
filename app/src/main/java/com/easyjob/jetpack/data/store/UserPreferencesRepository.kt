@@ -23,6 +23,16 @@ class UserPreferencesRepository @Inject constructor(
         }
     }
 
+    // Clear user info from DataStore
+    suspend fun clearUserInfo() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(UserPreferences.JWT_KEY)
+            preferences.remove(UserPreferences.USER_ID_KEY)
+            preferences.remove(UserPreferences.NAME_KEY)
+            preferences.remove(UserPreferences.LAST_NAME_KEY)
+            preferences.remove(UserPreferences.ROLES_KEY)
+        }
+    }
 
 
     // Retrieve JWT

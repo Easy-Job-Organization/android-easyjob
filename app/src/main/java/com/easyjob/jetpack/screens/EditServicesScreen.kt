@@ -26,6 +26,9 @@ import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.EditServicesViewModel
 import kotlin.math.floor
 
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.ui.graphics.Color
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditServicesScreen(
@@ -37,9 +40,10 @@ fun EditServicesScreen(
     val services by viewModel.services.observeAsState(emptyList())
     val loading by viewModel.loading.observeAsState(false)
     val errorMessage by viewModel.errorMessage.observeAsState("")
+    val deleteSuccess by viewModel.deleteSuccess.observeAsState(false)
 
     LaunchedEffect(Unit) {
-        viewModel.fetchServicesOfProfessinal()
+        viewModel.fetchServicesOfProfessional()
     }
 
     Scaffold(
@@ -50,6 +54,18 @@ fun EditServicesScreen(
                 navController = navController,
                 isBack = true
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("createService") },
+                backgroundColor = Color(0xff3b82f6)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Añadir servicio",
+                    tint = Color.White
+                )
+            }
         }
     ) { padding ->
         Box(
@@ -59,29 +75,25 @@ fun EditServicesScreen(
             contentAlignment = Alignment.Center
         ) {
             when {
-                loading -> {
-                    CircularProgressIndicator()
-                }
-
-                errorMessage.isNotEmpty() -> {
+                loading -> CircularProgressIndicator()
+                (errorMessage.isNotEmpty() && !deleteSuccess) -> {
                     Text(
                         text = "Error: $errorMessage",
                         color = MaterialTheme.colors.error,
                         textAlign = TextAlign.Center
                     )
                 }
-
                 services.isEmpty() -> {
                     Text(
                         text = "No hay servicios disponibles",
                         textAlign = TextAlign.Center
                     )
                 }
-
                 else -> {
                     ServiceList(
                         services = services,
-                        navController = navController
+                        navController = navController,
+                        viewModel = viewModel
                     )
                 }
             }
@@ -92,7 +104,8 @@ fun EditServicesScreen(
 @Composable
 fun ServiceList(
     services: List<Service?>,
-    navController: NavController
+    navController: NavController,
+    viewModel: EditServicesViewModel,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -103,8 +116,10 @@ fun ServiceList(
             service?.let {
                 ServiceItem(
                     service = service,
-                    onEditService = {navController.navigate("editService/${service.id}")},
-                    onDeleteService = {}
+                    onEditService = { navController.navigate("editService/${service.id}") },
+                    onDeleteService = {
+                        viewModel.deleteService(service.id)
+                    }
                 )
             }
         }
@@ -118,7 +133,6 @@ fun ServiceItem(
     onDeleteService: (Service) -> Unit
 ) {
     val decimalFormat = remember { DecimalFormat("#,###") }
-
     val roundedPrice = floor(service.price / 10).toInt() * 10
 
     Card(
@@ -134,7 +148,6 @@ fun ServiceItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Información del servicio
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = service.title,
@@ -146,18 +159,13 @@ fun ServiceItem(
                     style = MaterialTheme.typography.body2
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-
-                // Formateo del precio con separadores de miles
-                val formattedPrice = decimalFormat.format(roundedPrice)  // Se aplica el formato con comas
+                val formattedPrice = decimalFormat.format(roundedPrice)
                 Text(
-                    text = "Precio: $$formattedPrice",  // Muestra el precio formateado
-                    style = MaterialTheme.typography.subtitle1.copy(
-                        fontWeight = FontWeight.Bold,
-                    )
+                    text = "Precio: $$formattedPrice",
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold)
                 )
             }
 
-            // Botones de edición y eliminación, uno encima del otro
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally

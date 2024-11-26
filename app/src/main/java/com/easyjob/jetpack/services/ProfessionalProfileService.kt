@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ProfessionalProfileService {
@@ -23,5 +24,8 @@ interface ProfessionalProfileService {
 
     @GET("/reviews/professional/{id}")
     suspend fun getReviews(@Path("id") id: String): Response<List<Review>>
+
+    @POST("/likes/client/{clientId}/professional/{professionalId}")
+    suspend fun likeProfessional(@Path("clientId") clientId: String, @Path("professionalId") id: String)
 
 }

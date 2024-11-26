@@ -34,12 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.models.Professional
+import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.ui.theme.components.ButtonSection
 import com.easyjob.jetpack.ui.theme.components.CommentsCard
 import com.easyjob.jetpack.ui.theme.components.FilterCard
@@ -49,6 +52,7 @@ import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
+import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.viewmodels.ReviewViewModel
 import kotlin.math.roundToInt
@@ -63,6 +67,7 @@ fun ProfessionalClientScreen(
     id: String,
 ) {
     var showReviewDialog by remember { mutableStateOf(false) }
+    var showLikeDialog by remember { mutableStateOf(false) }
     var hasSubmittedReview by remember { mutableStateOf(false) }
     var previousScore by remember { mutableDoubleStateOf(0.0) }
     var previousComment by remember { mutableStateOf("") }
@@ -92,6 +97,7 @@ fun ProfessionalClientScreen(
                 Toast.makeText(context, "¡Reseña enviada con éxito!", Toast.LENGTH_SHORT).show()
                 showReviewDialog = false
             }
+
             is ReviewViewModel.ReviewState.Error -> {
                 Toast.makeText(
                     context,
@@ -100,6 +106,7 @@ fun ProfessionalClientScreen(
                 ).show()
                 showReviewDialog = false
             }
+
             else -> Unit
         }
     }
@@ -125,7 +132,9 @@ fun ProfessionalClientScreen(
             Topbar(
                 title = "Perfil del profesional",
                 icon = Icons.Default.FavoriteBorder,
-                onEditClick = {},
+                onEditClick = {
+                    showLikeDialog = true
+                },
                 scrollBehavior = scrollBehavior,
                 navController = navController,
                 isBack = true
@@ -147,6 +156,14 @@ fun ProfessionalClientScreen(
                     initialComment = previousComment,
                     onDismissRequest = { showReviewDialog = false },
                     onReviewSubmitted = { }
+                )
+            }
+
+            if (showLikeDialog) {
+                LikeDialog(
+                    professionalId = id,
+                    onDismissRequest = { showLikeDialog = false },
+                    onLikeSubmitted = { showLikeDialog = false }
                 )
             }
 
@@ -184,20 +201,19 @@ fun ProfessionalClientScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        servicesState?.let { services ->
+                        professionalState?.specialities?.let { specialities ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .wrapContentHeight(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                services.forEach { service ->
-                                    service?.let {
+                                specialities.forEach { speciality ->
+                                    speciality?.let {
                                         FilterCard(
-                                            icon = Icons.Sharp.Lock,
-                                            descriptionIcon = service.title,
+                                            descriptionIcon = speciality.speciality_name,
                                             iconSize = 16,
-                                            text = service.title,
+                                            text = speciality.speciality_name,
                                             color = Color(0xff133c55),
                                             backgroundColor = Color(0x32133c55),
                                             click = false
@@ -217,10 +233,13 @@ fun ProfessionalClientScreen(
                                 text = "Agendar cita",
                                 onClick = {
                                     navController.navigate("registerDate/${id}")
-                                })
+                                }
+                            )
+
                             SecondaryButton(
                                 text = "Enviar mensaje",
-                                onClick = { navController.navigate("chat/$id") })
+                                onClick = { navController.navigate("chat/$id") }
+                            )
                             SecondaryButton(
                                 text = if (oldReview != null) "Editar opinión" else "Escribir una opinión",
                                 onClick = {
@@ -239,21 +258,48 @@ fun ProfessionalClientScreen(
                                 active = activeSection,
                                 text = "Información",
                                 onClick = { activeSection = !activeSection },
-                                width = 200
+                                width = 220
                             )
                             ButtonSection(
                                 active = !activeSection,
                                 text = "Opiniones",
                                 onClick = { activeSection = !activeSection },
-                                width = 200
+                                width = 220
                             )
                         }
                         Box(modifier = Modifier.height(10.dp))
-                        Column(modifier = Modifier.fillMaxWidth()) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
                             if (activeSection) {
                                 servicesState?.let { InformationCard(services = it) }
                             } else {
-                                reviewsState?.let { CommentsCard(reviews = it) }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+
+                                    Text(
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 22.sp,
+                                        color = Color(0xFF133c55),
+                                        text = "Opiniones totales: ${reviewsState?.size ?: 0}",
+                                    )
+
+                                    /*SecondaryButton(
+                                    text = "Escribir una opinión",
+                                    onClick = { showReviewDialog = true }
+                                )*/
+
+                                    reviewsState?.let {
+                                        CommentsCard(reviews = it)
+                                    }
+
+                                }
+
                             }
                         }
                     }

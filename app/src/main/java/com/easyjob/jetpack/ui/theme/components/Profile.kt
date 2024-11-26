@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +23,10 @@ import androidx.compose.material3.*
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Call
+import androidx.compose.material.icons.outlined.LocationOn
+import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -32,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,7 +51,7 @@ import com.easyjob.jetpack.models.City
 @Composable
 fun ProfileSection(
     image: String?,
-    descriptionImage: String,
+    descriptionImage: String?,
     name: String = "Cargando",
     cities: List<City>,
     phoneNumber: String,
@@ -66,10 +72,11 @@ fun ProfileSection(
         ) {
             AsyncImage(
                 model = image,
-                contentDescription = descriptionImage,
+                contentDescription = descriptionImage?:"",
                 modifier = Modifier
                     .clip(CircleShape)
                     .size(100.dp),
+                contentScale = ContentScale.Crop,
                 error = painterResource(R.drawable.ic_launcher_background)
             )
         }
@@ -96,21 +103,39 @@ fun ProfileSection(
                     .wrapContentHeight(),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    color = Color(0xFF133c55),
-                    text = cities.joinToString(", "){
-                        it.city_name
-                    }
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = "Ubicacion",
+                        tint = Color.Black,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = cities.joinToString(", "){
+                            it.city_name
+                        }
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.Call,
+                        contentDescription = "Telefono",
+                        tint = Color.Black,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = phoneNumber
+                    )
+                }
 
-                Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    color = Color(0xFF133c55),
-                    text = phoneNumber
-                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -129,6 +154,94 @@ fun ProfileSection(
                         text = "$comments opiniones"
                     )
 
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ProfileSectionClient(
+    image: String?,
+    descriptionImage: String,
+    name: String = "Cargando",
+    phoneNumber: String,
+    email: String
+)
+{
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight()
+        .padding(vertical = 10.dp),
+        verticalAlignment = Alignment.Top,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier.padding(5.dp)
+        ) {
+            AsyncImage(
+                model = image,
+                contentDescription = descriptionImage,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(100.dp),
+                contentScale = ContentScale.Crop,
+                error = painterResource(R.drawable.ic_launcher_background)
+            )
+        }
+
+        Box(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            Text(
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
+                color = Color(0xFF133c55),
+                text = name,
+                lineHeight = 30.sp
+            )
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight(),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.Mail,
+                        contentDescription = "Correo Electronico",
+                        tint = Color.Black,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = email
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.Call,
+                        contentDescription = "Telefono",
+                        tint = Color.Black,
+                        modifier = Modifier.size(14.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = phoneNumber
+                    )
                 }
             }
         }

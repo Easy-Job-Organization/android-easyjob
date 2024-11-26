@@ -9,20 +9,29 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
+
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.HourglassBottom
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +50,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -56,28 +66,25 @@ fun Input(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
+        modifier = Modifier
+            .wrapContentHeight()
+            .fillMaxWidth()
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp)),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
+        ),
         value = value,
         placeholder = { Text(modifier = Modifier.background(Color.Transparent), text = label) },
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(4.dp),
         onValueChange = onValueChange,
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = if (visualTransformation is PasswordVisualTransformation) KeyboardType.Password else KeyboardType.Text,
             imeAction = ImeAction.Done
-        ),
-        modifier = Modifier
-            .wrapContentHeight()
-            .then(
-                if (width != null) {
-                    Modifier
-                        .width(width.dp)
-                } else {
-                    Modifier
-                        .fillMaxWidth()
-                }
-            )
-            .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-            .background(Color.Transparent)
+        )
     )
 }
 
@@ -105,15 +112,21 @@ fun DropdownMenu1(
                         .wrapContentWidth()
                 }
             )
-            .border(2.dp, Color.Gray, shape = RoundedCornerShape(8.dp))
-            .background(Color.Transparent)
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
+            .background(Color.White),
+
     ) {
         TextField(
             value = selectedOption,
             onValueChange = onOptionSelected,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.textFieldColors(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
             modifier = Modifier.fillMaxWidth()
         )
         
@@ -139,20 +152,24 @@ fun DropdownMenu1(
 
 @Composable
 fun DescriptionTextArea(
-    description: String,
-    onDescriptionChange: (String) -> Unit
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
 ) {
     TextField(
-        value = description,
-        onValueChange = onDescriptionChange,
+        value = value,
+        onValueChange = onValueChange,
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp) // Altura para que funcione como área de texto
-            .shadow(8.dp, RoundedCornerShape(8.dp)) // Sombra con radio de 8dp
+            .border(1.dp, Color.Gray, shape = RoundedCornerShape(4.dp))
             .padding(8.dp),
-        placeholder = { Text("Escribe la descripción aquí...") },
+        placeholder = { Text(label) },
         colors = TextFieldDefaults.colors(
-            unfocusedContainerColor = Color.White
+            focusedContainerColor = Color.White,
+            unfocusedContainerColor = Color.White,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
         ),
         shape = RoundedCornerShape(8.dp), // Forma con bordes redondeados
         maxLines = 5 // Limitar el número de líneas si lo prefieres
@@ -193,20 +210,103 @@ fun DateTimePicker(
         hour, minute, true
     )
 
-    Column(
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.Center,
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Fecha seleccionada: $selectedDate")
-        Spacer(modifier = Modifier.height(16.dp))
-        PrimaryButton(text = "Elegir fecha", onClick = { datePickerDialog.show() })
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Fecha seleccionada:"
+            )
+            Text(
+                text = "$selectedDate",
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Button(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(120.dp)
+                        .padding(8.dp)
+                    .border(1.dp, Color.LightGray, shape = RoundedCornerShape(6.dp))
+                    ,
 
-        Spacer(modifier = Modifier.height(24.dp))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color(0xFF133c55),
+                    ),
+                    elevation = ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 4.dp, // Elevación normal
+                        pressedElevation = 8.dp // Elevación cuando se presiona
+                    ),
+                    shape = RoundedCornerShape(6.dp),
+                    onClick = { datePickerDialog.show()  }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Event,
+                        contentDescription = "Fecha seleccionada",
+                        tint = Color.Black,
+                        modifier = Modifier.size(44.dp)
+                    )
+                }
+            }
 
-        Text(text = "Hora seleccionada: $selectedTime")
-        Spacer(modifier = Modifier.height(16.dp))
-        PrimaryButton(text = "Elegir hora", onClick = { timePickerDialog.show() })
+
+        }
+
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Hora seleccionada:"
+            )
+            Text(
+                text = "$selectedTime",
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+
+                Button(
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(120.dp)
+                        .padding(8.dp)
+                        .border(1.dp, Color.LightGray, shape = RoundedCornerShape(6.dp))
+                    ,
+
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color(0xFF133c55),
+                    ),
+                    elevation = ButtonDefaults.elevatedButtonElevation(
+                        defaultElevation = 4.dp, // Elevación normal
+                        pressedElevation = 8.dp // Elevación cuando se presiona
+                    ),
+                    shape = RoundedCornerShape(6.dp),
+                    onClick = { timePickerDialog.show()  }
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.HourglassBottom,
+                        contentDescription = "Fecha seleccionada",
+                        tint = Color.Black,
+                        modifier = Modifier.size(44.dp)
+                    )
+                }
+            }
+        }
     }
 }
 

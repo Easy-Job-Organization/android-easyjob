@@ -85,8 +85,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthDateService(): DateService {
-        return DateServiceImpl();
+    fun provideAuthDateService(): AppointmentService {
+        return AppointmentServiceImpl();
     }
 
     // Provee las instancias de los servicios usando Retrofit
@@ -122,6 +122,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideCreateServiceService(retrofit: Retrofit): CreateServiceService {
+        return retrofit.create(CreateServiceService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideChatService(): ChatsService {
         return ChatsServiceImpl()
     }
@@ -138,6 +144,29 @@ object AppModule {
         return ProfileServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideRecoverPassService(retrofit: Retrofit): RecoverPassService {
+        return retrofit.create(RecoverPassService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditProfessionalProfileService(retrofit: Retrofit): EditProfessionalProfileService {
+        return retrofit.create(EditProfessionalProfileService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditClientProfileService(retrofit: Retrofit): EditClientProfileService {
+        return retrofit.create(EditClientProfileService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLikesProfessionalService(): LikesProfessionalService {
+        return LikesProfessionalServiceImpl()
+    }
 
 
     // Repositories
@@ -153,9 +182,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthDateRepository(
-        dateService: DateService
-    ): DateRepository {
-        return DateRepositoryImpl(dateService)
+        appointmentService: AppointmentService
+    ): AppointmentRepository {
+        return AppointmentRepositoryImpl(appointmentService)
     }
 
     @Provides
@@ -210,10 +239,51 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideCreateServiceRepository(
+        createServiceService: CreateServiceService
+    ):  CreateServiceRepository {
+        return  CreateServiceRepositoryImpl(createServiceService)
+    }
+
+    @Provides
+    @Singleton
     fun provideChatRepository(
         chatsService: ChatsService,
         userPreferencesRepository: UserPreferencesRepository
     ): ChatsRepository {
         return ChatsRepositoryImpl(chatsService, userPreferencesRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecoverPassRepository(
+        recoverPassService: RecoverPassService
+    ): RecoverPassRepository {
+        return RecoverPassRepositoryImpl(recoverPassService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEditProfessionalProfileRepository(
+        editProfessionalProfileService: EditProfessionalProfileService
+    ): EditProfessionalProfileRepository {
+        return EditProfessionalProfileRepositoryImpl(editProfessionalProfileService)
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideEditClientProfileRepository(
+        editClientProfileService: EditClientProfileService
+    ): EditClientProfileRepository {
+        return EditClientProfileRepositoryImpl(editClientProfileService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLikesProfessionalRepository(
+        likesProfessionalService: LikesProfessionalService
+    ): LikesProfessionalRepository {
+        return LikesProfessionalRepositoryImpl(likesProfessionalService)
     }
 }

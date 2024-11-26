@@ -24,38 +24,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.easyjob.jetpack.models.CreateAppointment
+import com.easyjob.jetpack.models.Appointment
 import com.easyjob.jetpack.ui.theme.components.DateTimePicker
 import com.easyjob.jetpack.ui.theme.components.DescriptionTextArea
 import com.easyjob.jetpack.ui.theme.components.DropdownMenu1
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
-import com.easyjob.jetpack.viewmodels.DateViewModel
+import com.easyjob.jetpack.viewmodels.AppointmentViewModel
+import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterDateScreen(
     id: String,
     navController: NavController = rememberNavController(),
-    registerDateViewModel: DateViewModel = hiltViewModel()
+    registerAppointmentViewModel: AppointmentViewModel = hiltViewModel()
 ){
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
     val scrollState = rememberScrollState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     LaunchedEffect(Unit) {
-        registerDateViewModel.loadProfessionalServices(id)
+        registerAppointmentViewModel.loadProfessionalServices(id)
     }
 
-    val professionalServices by registerDateViewModel.professionalServices.observeAsState(emptyList())
+    val professionalServices by registerAppointmentViewModel.professionalServices.observeAsState(emptyList())
 
+    var descriptionService by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
 
@@ -85,13 +86,13 @@ fun RegisterDateScreen(
         ) {
             Text(
                 "Seleccionar un Servicio",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
             )
             DropdownMenu1(
-                options = professionalServices.map { it?.title ?: "-" },
+                options = professionalServices.map { it?.title ?: "" },
                 selectedOption = selectedOption,
                 onOptionSelected = {selectedOption = it}
             )
@@ -100,23 +101,23 @@ fun RegisterDateScreen(
 
             Text(
                 "Descripción de la solicitud",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
             )
 
             DescriptionTextArea(
-                description = "Describe tu avería o inconveniente a solucionar"
-            ) {
-
-            }
+                value = descriptionService,
+                onValueChange = { descriptionService = it },
+                label = "Describe tu avería o inconveniente a solucionar"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
                 "Selecciona fecha y hora",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 15.dp)
@@ -137,15 +138,16 @@ fun RegisterDateScreen(
                 PrimaryButton(
                     text = "Agendar",
                     onClick = {
-                        val nwAppointment = CreateAppointment(
+                        val nwAppointment = CreateAppointmentDTO(
                             date = selectedDate,
                             location = "Cali",
                             hour = selectedTime,
-                            service = selectedOption,
+                            description = descriptionService,
+                            service = professionalServices.find { it?.title == selectedOption }?.id.toString(),
                             client = "",
                             professional = id
                             )
-                        registerDateViewModel.createDate(nwAppointment)
+                        registerAppointmentViewModel.createDate(nwAppointment)
                         navController.popBackStack()
                               },
                     width = 200)

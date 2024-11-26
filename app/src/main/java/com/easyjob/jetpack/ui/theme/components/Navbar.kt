@@ -128,3 +128,79 @@ fun BottomNavBar(nestedNavController: NavController = rememberNavController()) {
 }
 
 
+@Composable
+fun BottomProfessionalNavBar(nestedNavController: NavController = rememberNavController()) {
+    var selectedIndex by remember { mutableStateOf(0) }
+    val selectedColor = Color(0xff4091b6)
+
+    NavigationBar {
+        NavigationBarItem(
+            selected = selectedIndex == 1,
+            onClick = {
+                selectedIndex = 1
+                nestedNavController.navigate("appointments") {
+                    launchSingleTop = true
+                }
+            },
+            icon = {
+                Icon(
+                    Icons.Default.DateRange,
+                    contentDescription = "Citas",
+                    tint = if (selectedIndex == 1) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Citas",
+                    color = if (selectedIndex == 1) selectedColor else Color.Black
+                )
+            }
+        )
+        NavigationBarItem(
+            selected = selectedIndex == 2,
+            onClick = {
+                selectedIndex = 2
+                nestedNavController.navigate("listChat") {
+                    launchSingleTop = true
+                }
+            },
+            icon = {
+                Icon(
+                    Icons.Filled.Send,
+                    contentDescription = "Mensajes",
+                    tint = if (selectedIndex == 2) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Mensajes",
+                    color = if (selectedIndex == 2) selectedColor else Color.Black
+                )
+            }
+        )
+        NavigationBarItem(
+            selected = selectedIndex == 3,
+            onClick = {
+                selectedIndex = 3
+                nestedNavController.navigate("profile") {
+                    launchSingleTop = true
+                }
+            },
+            icon = {
+                Icon(
+                    Icons.Filled.Person,
+                    contentDescription = "Perfil",
+                    tint = if (selectedIndex == 3) selectedColor else Color.Black
+                ) },
+            label = {
+                Text(
+                    text = "Perfil",
+                    color = if (selectedIndex == 3) selectedColor else Color.Black
+                )
+            }
+        )
+    }
+}
+
+
+
+
+
