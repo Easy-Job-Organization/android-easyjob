@@ -33,6 +33,7 @@ data class ProfessionalCardResponse(
     val photo_url: String,
     val roles: List<String>,
     val description: String?,
+    val cities: List<City>,
     val score : Double?
 )
 

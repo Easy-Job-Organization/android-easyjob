@@ -162,7 +162,8 @@ fun SearchScreen(
                             descriptionImage = "Profile photo",
                             name = card.name + " " + card.last_name,
                             stars = card.score?.toInt() ?: 0, //Pasar a double las estrellas
-                            navController = navController
+                            navController = navController,
+                            cities = card.cities.map { it.city_name }
 
                         )
                     }
