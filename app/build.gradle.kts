@@ -53,6 +53,8 @@ android {
 
 dependencies {
 
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
     //Socket io
     implementation ("io.socket:socket.io-client:2.1.0")
 

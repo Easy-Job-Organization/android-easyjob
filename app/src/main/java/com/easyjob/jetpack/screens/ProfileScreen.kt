@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ContactSupport
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.RateReview
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,6 +32,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
 import com.easyjob.jetpack.ui.theme.components.ProfileSectionClient
@@ -61,8 +62,6 @@ fun ProfileScreen(
         topBar = {
             Topbar(
                 title = "Mi perfil",
-                icon = Icons.Default.Edit,
-                onEditClick = {},
                 scrollBehavior = scrollBehavior,
                 isBack = false
             )
@@ -132,6 +131,13 @@ fun ProfileScreen(
                                 descriptionIcon = "Mis direcciones",
                                 onClick = { /*TODO*/ },
                                 text = "Mis direcciones",
+                                color = Color.Black
+                            )
+                            ButtonIconLink(
+                                icon = Icons.Default.Settings,
+                                descriptionIcon = "Configuración",
+                                onClick = { clientNavController.navigate("editProfile") },
+                                text = "Editar perfil",
                                 color = Color.Black
                             )
                             ButtonIconLink(

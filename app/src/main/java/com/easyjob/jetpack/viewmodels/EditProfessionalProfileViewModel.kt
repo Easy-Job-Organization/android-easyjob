@@ -143,7 +143,6 @@ class EditProfessionalProfileViewModel @Inject constructor(
             val city = _cityId.value.orEmpty()
             val speciality = _specialityId.value.orEmpty()
 
-            // Validar que los campos requeridos no estén vacíos
             if (name.isBlank() || lastName.isBlank() || phoneNumber.isBlank() || city.isBlank() || speciality.isBlank() || imageUri == null) {
                 Log.e("EditProfessionalVM", "Campos vacíos o imagen no seleccionada")
                 _updateResult.value = false
@@ -157,25 +156,14 @@ class EditProfessionalProfileViewModel @Inject constructor(
                 return@launch
             }
 
-            // Llamar al repositorio para editar el perfil
-            val response = repository.editProfessional(
-                userId,
-                name,
-                lastName,
-                phoneNumber,
-                imageUri,
-                city,
-                speciality,
-                contentResolver
-            )
-
-            if (response != null) {
-                _updateResult.value = response.isSuccessful
-            }
-            if (response != null) {
-                if (!response.isSuccessful) {
-                    Log.e("EditProfessionalVM", "Error al actualizar perfil: ${response.errorBody()?.string()}")
-                }
+            try {
+                val response = repository.editProfessional(
+                    userId, name, lastName, phoneNumber, imageUri, city, speciality, contentResolver
+                )
+                _updateResult.value = response?.isSuccessful == true
+            } catch (e: Exception) {
+                Log.e("EditProfessionalVM", "Error al actualizar perfil: ${e.message}")
+                _updateResult.value = false
             }
         }
     }
