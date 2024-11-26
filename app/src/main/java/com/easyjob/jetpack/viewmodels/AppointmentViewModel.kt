@@ -60,6 +60,7 @@ class AppointmentViewModel @Inject constructor(
             val id = getUserId()
             if (getRole().equals("client")) {
                 val res = repo.getCLientAppointments(id?:"")
+
                 withContext(Dispatchers.Main) {
                     appointments.value = res
                     role.value = userRole?:""
