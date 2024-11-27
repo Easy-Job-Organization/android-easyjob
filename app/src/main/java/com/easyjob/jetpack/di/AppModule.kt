@@ -168,6 +168,12 @@ object AppModule {
         return LikesProfessionalServiceImpl()
     }
 
+    @Provides
+    @Singleton
+    fun provideAppointmentDetailsService(retrofit: Retrofit): AppointmentDetailsService {
+        return retrofit.create(AppointmentDetailsService::class.java)
+    }
+
 
     // Repositories
 
@@ -285,5 +291,13 @@ object AppModule {
         likesProfessionalService: LikesProfessionalService
     ): LikesProfessionalRepository {
         return LikesProfessionalRepositoryImpl(likesProfessionalService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideAppointmentDetailsRepository(
+        appointmentDetailsService: AppointmentDetailsService
+    ): AppointmentDetailsRepository {
+        return AppointmentDetailsRepositoryImpl(appointmentDetailsService)
     }
 }
