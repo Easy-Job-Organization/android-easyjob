@@ -334,7 +334,8 @@ fun AppointmentCard(
     service: Service?,
     date: String,
     hour: String,
-    photo_url: String
+    photo_url: String,
+    navController: NavController
 ){
     Box(
         modifier = Modifier
@@ -342,6 +343,10 @@ fun AppointmentCard(
             .wrapContentHeight()
             .shadow(10.dp, RoundedCornerShape(12.dp)) // Sombra aplicada al Box
             .background(Color.White, RoundedCornerShape(12.dp))
+            .clickable {
+                navController.navigate("appointment/$id")
+            }
+
     ) {
 
         Row(
