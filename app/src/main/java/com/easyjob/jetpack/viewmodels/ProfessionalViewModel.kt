@@ -116,16 +116,22 @@ class ProfessionalViewModel(
     }
 
     fun recalculateScoreAndCount(reviews: List<Review?>) {
-        var score = 0.0
+        if (reviews.isEmpty()) {
+            _scoreAndCount.value = Pair(0.0, 0)
+            return
+        }
+
+        var totalScore = 0.0
         var count = 0
         reviews.forEach {
             if (it != null) {
-                score += it.score
+                totalScore += it.score
                 count++
             }
         }
-        score /= count
-        _scoreAndCount.value = Pair(score, count)
+
+        val averageScore = if (count > 0) totalScore / count else 0.0
+        _scoreAndCount.value = Pair(averageScore, count)
     }
 
 }
