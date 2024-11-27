@@ -178,12 +178,12 @@ fun RegisterScreen(
                     placeholder = "Selecciona tu ciudad"
                 )
 
-                DropdownMenu1(
+                /*DropdownMenu1(
                     options = languages.map { it.language_name },
                     selectedOption = selectedLanguage,
                     onOptionSelected = { selectedLanguage = it },
                     placeholder = "Selecciona tu idioma"
-                )
+                )*/
 
                 DropdownMenu1(
                     options = specialities.map { it.speciality_name },
@@ -192,12 +192,12 @@ fun RegisterScreen(
                     placeholder = "Selecciona una especialidad"
                 )
 
-                DropdownMenu1(
+                /*DropdownMenu1(
                     options = services.map { it.title },
                     selectedOption = selectedService,
                     onOptionSelected = { selectedService = it },
                     placeholder = "Selecciona un servicio"
-                )
+                )*/
 
             }
 
