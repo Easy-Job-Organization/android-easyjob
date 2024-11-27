@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,7 @@ import com.easyjob.jetpack.R
 import com.easyjob.jetpack.ui.theme.components.PrimaryButton
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
+import com.easyjob.jetpack.viewmodels.AppointmentDetailsViewModel
 import com.easyjob.jetpack.viewmodels.AppointmentViewModel
 import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 
@@ -52,18 +54,21 @@ import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
 @Composable
 fun AppointmentDetailsScreen(
     navController: NavController = rememberNavController(),
-    appointmentDetailsViewModel: AppointmentViewModel = hiltViewModel(), //Cambiar por el bueno
+    appointmentDetailsViewModel: AppointmentDetailsViewModel = hiltViewModel(),
     id: String
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+    val appointment by appointmentDetailsViewModel.appointment.observeAsState()
+    val error by appointmentDetailsViewModel.error.observeAsState()
+    val statusUpdateSuccess by appointmentDetailsViewModel.statusUpdateSuccess.observeAsState()
+    val role by appointmentDetailsViewModel.role.observeAsState("")
 
     LaunchedEffect(Unit) {
-        //appointmentDetailsViewModel.loadAppointmentDetails()
+        appointmentDetailsViewModel.loadAppointmentDetails(id)
+        appointmentDetailsViewModel.getRole()
+        Log.e("AppointmentDetailsScreen", "ROLE: $role")
     }
 
-    //val appointment by appointmentDetailsViewModel
-    //val role by appointmentViewModel.role.observeAsState("")
-    val status = "Terminada"
 
 
 
@@ -88,51 +93,59 @@ fun AppointmentDetailsScreen(
                 .padding(innerPadding)
         ) {
             //TITULO
-            Text(
-                text = "Cuenta pinguinos",//appointment.service.title,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+            appointment?.service?.let {
+                Text(
+                    text = it.title,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
             //NOMBRE Y FOTO DEL CLIENTE/PROFESIONAL
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(bottom = 16.dp)
             ) {
                 AsyncImage(
-                    model = "review.professional?.photo_url,", //if (role.equals("client")) appointment.professional?.photo_url else appointment.client.photo_url,
-                    contentDescription = "PePito", //if (role.equals("client")) appointment.professional?.name else appointment.client.name,
+                    model = if (role.equals("client")) appointment?.professional?.photo_url else appointment?.client?.photo_url,
+                    contentDescription = if (role.equals("client")) appointment?.professional?.name else appointment?.client?.name,
                     modifier = Modifier
                         .clip(CircleShape)
                         .size(40.dp),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.ic_launcher_background)
                 )
-                Text(
-                    text = "PePito", //if (role.equals("client")) appointment.professional?.name else appointment.client.name,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                (if (role.equals("client")) appointment?.professional?.name else appointment?.client?.name)?.let {
+                    Text(
+                        text = it,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
 
-                Text(
-                    text = "PEREZ", //if (role.equals("client")) appointment.professional?.last_name else appointment.client.last_name,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
-                )
+                (if (role.equals("client")) appointment?.professional?.last_name else appointment?.client?.last_name)?.let {
+                    Text(
+                        text = it,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 18.sp
+                    )
+                }
             }
 
             // Descripción
-            Text(
-                text = "aaa",//appointment.description,
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
-                    .padding(8.dp)
-            )
+            appointment?.description?.let {
+                Text(
+                    text = it,//appointment.description,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
+                        .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                )
+            }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -151,7 +164,7 @@ fun AppointmentDetailsScreen(
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
                     color = Color(0xFF636363),
-                    text = "date hoy",
+                    text = appointment?.date.toString(),
                     lineHeight = 30.sp
                 )
 
@@ -168,21 +181,21 @@ fun AppointmentDetailsScreen(
                     fontWeight = FontWeight.Normal,
                     fontSize = 12.sp,
                     color = Color(0xFF636363),
-                    text = "A LAS YA",
+                    text = appointment?.hour.toString(),
                     lineHeight = 30.sp
                 )
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (status != "Cancelada" && status != "Terminada")
+            if (appointment?.appointmentStatus?.status != "Cancelada" && appointment?.appointmentStatus?.status != "Terminada")
             {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    if (status == "Pendiente") {
+                    if (appointment?.appointmentStatus?.status == "Pendiente") {
                         SecondaryButton(text = "Cancelar", onClick = { navController.popBackStack()}, width = 200)
 
                         PrimaryButton(
@@ -191,7 +204,7 @@ fun AppointmentDetailsScreen(
                                 navController.popBackStack()
                             },
                             width = 200)
-                    } else if (status == "Aceptada") {
+                    } else if (appointment?.appointmentStatus?.status == "Aceptada") {
                         SecondaryButton(text = "Cancelar", onClick = { navController.popBackStack()}, width = 200)
                     }
                 }
