@@ -186,17 +186,17 @@ fun RegisterScreen(
                 )
 
                 DropdownMenu1(
-                    options = services.map { it.title },
-                    selectedOption = selectedService,
-                    onOptionSelected = { selectedService = it },
-                    placeholder = "Selecciona un servicio"
-                )
-
-                DropdownMenu1(
                     options = specialities.map { it.speciality_name },
                     selectedOption = selectedSpeciality,
                     onOptionSelected = { selectedSpeciality = it },
                     placeholder = "Selecciona una especialidad"
+                )
+
+                DropdownMenu1(
+                    options = services.map { it.title },
+                    selectedOption = selectedService,
+                    onOptionSelected = { selectedService = it },
+                    placeholder = "Selecciona un servicio"
                 )
 
             }

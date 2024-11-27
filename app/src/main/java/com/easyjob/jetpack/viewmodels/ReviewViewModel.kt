@@ -1,7 +1,5 @@
 package com.easyjob.jetpack.viewmodels
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
@@ -11,7 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,15 +31,25 @@ class ReviewViewModel @Inject constructor(
     private val _state = MutableStateFlow<ReviewState>(ReviewState.Idle)
     val state: StateFlow<ReviewState> = _state
 
-    private val _oldReview = MutableStateFlow<Pair<Double, String>?>(null)
-    val oldReview: StateFlow<Pair<Double, String>?> = _oldReview
+    private val _oldReview = MutableStateFlow<Triple<Double, String, String>?>(null)
+    val oldReview: StateFlow<Triple<Double, String, String>?> = _oldReview
 
-    fun submitReview(professional: String, score: Double, comment: String) {
+    fun submitReview(
+        professional: String,
+        score: Double,
+        comment: String,
+        reviewId: String? = null
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             val clientId = userPreferencesRepository.userIdFlow.firstOrNull() ?: return@launch
             _state.value = ReviewState.Loading
 
-            val response = repo.submitReview(clientId, professional, score, comment)
+            val response = if (reviewId == null) {
+                repo.submitReview(clientId, professional, score, comment)
+            } else {
+                repo.updateReview(reviewId, score, comment)
+            }
+
             _state.value = if (response.isSuccessful) {
                 ReviewState.Success
             } else {
@@ -51,12 +58,16 @@ class ReviewViewModel @Inject constructor(
         }
     }
 
-    fun checkSubmittedReview(reviews: List<Review?>?) {
+    fun getOldReview(reviews: List<Review?>?) {
         viewModelScope.launch(Dispatchers.IO) {
             val clientId = userPreferencesRepository.userIdFlow.firstOrNull() ?: return@launch
-            val review = reviews?.firstOrNull { it?.client?.id == clientId }
-            _oldReview.value = review?.let { Pair(it.score, it.comment) }
+            reviews?.find { it?.client?.id == clientId }?.let { review ->
+                withContext(Dispatchers.Main) {
+                    _oldReview.value = Triple(review.score, review.comment, review.id)
+                }
+            }
         }
     }
+
 
 }

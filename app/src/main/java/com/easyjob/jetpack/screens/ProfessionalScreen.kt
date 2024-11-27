@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.sharp.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -42,7 +42,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.models.Professional
-import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.ui.theme.components.ButtonSection
 import com.easyjob.jetpack.ui.theme.components.CommentsCard
 import com.easyjob.jetpack.ui.theme.components.FilterCard
@@ -52,7 +51,6 @@ import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
-import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.viewmodels.ReviewViewModel
 import kotlin.math.roundToInt
@@ -66,17 +64,20 @@ fun ProfessionalClientScreen(
     reviewViewModel: ReviewViewModel = hiltViewModel(),
     id: String,
 ) {
+
     var showReviewDialog by remember { mutableStateOf(false) }
     var showLikeDialog by remember { mutableStateOf(false) }
     var hasSubmittedReview by remember { mutableStateOf(false) }
     var previousScore by remember { mutableDoubleStateOf(0.0) }
     var previousComment by remember { mutableStateOf("") }
+    var reviewId by remember { mutableStateOf<String?>(null) }
 
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
     val reviewsState by professionalViewModel.reviews.observeAsState() // Todas las reseñas del profesional
     //val city by professionalProfileViewModel.city.observeAsState()
-    val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+    //val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+    val scoreAndCount by professionalViewModel.scoreAndCount.observeAsState()
 
     val loading by professionalViewModel.loading.observeAsState()
     val error by professionalViewModel.errorMessage.observeAsState()
@@ -89,21 +90,20 @@ fun ProfessionalClientScreen(
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    reviewViewModel.checkSubmittedReview(reviewsState)
+    reviewViewModel.getOldReview(reviewsState)
 
     LaunchedEffect(reviewState) {
         when (reviewState) {
             is ReviewViewModel.ReviewState.Success -> {
                 Toast.makeText(context, "¡Reseña enviada con éxito!", Toast.LENGTH_SHORT).show()
                 showReviewDialog = false
+
+                professionalViewModel.fetchReviewsOfProfessinal(id)
             }
 
             is ReviewViewModel.ReviewState.Error -> {
-                Toast.makeText(
-                    context,
-                    (reviewState as ReviewViewModel.ReviewState.Error).message,
-                    Toast.LENGTH_SHORT
-                ).show()
+                val errorMessage = (reviewState as ReviewViewModel.ReviewState.Error).message
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 showReviewDialog = false
             }
 
@@ -114,9 +114,15 @@ fun ProfessionalClientScreen(
     LaunchedEffect(id) {
         professionalViewModel.fetchProfessional(id)
         //professionalProfileViewModel.loadCity(id)
-        professionalProfileViewModel.loadCommentsCount(id)
+        //professionalProfileViewModel.loadCommentsCount(id)
         professionalViewModel.fetchServicesOfProfessinal(id)
         professionalViewModel.fetchReviewsOfProfessinal(id)
+        //professionalViewModel.recalculateScoreAndCount(reviewsState ?: listOf())
+    }
+
+    LaunchedEffect(reviewsState) {
+        reviewsState?.let { professionalViewModel.recalculateScoreAndCount(it) }
+
     }
 
     var activeSection by remember {
@@ -154,8 +160,12 @@ fun ProfessionalClientScreen(
                     professionalId = id,
                     initialScore = previousScore,
                     initialComment = previousComment,
+                    reviewId = reviewId,
                     onDismissRequest = { showReviewDialog = false },
-                    onReviewSubmitted = { }
+                    onReviewSubmitted = {
+                        reviewViewModel.getOldReview(reviewsState)
+                        showReviewDialog = false
+                    }
                 )
             }
 
@@ -187,9 +197,8 @@ fun ProfessionalClientScreen(
                             phoneNumber = professional.phone_number,
                             cities = professional.cities ?: listOf(),
                             iconSize = 16,
-                            stars = professional.score?.toDouble()?.roundToInt()
-                                ?: 0, //ajustar para el score del tecnico
-                            comments = commentsCount.toString(),
+                            stars = (scoreAndCount?.first ?: 0.0).roundToInt(),
+                            comments = (scoreAndCount?.second ?: 0).toString(),
                         )
                     }
 
@@ -244,7 +253,8 @@ fun ProfessionalClientScreen(
                                 text = if (oldReview != null) "Editar opinión" else "Escribir una opinión",
                                 onClick = {
                                     previousScore = oldReview?.first ?: 0.0
-                                    previousComment = oldReview?.second ?: ""
+                                    previousComment = oldReview?.second.orEmpty()
+                                    reviewId = oldReview?.third
                                     showReviewDialog = true
                                 }
                             )
@@ -286,13 +296,8 @@ fun ProfessionalClientScreen(
                                         fontWeight = FontWeight.Medium,
                                         fontSize = 22.sp,
                                         color = Color(0xFF133c55),
-                                        text = "Opiniones totales: ${reviewsState?.size ?: 0}",
+                                        text = "Opiniones totales: ${scoreAndCount?.second ?: 0}",
                                     )
-
-                                    /*SecondaryButton(
-                                    text = "Escribir una opinión",
-                                    onClick = { showReviewDialog = true }
-                                )*/
 
                                     reviewsState?.let {
                                         CommentsCard(reviews = it)

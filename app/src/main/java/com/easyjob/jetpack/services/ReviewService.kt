@@ -5,6 +5,7 @@ import com.easyjob.jetpack.repositories.ReviewClientDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 
@@ -19,6 +20,12 @@ interface ReviewService {
     suspend fun submitReview(
         @Path("clientId") clientId: String,
         @Path("professionalId") professionalId: String,
+        @Body review: ReviewRequest
+    ): Response<Review>
+
+    @PATCH("reviews/{reviewId}")
+    suspend fun updateReview(
+        @Path("reviewId") reviewId: String,
         @Body review: ReviewRequest
     ): Response<Review>
 
