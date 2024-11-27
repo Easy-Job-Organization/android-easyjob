@@ -11,6 +11,7 @@ import com.easyjob.jetpack.repositories.AppointmentDetailsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +25,10 @@ class AppointmentDetailsViewModel @Inject constructor(
 
     private val _statusUpdateSuccess = MutableLiveData<Boolean>()
     val statusUpdateSuccess: LiveData<Boolean> get() = _statusUpdateSuccess
+
+
+    private val _statusFinal = MutableLiveData<String>()
+    val statusFinal: LiveData<String> get() = _statusFinal
 
     private val _role = MutableLiveData<String>()
     val role: LiveData<String> get() = _role
@@ -40,15 +45,36 @@ class AppointmentDetailsViewModel @Inject constructor(
         Log.e("AppointmentDetailsScreen", "ROLE: $_role.value")
     }
 
+
     fun loadAppointmentDetails(appointmentId: String) {
         viewModelScope.launch {
             try {
                 val response = appointmentDetailsRepository.getAppointment(appointmentId)
                 if (response.isSuccessful) {
                     _appointment.value = response.body()
+                    Log.e("AppointmentDetailsScreen", "APPOINTMENT: ${appointment.value}")
+
+                    // Lógica para determinar el statusFinal
+                    _appointment.value?.let { appointment ->
+                        val currentDate = LocalDateTime.now() // Fecha y hora actual
+                        val dateStr = "${appointment.date}T${appointment.hour}"
+                        val appointmentDate = dateStr.let { LocalDateTime.parse(it) } // Asegúrate de que date sea del formato correcto
+                        Log.e("AppointmentDetailsScreen", "APPOINTMENTa1a: ${statusFinal.value}")
+
+                        if (appointmentDate != null && appointmentDate.isBefore(currentDate)) {
+                            _statusFinal.value = "terminada"
+                        } else {
+                            _statusFinal.value = appointment.appointmentStatus?.status
+                        }
+                    }
+
+                    Log.e("AppointmentDetailsScreen", "APPOINTMENTaa: ${statusFinal.value}")
+
                 } else {
                     _error.value = "Error al cargar los detalles de la cita"
                 }
+
+
             } catch (e: Exception) {
                 _error.value = e.message
             }

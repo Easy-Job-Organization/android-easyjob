@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.repositories
 
+import android.util.Log
 import com.easyjob.jetpack.models.Appointment
 import com.easyjob.jetpack.services.AppointmentDetailsService
 import retrofit2.Response
@@ -23,6 +24,7 @@ class AppointmentDetailsRepositoryImpl @Inject constructor(
 
     override suspend fun updateStatus(id: String, status_name: String): Response<Unit> {
         val res = appointmentDetailsService.updateStatus(id, status_name)
+        Log.e("AppointmentDetailsScreen", "APPOINTMENTaa: ${res}")
         return res
     }
 

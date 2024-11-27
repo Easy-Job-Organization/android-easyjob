@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -59,6 +60,7 @@ fun AppointmentDetailsScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val appointment by appointmentDetailsViewModel.appointment.observeAsState()
+    val status by appointmentDetailsViewModel.statusFinal.observeAsState()
     val error by appointmentDetailsViewModel.error.observeAsState()
     val statusUpdateSuccess by appointmentDetailsViewModel.statusUpdateSuccess.observeAsState()
     val role by appointmentDetailsViewModel.role.observeAsState("")
@@ -67,6 +69,7 @@ fun AppointmentDetailsScreen(
         appointmentDetailsViewModel.loadAppointmentDetails(id)
         appointmentDetailsViewModel.getRole()
         Log.e("AppointmentDetailsScreen", "ROLE: $role")
+        Log.e("AppointmentDetailsScreen", "APPOINTMENT: ${appointment}")
     }
 
 
@@ -91,35 +94,43 @@ fun AppointmentDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(16.dp)
         ) {
             //TITULO
             appointment?.service?.let {
                 Text(
                     text = it.title,
-                    fontSize = 20.sp,
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .fillMaxWidth(),
+                    color = Color.Black
+                    )
             }
             //NOMBRE Y FOTO DEL CLIENTE/PROFESIONAL
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             ) {
                 AsyncImage(
                     model = if (role.equals("client")) appointment?.professional?.photo_url else appointment?.client?.photo_url,
                     contentDescription = if (role.equals("client")) appointment?.professional?.name else appointment?.client?.name,
                     modifier = Modifier
+                        .size(64.dp)
                         .clip(CircleShape)
-                        .size(40.dp),
+                        .background(Color.Gray),
                     contentScale = ContentScale.Crop,
                     error = painterResource(R.drawable.ic_launcher_background)
                 )
+                Spacer(modifier = Modifier.width(16.dp))
                 (if (role.equals("client")) appointment?.professional?.name else appointment?.client?.name)?.let {
                     Text(
                         text = it,
                         color = Color.Black,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Medium,
                         fontSize = 18.sp
                     )
                 }
@@ -143,43 +154,47 @@ fun AppointmentDetailsScreen(
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                         .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
-                        .padding(8.dp)
+                        .padding(12.dp)
                 )
             }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth()
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Event,
                     contentDescription = "Calendar Icon",
                     tint = Color(0xFF636363),
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                         .padding(end = 8.dp)
                 )
 
                 Text(
                     fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     color = Color(0xFF636363),
                     text = appointment?.date.toString(),
                     lineHeight = 30.sp
                 )
+
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
                     imageVector = Icons.Outlined.AccessTime,
                     contentDescription = "Clock Icon",
                     tint = Color(0xFF636363),
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(20.dp)
                         .padding(end = 8.dp)
                 )
 
                 Text(
                     fontWeight = FontWeight.Normal,
-                    fontSize = 12.sp,
+                    fontSize = 14.sp,
                     color = Color(0xFF636363),
                     text = appointment?.hour.toString(),
                     lineHeight = 30.sp
@@ -188,24 +203,38 @@ fun AppointmentDetailsScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (appointment?.appointmentStatus?.status != "Cancelada" && appointment?.appointmentStatus?.status != "Terminada")
+            if (status != "rechazada" && status != "terminada")
             {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    if (appointment?.appointmentStatus?.status == "Pendiente") {
-                        SecondaryButton(text = "Cancelar", onClick = { navController.popBackStack()}, width = 200)
-
-                        PrimaryButton(
-                            text = "Agendar",
+                    if (status == "pendiente") {
+                        SecondaryButton(
+                            text = "Cancelar",
                             onClick = {
+                                appointmentDetailsViewModel.updateAppointmentStatus(appointment?.id?:"","rechazada")
                                 navController.popBackStack()
                             },
                             width = 200)
-                    } else if (appointment?.appointmentStatus?.status == "Aceptada") {
-                        SecondaryButton(text = "Cancelar", onClick = { navController.popBackStack()}, width = 200)
+                        if(role!="client"){
+                            PrimaryButton(
+                                text = "Aceptar",
+                                onClick = {
+                                    appointmentDetailsViewModel.updateAppointmentStatus(appointment?.id?:"","aceptada")
+                                    navController.popBackStack()
+                                },
+                                width = 200)
+                        }
+                    } else if (status == "aceptada") {
+                        SecondaryButton(
+                            text = "Cancelar",
+                            onClick = {
+                                appointmentDetailsViewModel.updateAppointmentStatus(appointment?.id?:"","rechazada")
+                                navController.popBackStack()
+                                  },
+                            width = 200)
                     }
                 }
             }
