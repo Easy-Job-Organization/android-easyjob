@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.sharp.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -22,10 +21,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +42,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.models.Professional
-import com.easyjob.jetpack.models.Service
 import com.easyjob.jetpack.ui.theme.components.ButtonSection
 import com.easyjob.jetpack.ui.theme.components.CommentsCard
 import com.easyjob.jetpack.ui.theme.components.FilterCard
@@ -50,7 +51,6 @@ import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.SecondaryButton
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfessionalClientViewModel
-import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
 import com.easyjob.jetpack.viewmodels.ProfessionalViewModel
 import com.easyjob.jetpack.viewmodels.ReviewViewModel
 import kotlin.math.roundToInt
@@ -64,42 +64,65 @@ fun ProfessionalClientScreen(
     reviewViewModel: ReviewViewModel = hiltViewModel(),
     id: String,
 ) {
+
     var showReviewDialog by remember { mutableStateOf(false) }
     var showLikeDialog by remember { mutableStateOf(false) }
+    var hasSubmittedReview by remember { mutableStateOf(false) }
+    var previousScore by remember { mutableDoubleStateOf(0.0) }
+    var previousComment by remember { mutableStateOf("") }
+    var reviewId by remember { mutableStateOf<String?>(null) }
 
     val professionalState by professionalViewModel.professional.observeAsState()
     val servicesState by professionalViewModel.services.observeAsState()
-    val reviewsState by professionalViewModel.reviews.observeAsState()
+    val reviewsState by professionalViewModel.reviews.observeAsState() // Todas las reseñas del profesional
     //val city by professionalProfileViewModel.city.observeAsState()
-    val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+    //val commentsCount by professionalProfileViewModel.commentsCount.observeAsState(0)
+    val scoreAndCount by professionalViewModel.scoreAndCount.observeAsState()
 
     val loading by professionalViewModel.loading.observeAsState()
     val error by professionalViewModel.errorMessage.observeAsState()
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-    val reviewState by reviewViewModel.state.observeAsState()
+    val reviewState by reviewViewModel.state.collectAsState()
+    val oldReview by reviewViewModel.oldReview.collectAsState()
+
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    reviewViewModel.getOldReview(reviewsState)
 
     LaunchedEffect(reviewState) {
         when (reviewState) {
-            2 -> {
+            is ReviewViewModel.ReviewState.Success -> {
                 Toast.makeText(context, "¡Reseña enviada con éxito!", Toast.LENGTH_SHORT).show()
                 showReviewDialog = false
+
+                professionalViewModel.fetchReviewsOfProfessinal(id)
             }
-            3 -> {
-                Toast.makeText(context, "Error al enviar la reseña. Inténtalo nuevamente.", Toast.LENGTH_SHORT).show()
+
+            is ReviewViewModel.ReviewState.Error -> {
+                val errorMessage = (reviewState as ReviewViewModel.ReviewState.Error).message
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                 showReviewDialog = false
             }
+
+            else -> Unit
         }
     }
 
     LaunchedEffect(id) {
         professionalViewModel.fetchProfessional(id)
         //professionalProfileViewModel.loadCity(id)
-        professionalProfileViewModel.loadCommentsCount(id)
+        //professionalProfileViewModel.loadCommentsCount(id)
         professionalViewModel.fetchServicesOfProfessinal(id)
         professionalViewModel.fetchReviewsOfProfessinal(id)
+        //professionalViewModel.recalculateScoreAndCount(reviewsState ?: listOf())
+    }
+
+    LaunchedEffect(reviewsState) {
+        reviewsState?.let { professionalViewModel.recalculateScoreAndCount(it) }
+
     }
 
     var activeSection by remember {
@@ -135,8 +158,14 @@ fun ProfessionalClientScreen(
             if (showReviewDialog) {
                 ReviewDialog(
                     professionalId = id,
+                    initialScore = previousScore,
+                    initialComment = previousComment,
+                    reviewId = reviewId,
                     onDismissRequest = { showReviewDialog = false },
-                    onReviewSubmitted = {  }
+                    onReviewSubmitted = {
+                        reviewViewModel.getOldReview(reviewsState)
+                        showReviewDialog = false
+                    }
                 )
             }
 
@@ -168,9 +197,8 @@ fun ProfessionalClientScreen(
                             phoneNumber = professional.phone_number,
                             cities = professional.cities ?: listOf(),
                             iconSize = 16,
-                            stars = professional.score?.toDouble()?.roundToInt()
-                                ?: 0, //ajustar para el score del tecnico
-                            comments = commentsCount.toString(),
+                            stars = (scoreAndCount?.first ?: 0.0).roundToInt(),
+                            comments = (scoreAndCount?.second ?: 0).toString(),
                         )
                     }
 
@@ -221,65 +249,70 @@ fun ProfessionalClientScreen(
                                 text = "Enviar mensaje",
                                 onClick = { navController.navigate("chat/$id") }
                             )
+                            SecondaryButton(
+                                text = if (oldReview != null) "Editar opinión" else "Escribir una opinión",
+                                onClick = {
+                                    previousScore = oldReview?.first ?: 0.0
+                                    previousComment = oldReview?.second.orEmpty()
+                                    reviewId = oldReview?.third
+                                    showReviewDialog = true
+                                }
+                            )
+
                         }
 
-                    }
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            ButtonSection(
+                                active = activeSection,
+                                text = "Información",
+                                onClick = { activeSection = !activeSection },
+                                width = 220
+                            )
+                            ButtonSection(
+                                active = !activeSection,
+                                text = "Opiniones",
+                                onClick = { activeSection = !activeSection },
+                                width = 220
+                            )
+                        }
+                        Box(modifier = Modifier.height(10.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        ) {
+                            if (activeSection) {
+                                servicesState?.let { InformationCard(services = it) }
+                            } else {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        ButtonSection(
-                            active = activeSection,
-                            text = "Información",
-                            onClick = { activeSection = !activeSection },
-                            width = 220
-                        )
-                        ButtonSection(
-                            active = !activeSection,
-                            text = "Opiniones",
-                            onClick = { activeSection = !activeSection },
-                            width = 220
-                        )
-                    }
-                    Box(modifier = Modifier.height(10.dp))
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                    ) {
-                        if (activeSection) {
-                            servicesState?.let { InformationCard(services = it) }
-                        } else {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
+                                    Text(
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 22.sp,
+                                        color = Color(0xFF133c55),
+                                        text = "Opiniones totales: ${scoreAndCount?.second ?: 0}",
+                                    )
 
-                                Text (
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 22.sp,
-                                    color = Color(0xFF133c55),
-                                    text = "Opiniones totales: ${reviewsState?.size ?: 0}",
-                                )
+                                    reviewsState?.let {
+                                        CommentsCard(reviews = it)
+                                    }
 
-                                /*SecondaryButton(
-                                    text = "Escribir una opinión",
-                                    onClick = { showReviewDialog = true }
-                                )*/
-
-                                reviewsState?.let {
-                                    CommentsCard(reviews = it)
                                 }
 
                             }
-
                         }
                     }
                 }
+
             }
 
         }
 
     }
-
 }
