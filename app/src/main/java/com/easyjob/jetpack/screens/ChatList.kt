@@ -120,13 +120,13 @@ fun ChatList(
 
                 Box(modifier = Modifier.width(20.dp))
 
-                Row(
+                /*Row(
                     modifier = Modifier.width(80.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     IconButton(onClick = {
-                        /*TODO*/
+                        *//*TODO*//*
                     }) {
                         Icon(
                             Icons.Rounded.Create,
@@ -136,7 +136,7 @@ fun ChatList(
                     }
 
                     IconButton(onClick = {
-                        /*TODO*/
+                        *//*TODO*//*
                     }) {
                         Icon(
                             Icons.Default.Settings,
@@ -144,7 +144,7 @@ fun ChatList(
                             modifier = Modifier.size(30.dp)
                         )
                     }
-                }
+                }*/
             }
 
             Text(

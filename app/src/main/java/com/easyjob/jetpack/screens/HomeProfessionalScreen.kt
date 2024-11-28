@@ -49,6 +49,9 @@ fun HomeProfessionalScreen(
             composable("appointments") { AppointmentScreen(navController, nestedNavController) }
             composable("messages") { MessageScreen(navController) }
             composable("editServices") { EditServicesScreen(nestedNavController) }
+
+            composable("places") { PlacesScreen(nestedNavController) }
+            composable("addPlace") { AddPlaceScreen(nestedNavController) }
             composable("appointment/{id}", arguments = listOf(
                 navArgument("id") { type = NavType.StringType }
             )) {entry ->
