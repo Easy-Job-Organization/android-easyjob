@@ -89,6 +89,7 @@ fun HomeScreen(
             }
             composable("likes") { LikesProfessionalScreen(nestedNavController)}
             composable("reviews") { ReviewsScreen(nestedNavController)}
+            composable("map") { MapScreen(nestedNavController) }
         }
     }
 }
