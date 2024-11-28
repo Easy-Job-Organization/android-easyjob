@@ -171,6 +171,7 @@ object AppModule {
     @Singleton
     fun providePlacesService(retrofit: Retrofit): PlacesService {
         return retrofit.create(PlacesService::class.java)
+    }
 
     @Provides
     @Singleton
@@ -251,8 +252,8 @@ object AppModule {
     @Singleton
     fun provideCreateServiceRepository(
         createServiceService: CreateServiceService
-    ):  CreateServiceRepository {
-        return  CreateServiceRepositoryImpl(createServiceService)
+    ): CreateServiceRepository {
+        return CreateServiceRepositoryImpl(createServiceService)
     }
 
     @Provides
@@ -303,6 +304,7 @@ object AppModule {
         placesService: PlacesService
     ): PlacesRepository {
         return PlacesRepositoryImpl(placesService)
+    }
 
     @Singleton
     @Provides
@@ -311,4 +313,5 @@ object AppModule {
     ): AppointmentDetailsRepository {
         return AppointmentDetailsRepositoryImpl(appointmentDetailsService)
     }
+
 }
