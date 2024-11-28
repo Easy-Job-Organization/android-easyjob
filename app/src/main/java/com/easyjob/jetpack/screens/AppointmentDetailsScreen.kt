@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
+import androidx.compose.material.icons.outlined.AttachMoney
 import androidx.compose.material.icons.rounded.Event
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,6 +50,8 @@ import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.AppointmentDetailsViewModel
 import com.easyjob.jetpack.viewmodels.AppointmentViewModel
 import com.easyjob.jetpack.viewmodels.CreateAppointmentDTO
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,6 +75,19 @@ fun AppointmentDetailsScreen(
         Log.e("AppointmentDetailsScreen", "APPOINTMENT: ${appointment}")
     }
 
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+
+    // Variable para la fecha formateada
+    val formattedDate = appointment?.date?.let { date ->
+        try {
+            val parsedDate = LocalDate.parse(date, inputFormatter)
+            parsedDate.format(outputFormatter)
+        } catch (e: Exception) {
+            Log.e("AppointmentDetailsScreen", "Error parsing date: $date", e)
+            "Fecha no disponible"
+        }
+    } ?: "Cargando..."
 
 
 
@@ -95,6 +111,7 @@ fun AppointmentDetailsScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
+                .padding(top = 20.dp)
         ) {
             //TITULO
             appointment?.service?.let {
@@ -103,17 +120,112 @@ fun AppointmentDetailsScreen(
                     fontSize = 30.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 20.dp)
                         .fillMaxWidth(),
-                    color = Color.Black
+                    color = Color(0xff3B82F6)
                     )
             }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy((-4).dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Event,
+                            contentDescription = "Calendar Icon",
+                            tint = Color(0xFF636363),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+
+                        Text(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 20.sp,
+                            color = Color(0xFF636363),
+                            text = formattedDate,
+                            lineHeight = 30.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Outlined.AccessTime,
+                            contentDescription = "Clock Icon",
+                            tint = Color(0xFF636363),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .padding(end = 8.dp)
+                        )
+
+                        Text(
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 20.sp,
+                            color = Color(0xFF636363),
+                            text = appointment?.hour.toString(),
+                            lineHeight = 30.sp
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .background(
+                            color = if(status=="aceptada"){Color(0xFFD4EDDA)}else if (status=="pendiente") {Color(0xFFFFF3CD)} else {Color(0xFFF8D7DA)}, // Verde claro
+                            shape = RoundedCornerShape(10.dp) // Bordes redondeados
+                        )
+                        .padding(horizontal = 20.dp, vertical = 10.dp) // Espaciado interno
+                ) {
+                    Text(
+                        text = if(status=="aceptada"){"Aceptada"}else if (status=="pendiente") {"Pendiente"} else if(status=="rechazada") {"Cancelada"} else {"Terminada"} ,
+                        color = if(status=="aceptada"){Color(0xFF155724)}else if (status=="pendiente") {Color(0xFF856404)} else {Color(0xFF721C24)}, // Texto verde oscuro
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+
+            role?.let {
+                Text(
+                    text = if (role == "client"){"Te va a ayudar:"}else{"Vas a ayudar a:"},
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .padding(bottom = 8.dp, top = 16.dp)
+                        .fillMaxWidth(),
+                    color = Color.Black
+                )
+            }
+
+
+
             //NOMBRE Y FOTO DEL CLIENTE/PROFESIONAL
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 20.dp)
             ) {
                 AsyncImage(
                     model = if (role.equals("client")) appointment?.professional?.photo_url else appointment?.client?.photo_url,
@@ -130,78 +242,104 @@ fun AppointmentDetailsScreen(
                     Text(
                         text = it,
                         color = Color.Black,
-                        fontWeight = FontWeight.Medium,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 18.sp
                     )
                 }
+
+                Spacer(modifier = Modifier.width(5.dp))
 
                 (if (role.equals("client")) appointment?.professional?.last_name else appointment?.client?.last_name)?.let {
                     Text(
                         text = it,
                         color = Color.Black,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Normal,
                         fontSize = 18.sp
                     )
                 }
             }
 
-            // Descripción
-            appointment?.description?.let {
+            Text(
+                text = "Detalles del servicio:",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .padding(bottom = 8.dp, top = 16.dp)
+                    .fillMaxWidth(),
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+
+                Icon(
+                    imageVector = Icons.Outlined.AttachMoney,
+                    contentDescription = "Clock Icon",
+                    tint = Color(0xFF636363),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(end = 4.dp)
+                )
+
                 Text(
-                    text = it,//appointment.description,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 20.sp,
+                    color = Color(0xFF636363),
+                    text = appointment?.service?.price.toString()?:"---",
+                    lineHeight = 30.sp
+                )
+            }
+
+            appointment?.service?.description?.let {
+                Text(
+                    text = it,
                     fontSize = 16.sp,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp)
+                        .padding(bottom = 10.dp)
                         .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
                         .padding(12.dp)
                 )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .padding(bottom = 16.dp)
-                    .fillMaxWidth()
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Event,
-                    contentDescription = "Calendar Icon",
-                    tint = Color(0xFF636363),
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(end = 8.dp)
-                )
-
+            if(appointment?.description!=null){
                 Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    color = Color(0xFF636363),
-                    text = appointment?.date.toString(),
-                    lineHeight = 30.sp
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                Icon(
-                    imageVector = Icons.Outlined.AccessTime,
-                    contentDescription = "Clock Icon",
-                    tint = Color(0xFF636363),
+                    text = if (role == "client"){"Tus indicaciones:"}else{"Indicaciones del cliente:"},
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium,
                     modifier = Modifier
-                        .size(20.dp)
-                        .padding(end = 8.dp)
-                )
-
-                Text(
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 14.sp,
-                    color = Color(0xFF636363),
-                    text = appointment?.hour.toString(),
-                    lineHeight = 30.sp
+                        .padding(bottom = 8.dp, top = 16.dp)
+                        .fillMaxWidth(),
+                    color = Color.Black
                 )
             }
 
+
+            // Descripción
+            appointment?.description?.let { it1 ->
+                Text(
+                    text = it1,
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                        .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
+                        .padding(12.dp)
+                )
+            }
+
+
+
+
+
+
+
             Spacer(modifier = Modifier.weight(1f))
+
 
             if (status != "rechazada" && status != "terminada")
             {
