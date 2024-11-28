@@ -25,6 +25,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +38,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
+import com.easyjob.jetpack.ui.theme.components.InfoAlert
 import com.easyjob.jetpack.ui.theme.components.ProfileSectionClient
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfileViewModel
@@ -46,6 +50,15 @@ fun ProfileScreen(
     clientNavController: NavController,
     profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
+
+    var showHelpInfo by remember {
+        mutableStateOf(false)
+    }
+
+    var showInProgressInfo by remember {
+        mutableStateOf(false)
+    }
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     val profileState by profileViewModel.profileState.observeAsState()
@@ -85,6 +98,22 @@ fun ProfileScreen(
                     Text("Hubo un error al cargar el perfil", color = Color.Red)
                 }
                 3 -> {
+
+                    if(showHelpInfo){
+                        InfoAlert(
+                            title = "Ayuda",
+                            info = "Comunicate con nosotros al correo:\n\ncontacto@easyjob.com",
+                            onAccept = {showHelpInfo=false}
+                        )
+                    }
+
+                    if(showInProgressInfo){
+                        InfoAlert(
+                            title = "Funcion en desarrollo",
+                            info = "Agradecemos tu interes\n\nPronto tendremos esta funcion disponible",
+                            onAccept = {showInProgressInfo=false}
+                        )
+                    }
                     profileData?.let { profile ->
                         ProfileSectionClient(
                             image = profile.photo_url ?: "https://example.com/default_profile.jpg",
@@ -104,19 +133,19 @@ fun ProfileScreen(
                                 image = com.easyjob.jetpack.R.drawable.ayuda,
                                 descriptionImage = "Ayuda",
                                 title = "Ayuda",
-                                onClick = { /*TODO*/ }
+                                onClick = { showHelpInfo=true }
                             )
                             ActionCard(
                                 image = com.easyjob.jetpack.R.drawable.easyjobplus,
                                 descriptionImage = "Easy job +",
-                                title = "Easy job +",
-                                onClick = { /*TODO*/ }
+                                title = "EasyJob+",
+                                onClick = { showInProgressInfo=true }
                             )
                             ActionCard(
                                 image = com.easyjob.jetpack.R.drawable.history_toggle_off,
                                 descriptionImage = "Historial",
                                 title = "Historial",
-                                onClick = { /*TODO*/ }
+                                onClick = { showInProgressInfo=true }
                             )
                         }
 

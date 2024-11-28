@@ -39,29 +39,28 @@ class EditClientProfileRepositoryImpl @Inject constructor(
         contentResolver: ContentResolver
     ): Response<Unit>? {
 
-        // Convert fields to RequestBody
         val namePart = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
         val lastNamePart = RequestBody.create("text/plain".toMediaTypeOrNull(), last_name)
         val phoneNumberPart = RequestBody.create("text/plain".toMediaTypeOrNull(), phone_number)
 
-        val imageName = "client_image"
-
-        val imageStream = contentResolver.openInputStream(client_image)
-        val imagePart = imageStream?.let {
-            MultipartBody.Part.createFormData(
-                imageName,
-                File(client_image.path!!).name,
-                it.readBytes().toRequestBody("image/*".toMediaTypeOrNull())
-            )
+        val imagePart: MultipartBody.Part? = if (client_image.scheme == "content" || client_image.scheme == "file") {
+            val imageStream = contentResolver.openInputStream(client_image)
+            imageStream?.let {
+                MultipartBody.Part.createFormData(
+                    "client_image",
+                    File(client_image.path!!).name,
+                    it.readBytes().toRequestBody("image/*".toMediaTypeOrNull())
+                )
+            }
+        } else {
+            // Si la imagen no es local (ejemplo: URI remota), no se incluye en el multipart
+            Log.d("EditClientProfileRepository", "La imagen no es local, omitiendo el envío")
+            null
         }
 
-        val res = imagePart?.let {
-            service.editClient(id, namePart, lastNamePart, phoneNumberPart,
-                it)
-        }
-
-        Log.d("EditProfessionalProfileRepository", ">>> Response - $res")
-        return res
+        return imagePart?.let {
+            service.editClient(id, namePart, lastNamePart, phoneNumberPart, it)
+        } ?: service.editClient(id, namePart, lastNamePart, phoneNumberPart, null)
     }
 
     override suspend fun getCurrentClient(id: String): Response<Client>{

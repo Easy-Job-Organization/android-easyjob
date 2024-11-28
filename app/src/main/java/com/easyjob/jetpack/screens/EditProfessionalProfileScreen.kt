@@ -240,7 +240,15 @@ fun SinglePhotoPickerA(uri: Uri?, onUriChange: (Uri?) -> Unit) {
     val singlePhotoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { newUri ->
-            onUriChange(newUri)
+            if (newUri != null) {
+                onUriChange(newUri) // Actualiza solo si hay una nueva URI
+            } else {
+                Toast.makeText(
+                    context,
+                    "No se seleccionó ninguna foto",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     )
 
@@ -268,11 +276,10 @@ fun SinglePhotoPickerA(uri: Uri?, onUriChange: (Uri?) -> Unit) {
             .height(38.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(
-            defaultElevation = 4.dp, // Elevación normal
-            pressedElevation = 8.dp // Elevación cuando se presiona
+            defaultElevation = 4.dp,
+            pressedElevation = 8.dp
         ),
         onClick = {
-            // Verifica si los permisos han sido otorgados
             if (ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_MEDIA_IMAGES
@@ -285,7 +292,6 @@ fun SinglePhotoPickerA(uri: Uri?, onUriChange: (Uri?) -> Unit) {
                     "Se necesitan permisos para acceder a la galería.",
                     Toast.LENGTH_SHORT
                 ).show()
-                Log.d("SinglePhotoPicker", "Se necesitan permisos para acceder a la galería.")
             }
         }
     ) {
