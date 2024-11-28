@@ -2,6 +2,7 @@ package com.easyjob.jetpack.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,6 +34,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -109,22 +112,24 @@ fun AppointmentDetailsScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding)
-                .padding(16.dp)
-                .padding(top = 20.dp)
+                .padding(top = 28.dp, start = 20.dp, end = 20.dp)
         ) {
             //TITULO
             appointment?.service?.let {
                 Text(
                     text = it.title,
                     fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                         .padding(bottom = 20.dp)
                         .fillMaxWidth(),
-                    color = Color(0xff3B82F6)
+                    color = Color.Black
                     )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -145,20 +150,21 @@ fun AppointmentDetailsScreen(
                             contentDescription = "Calendar Icon",
                             tint = Color(0xFF636363),
                             modifier = Modifier
-                                .size(24.dp)
-                                .padding(end = 8.dp)
+                                .size(20.dp)
                         )
+
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
                             fontWeight = FontWeight.Normal,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             color = Color(0xFF636363),
                             text = formattedDate,
                             lineHeight = 30.sp
                         )
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -170,13 +176,14 @@ fun AppointmentDetailsScreen(
                             contentDescription = "Clock Icon",
                             tint = Color(0xFF636363),
                             modifier = Modifier
-                                .size(24.dp)
-                                .padding(end = 8.dp)
+                                .size(20.dp)
                         )
+
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
                             fontWeight = FontWeight.Normal,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                             color = Color(0xFF636363),
                             text = appointment?.hour.toString(),
                             lineHeight = 30.sp
@@ -191,7 +198,13 @@ fun AppointmentDetailsScreen(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .background(
-                            color = if(status=="aceptada"){Color(0xFFD4EDDA)}else if (status=="pendiente") {Color(0xFFFFF3CD)} else {Color(0xFFF8D7DA)}, // Verde claro
+                            color = if (status == "aceptada") {
+                                Color(0xFFD4EDDA)
+                            } else if (status == "pendiente") {
+                                Color(0xFFFFF3CD)
+                            } else {
+                                Color(0xFFF8D7DA)
+                            }, // Verde claro
                             shape = RoundedCornerShape(10.dp) // Bordes redondeados
                         )
                         .padding(horizontal = 20.dp, vertical = 10.dp) // Espaciado interno
@@ -209,7 +222,7 @@ fun AppointmentDetailsScreen(
             role?.let {
                 Text(
                     text = if (role == "client"){"Te va a ayudar:"}else{"Vas a ayudar a:"},
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .padding(bottom = 8.dp, top = 16.dp)
@@ -218,14 +231,17 @@ fun AppointmentDetailsScreen(
                 )
             }
 
-
+            Spacer(modifier = Modifier.height(10.dp))
 
             //NOMBRE Y FOTO DEL CLIENTE/PROFESIONAL
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
+                    .shadow(10.dp, RoundedCornerShape(12.dp)) // Sombra aplicada al Box
+                    .background(Color.White, RoundedCornerShape(12.dp))
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp)
+                    .padding( 15.dp)
             ) {
                 AsyncImage(
                     model = if (role.equals("client")) appointment?.professional?.photo_url else appointment?.client?.photo_url,
@@ -261,7 +277,7 @@ fun AppointmentDetailsScreen(
 
             Text(
                 text = "Detalles del servicio:",
-                fontSize = 24.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier
                     .padding(bottom = 8.dp, top = 16.dp)
@@ -278,7 +294,7 @@ fun AppointmentDetailsScreen(
 
                 Icon(
                     imageVector = Icons.Outlined.AttachMoney,
-                    contentDescription = "Clock Icon",
+                    contentDescription = "Money Icon",
                     tint = Color(0xFF636363),
                     modifier = Modifier
                         .size(24.dp)
@@ -293,6 +309,8 @@ fun AppointmentDetailsScreen(
                     lineHeight = 30.sp
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             appointment?.service?.description?.let {
                 Text(
@@ -309,7 +327,7 @@ fun AppointmentDetailsScreen(
             if(appointment?.description!=null){
                 Text(
                     text = if (role == "client"){"Tus indicaciones:"}else{"Indicaciones del cliente:"},
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .padding(bottom = 8.dp, top = 16.dp)

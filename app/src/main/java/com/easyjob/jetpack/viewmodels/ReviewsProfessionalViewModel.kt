@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.ReviewClientDTO
+import com.easyjob.jetpack.repositories.ReviewProfessionalDTO
 import com.easyjob.jetpack.repositories.ReviewRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +15,12 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class ReviewsViewModel @Inject constructor(
+class ReviewsProfessionalViewModel @Inject constructor(
     private val userPreferencesRepository: UserPreferencesRepository,
     private val reviewRepository: ReviewRepository
 ): ViewModel() {
 
-    val reviewsClient = MutableLiveData<List<ReviewClientDTO>>()
+    val reviewsProfessional = MutableLiveData<List<ReviewProfessionalDTO>>()
 
     val profileState = MutableLiveData<Int>() // 0: Idle, 1: Loading, 2: Error, 3: Success
 
@@ -35,9 +36,9 @@ class ReviewsViewModel @Inject constructor(
             val id = getUserId()
 
             id?.let {
-                val reviews = reviewRepository.getReviewsByClientId(it)
+                val reviews = reviewRepository.getReviewsByProfessionalId(it)
                 withContext(Dispatchers.Main) {
-                    reviewsClient.value = reviews.body()
+                    reviewsProfessional.value = reviews.body()
                     profileState.value = 3
                 }
             }

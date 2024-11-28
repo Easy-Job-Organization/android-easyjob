@@ -236,7 +236,9 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Outlined.RateReview,
                             descriptionIcon = "Reseñas sobre mi",
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                innerNavController.navigate("reviews")
+                            },
                             text = "Reseñas sobre mi",
                             color = Color.Black
                         )

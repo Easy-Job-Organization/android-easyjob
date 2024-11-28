@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -96,6 +98,7 @@ fun EditClientProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -112,7 +115,12 @@ fun EditClientProfileScreen(
                 value = name,
                 onValueChange = viewModel::onNameChange,
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Campo para el apellido
@@ -120,7 +128,12 @@ fun EditClientProfileScreen(
                 value = lastName,
                 onValueChange = viewModel::onLastNameChange,
                 label = { Text("Apellido") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Campo para el teléfono
@@ -129,7 +142,12 @@ fun EditClientProfileScreen(
                 onValueChange = viewModel::onPhoneNumberChange,
                 label = { Text("Teléfono") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Separador
