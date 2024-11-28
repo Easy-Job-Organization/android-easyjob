@@ -1,14 +1,11 @@
 package com.easyjob.jetpack.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.models.Marker
-import com.easyjob.jetpack.models.Place
 import com.easyjob.jetpack.repositories.SearchScreenRepository
-import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.ProfessionalCardResponse
 import com.easyjob.jetpack.services.ProfessionalCardResponseWithoutCity
 import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse

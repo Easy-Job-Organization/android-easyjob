@@ -1,11 +1,9 @@
 package com.easyjob.jetpack.repositories
 
-import android.util.Log
 import com.easyjob.jetpack.services.ProfessionalCardResponse
 import com.easyjob.jetpack.services.ProfessionalCardResponseWithoutCity
 import com.easyjob.jetpack.services.ProfessionalSearchScreenResponse
 import com.easyjob.jetpack.services.SearchScreenService
-import com.easyjob.jetpack.services.SearchScreenServiceImpl
 import javax.inject.Inject
 
 interface SearchScreenRepository {

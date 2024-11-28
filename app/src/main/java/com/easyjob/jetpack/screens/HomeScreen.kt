@@ -89,7 +89,10 @@ fun HomeScreen(
             }
             composable("likes") { LikesProfessionalScreen(nestedNavController)}
             composable("reviews") { ReviewsScreen(nestedNavController)}
-            composable("map") { MapScreen(nestedNavController) }
+            composable("map/{speciality}") { entry ->
+                val speciality = entry.arguments?.getString("speciality")
+                MapScreen(speciality ?: "")
+            }
         }
     }
 }

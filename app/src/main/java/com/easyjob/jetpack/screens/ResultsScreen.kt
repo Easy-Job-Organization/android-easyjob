@@ -51,6 +51,7 @@ fun ResultsScreen(
     }
 
     val searchResults by searchScreenViewModel.searchResult2.observeAsState(null)
+    val markerList by searchScreenViewModel.markerList.observeAsState(emptyList())
 
     Scaffold(
         modifier = Modifier
@@ -117,7 +118,7 @@ fun ResultsScreen(
             } else {
 
                 MapButton(onClick = {
-                    navController.navigate("map")
+                    navController.navigate("map/$searchText")
                 })
 
                 Column(modifier = Modifier.padding(top = 20.dp, start = 15.dp, end = 15.dp)) {
