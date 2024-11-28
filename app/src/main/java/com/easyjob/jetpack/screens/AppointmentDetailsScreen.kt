@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.AttachMoney
@@ -78,6 +80,8 @@ fun AppointmentDetailsScreen(
         Log.e("AppointmentDetailsScreen", "APPOINTMENT: ${appointment}")
     }
 
+    val scrollState = rememberScrollState()
+
     val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 
@@ -114,6 +118,7 @@ fun AppointmentDetailsScreen(
                 .fillMaxSize()
                 .background(Color.White)
                 .padding(innerPadding)
+                .verticalScroll(scrollState)
                 .padding(top = 28.dp, start = 20.dp, end = 20.dp)
         ) {
             //TITULO
@@ -241,7 +246,7 @@ fun AppointmentDetailsScreen(
                     .shadow(10.dp, RoundedCornerShape(12.dp)) // Sombra aplicada al Box
                     .background(Color.White, RoundedCornerShape(12.dp))
                     .fillMaxWidth()
-                    .padding( 15.dp)
+                    .padding(15.dp)
             ) {
                 AsyncImage(
                     model = if (role.equals("client")) appointment?.professional?.photo_url else appointment?.client?.photo_url,
