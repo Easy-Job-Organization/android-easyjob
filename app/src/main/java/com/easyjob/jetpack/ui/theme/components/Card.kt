@@ -311,13 +311,14 @@ fun GroupChatCard(
                             RatingStars(rating = score, iconSize = 16)
                         }
 
-                        Text(
-                            fontWeight = FontWeight.Thin,
-                            fontSize = 14.sp,
-                            color = Color(0xFF133c55),
-                            text = "($score)",
-                            modifier = Modifier.padding(start = 2.dp)
-                        )
+                    Text(
+                        fontWeight = FontWeight.Thin,
+                        fontSize = 14.sp,
+                        color = Color(0xFF133c55),
+                        text = "(${ String.format("%.1f", score) })",
+                        modifier = Modifier.padding(start = 2.dp)
+                    )
+
 
                     }
                 }

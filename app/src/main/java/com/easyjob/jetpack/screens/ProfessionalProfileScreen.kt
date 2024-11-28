@@ -211,7 +211,9 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Default.LocationOn,
                             descriptionIcon = "Mis direcciones",
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                innerNavController.navigate("places")
+                            },
                             text = "Mis direcciones",
                             color = Color.Black
                         )
@@ -238,13 +240,7 @@ fun ProfessionalProfileScreen(
                             text = "Reseñas sobre mi",
                             color = Color.Black
                         )
-                        ButtonIconLink(
-                            icon = Icons.AutoMirrored.Filled.ContactSupport,
-                            descriptionIcon = "Preguntas",
-                            onClick = { /*TODO*/ },
-                            text = "Preguntas",
-                            color = Color.Black
-                        )
+
                         ButtonIconLink(
                             icon = Icons.Default.ExitToApp,
                             descriptionIcon = "Cerrar sesión",

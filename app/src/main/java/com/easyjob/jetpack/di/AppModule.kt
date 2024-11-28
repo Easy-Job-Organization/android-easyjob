@@ -169,6 +169,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun providePlacesService(retrofit: Retrofit): PlacesService {
+        return retrofit.create(PlacesService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAppointmentDetailsService(retrofit: Retrofit): AppointmentDetailsService {
         return retrofit.create(AppointmentDetailsService::class.java)
     }
@@ -246,8 +252,8 @@ object AppModule {
     @Singleton
     fun provideCreateServiceRepository(
         createServiceService: CreateServiceService
-    ):  CreateServiceRepository {
-        return  CreateServiceRepositoryImpl(createServiceService)
+    ): CreateServiceRepository {
+        return CreateServiceRepositoryImpl(createServiceService)
     }
 
     @Provides
@@ -294,9 +300,18 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun providePlacesRepository(
+        placesService: PlacesService
+    ): PlacesRepository {
+        return PlacesRepositoryImpl(placesService)
+    }
+
+    @Singleton
+    @Provides
     fun provideAppointmentDetailsRepository(
         appointmentDetailsService: AppointmentDetailsService
     ): AppointmentDetailsRepository {
         return AppointmentDetailsRepositoryImpl(appointmentDetailsService)
     }
+
 }

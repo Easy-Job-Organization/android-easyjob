@@ -89,5 +89,6 @@ fun EasyJobApp() {
         composable("recover") { RecoverPasswordScreen(navController) }
         composable("home") { HomeScreen(navController) }
         composable("homeProfessional") { HomeProfessionalScreen(navController) }
+
     }
 }

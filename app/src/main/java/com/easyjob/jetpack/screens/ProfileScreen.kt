@@ -155,13 +155,13 @@ fun ProfileScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            ButtonIconLink(
+                           /* ButtonIconLink(
                                 icon = Icons.Default.LocationOn,
                                 descriptionIcon = "Mis direcciones",
-                                onClick = { /*TODO*/ },
+                                onClick = { *//*TODO*//* },
                                 text = "Mis direcciones",
                                 color = Color.Black
-                            )
+                            )*/
                             ButtonIconLink(
                                 icon = Icons.Default.Settings,
                                 descriptionIcon = "Configuración",
@@ -187,13 +187,13 @@ fun ProfileScreen(
                                 text = "Mis reseñas",
                                 color = Color.Black
                             )
-                            ButtonIconLink(
+                            /*ButtonIconLink(
                                 icon = Icons.AutoMirrored.Filled.ContactSupport,
                                 descriptionIcon = "Mis preguntas",
-                                onClick = { /*TODO*/ },
+                                onClick = { *//*TODO*//* },
                                 text = "Mis preguntas",
                                 color = Color.Black
-                            )
+                            )*/
                             ButtonIconLink(
                                 icon = Icons.Default.ExitToApp,
                                 descriptionIcon = "Cerrar sesión",

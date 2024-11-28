@@ -6,6 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import android.util.Log
+import com.easyjob.jetpack.models.Place
 import com.easyjob.jetpack.models.SpecialitiesResponse
 
 interface SearchScreenService {
@@ -47,7 +48,8 @@ data class ProfessionalCardResponseWithoutCity(
     val roles: List<String>,
     val specialities: List<SpecialitiesResponse>,
     val description: String?,
-    val score : Double?
+    val score: Double?,
+    val places: List<Place>
 )
 
 class SearchScreenServiceImpl : SearchScreenService {
