@@ -48,9 +48,15 @@ fun HomeScreen(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("search") { SearchScreen(nestedNavController) }
-            composable("appointments") { AppointmentScreen(navController) }
+            composable("appointments") { AppointmentScreen(nestedNavController, nestedNavController) }
             composable("messages") { MessageScreen(navController) }
             composable("profile") { ProfileScreen(generalNavController =  navController, clientNavController = nestedNavController) }
+            composable("appointment/{id}", arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            )) {entry ->
+                val id = entry.arguments?.getString("id")
+                AppointmentDetailsScreen(navController = nestedNavController, id = id?: "")
+            }
             composable("editProfile") {
                 EditClientProfileScreen(
                     nestedNavController
