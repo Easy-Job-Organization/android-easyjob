@@ -155,7 +155,11 @@ fun AddPlaceScreen(
             }
 
             PrimaryButton(text = "Guardar", onClick = {
-                placesViewModel.savePlaceOfProfessional(name, markerClickState.position.latitude, markerClickState.position.longitude)
+                placesViewModel.savePlaceOfProfessional(
+                    name,
+                    markerClickState.position.longitude,
+                    markerClickState.position.latitude,
+                )
                 navController.navigate("profile") {
                     popUpTo(navController.graph.startDestinationId) {
                         inclusive = true

@@ -95,70 +95,75 @@ fun PlacesScreen(
     ) { padding ->
 
 
-        Column(
+        Box(
             modifier = Modifier
-                .background(Color.White)
                 .fillMaxSize()
                 .padding(padding)
-                .padding(
-                    vertical = 28.dp,
-                    horizontal = 24.dp
-                )
+
         ) {
 
-            Row() {
-
-                Text(
-                    text = "Tus Ubicaciones:",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            LazyColumn(
+            Column(
                 modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                    .background(Color.White)
+                    .padding(
+                        vertical = 28.dp,
+                        horizontal = 24.dp
+                    )
             ) {
-                items(places) { place ->
-                    Box(
-                        modifier = Modifier
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
-                            .shadow(10.dp, RoundedCornerShape(12.dp))
-                            .background(Color.White, RoundedCornerShape(12.dp))
-                            .padding(20.dp)
-                    ) {
-                        Column() {
-                            Text(
-                                text = place.name,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 16.sp,
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Row {
-                                GoogleMap(
-                                    modifier= Modifier
-                                        .fillMaxWidth()
-                                        .height(200.dp)
-                                        .clip(RoundedCornerShape(16.dp))
-                                    ,
+                Row() {
 
-                                    cameraPositionState = rememberCameraPositionState{
-                                        position = CameraPosition.fromLatLngZoom(
-                                            LatLng(place.latitude, place.longitude),
-                                            15f)
+                    Text(
+                        text = "Tus Ubicaciones:",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(places) { place ->
+                        Box(
+                            modifier = Modifier
+                                .border(1.dp, Color.LightGray, RoundedCornerShape(12.dp))
+                                .shadow(10.dp, RoundedCornerShape(12.dp))
+                                .background(Color.White, RoundedCornerShape(12.dp))
+                                .padding(20.dp)
+                        ) {
+                            Column() {
+                                Text(
+                                    text = place.name,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 16.sp,
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row {
+                                    GoogleMap(
+                                        modifier= Modifier
+                                            .fillMaxWidth()
+                                            .height(200.dp)
+                                            .clip(RoundedCornerShape(16.dp))
+                                        ,
+
+                                        cameraPositionState = rememberCameraPositionState{
+                                            position = CameraPosition.fromLatLngZoom(
+                                                LatLng(place.latitude, place.longitude),
+                                                15f)
+                                        }
+                                    ) {
+                                        Marker(
+                                            state = rememberMarkerState(
+                                                position = LatLng(place.latitude, place.longitude)
+                                            ),
+                                            title = place.name,
+                                            snippet = "Ubicacion del profesional"
+                                        )
                                     }
-                                ) {
-                                    Marker(
-                                        state = rememberMarkerState(
-                                            position = LatLng(place.latitude, place.longitude)
-                                        ),
-                                        title = place.name,
-                                        snippet = "Ubicacion del profesional"
-                                    )
                                 }
                             }
                         }
@@ -166,6 +171,5 @@ fun PlacesScreen(
                 }
             }
         }
-
     }
 }

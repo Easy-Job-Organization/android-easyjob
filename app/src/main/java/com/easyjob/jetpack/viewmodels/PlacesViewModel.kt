@@ -51,7 +51,6 @@ class PlacesViewModel @Inject constructor(
             val professionalId = getUserId();
             val response = placesRepository.saveLocationByProfessional(professionalId?:"", name, longitude, latitude);
             withContext(Dispatchers.Main) {
-
                 profileState.value = 3
             }
         }

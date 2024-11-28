@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.easyjob.jetpack.ui.theme.components.BottomNavBar
@@ -30,12 +31,17 @@ fun HomeProfessionalScreen(
     }
 
     val nestedNavController = rememberNavController()
+    val currentBackStackEntry = nestedNavController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry.value?.destination?.route
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
+
         bottomBar = {
-            BottomProfessionalNavBar(nestedNavController = nestedNavController)
+            if (currentRoute != null && !currentRoute.startsWith("chat")) {
+                BottomProfessionalNavBar(nestedNavController = nestedNavController)
+            }
         }
     ) { innerPadding ->
 
@@ -49,7 +55,7 @@ fun HomeProfessionalScreen(
             composable("appointments") { AppointmentScreen(navController, nestedNavController) }
             composable("messages") { MessageScreen(navController) }
             composable("editServices") { EditServicesScreen(nestedNavController) }
-
+            composable("reviews") { ReviewsProfessionalScreen(nestedNavController) }
             composable("places") { PlacesScreen(nestedNavController) }
             composable("addPlace") { AddPlaceScreen(nestedNavController) }
             composable("appointment/{id}", arguments = listOf(

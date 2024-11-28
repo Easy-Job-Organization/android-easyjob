@@ -10,6 +10,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import coil.compose.AsyncImage
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Column
@@ -117,6 +118,7 @@ fun EditProfessionalProfileScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(padding)
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -133,7 +135,12 @@ fun EditProfessionalProfileScreen(
                 value = name,
                 onValueChange = viewModel::onNameChange,
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Campo para el apellido
@@ -141,7 +148,12 @@ fun EditProfessionalProfileScreen(
                 value = lastName,
                 onValueChange = viewModel::onLastNameChange,
                 label = { Text("Apellido") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Campo para el teléfono
@@ -150,7 +162,12 @@ fun EditProfessionalProfileScreen(
                 onValueChange = viewModel::onPhoneNumberChange,
                 label = { Text("Teléfono") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color( 0xff3b82f6),
+                    focusedLabelColor =  Color( 0xff3b82f6),
+                    cursorColor = Color( 0xff3b82f6),
+                )
             )
 
             // Dropdown para seleccionar ciudad
@@ -162,7 +179,8 @@ fun EditProfessionalProfileScreen(
                     viewModel.onCityIdChange(cities[index].id)
                 },
                 expanded = expandedCities,
-                onExpandedChange = { expandedCities = it }
+                onExpandedChange = { expandedCities = it },
+
             )
 
             // Dropdown para seleccionar especialidad
