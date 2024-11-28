@@ -119,91 +119,105 @@ fun RegisterScreen(
         }
     }
 
-    val scrollState = rememberScrollState()
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
-            .verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(20.dp)
     ) {
-        Row(modifier = Modifier.weight(2f)) {}
-
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(14.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 60.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            // Selección de foto
-            SinglePhotoPicker(uri = uri) { newUri ->
-                uri = newUri
-                photoError = false
-            }
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Selección de foto
+                SinglePhotoPicker(uri = uri) { newUri ->
+                    uri = newUri
+                    photoError = false
+                }
 
-            if (photoError) {
-                Text(
-                    text = "Por favor selecciona una foto",
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 4.dp)
+                if (photoError) {
+                    Text(
+                        text = "Por favor selecciona una foto",
+                        color = Color.Red,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Campos de registro
+                Input(value = name, label = "Nombre", onValueChange = { name = it })
+                Input(value = last_name, label = "Apellidos", onValueChange = { last_name = it })
+                Input(value = email, label = "Correo", onValueChange = { email = it })
+                Input(value = phone_number, label = "Teléfono", onValueChange = { phone_number = it })
+                Input(
+                    value = password,
+                    label = "Contraseña",
+                    onValueChange = { password = it },
+                    visualTransformation = PasswordVisualTransformation()
                 )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Campos de registro
-            Input(value = name, label = "Nombre", onValueChange = { name = it })
-            Input(value = last_name, label = "Apellidos", onValueChange = { last_name = it })
-            Input(value = email, label = "Correo", onValueChange = { email = it })
-            Input(value = phone_number, label = "Teléfono", onValueChange = { phone_number = it })
-            Input(
-                value = password,
-                label = "Contraseña",
-                onValueChange = { password = it },
-                visualTransformation = PasswordVisualTransformation()
-            )
-            DropdownMenu1(
-                options = options,
-                selectedOption = selectedOption,
-                onOptionSelected = { selectedOption = it }
-            )
-
-            // Campos adicionales para profesionales
-            if (selectedOption == "Profesional") {
-
                 DropdownMenu1(
-                    options = cities.map { it.city_name },
-                    selectedOption = selectedCity,
-                    onOptionSelected = { selectedCity = it },
-                    placeholder = "Selecciona tu ciudad"
+                    options = options,
+                    selectedOption = selectedOption,
+                    onOptionSelected = { selectedOption = it }
                 )
 
-                /*DropdownMenu1(
-                    options = languages.map { it.language_name },
-                    selectedOption = selectedLanguage,
-                    onOptionSelected = { selectedLanguage = it },
-                    placeholder = "Selecciona tu idioma"
-                )*/
+                // Campos adicionales para profesionales
+                if (selectedOption == "Profesional") {
+                    DropdownMenu1(
+                        options = cities.map { it.city_name },
+                        selectedOption = selectedCity,
+                        onOptionSelected = { selectedCity = it },
+                        placeholder = "Selecciona tu ciudad"
+                    )
 
-                DropdownMenu1(
-                    options = specialities.map { it.speciality_name },
-                    selectedOption = selectedSpeciality,
-                    onOptionSelected = { selectedSpeciality = it },
-                    placeholder = "Selecciona una especialidad"
-                )
+                    /*DropdownMenu1(
+                   options = languages.map { it.language_name },
+                   selectedOption = selectedLanguage,
+                   onOptionSelected = { selectedLanguage = it },
+                   placeholder = "Selecciona tu idioma"
+               )*/
 
-                /*DropdownMenu1(
+                    DropdownMenu1(
+                        options = specialities.map { it.speciality_name },
+                        selectedOption = selectedSpeciality,
+                        onOptionSelected = { selectedSpeciality = it },
+                        placeholder = "Selecciona una especialidad"
+                    )
+
+                    /*DropdownMenu1(
                     options = services.map { it.title },
                     selectedOption = selectedService,
                     onOptionSelected = { selectedService = it },
                     placeholder = "Selecciona un servicio"
                 )*/
+                }
 
+                // Indicador de carga o mensaje de error
+                when (authState) {
+                    1 -> CircularProgressIndicator()
+                    2 -> Text("Hubo un error", color = Color.Red)
+                }
             }
+        }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Registro con la URI de la imagen y datos de usuario
+        // Botón y texto "Ya tienes cuenta" al final de la ventana
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter) // Alinear al final del contenedor
+                .padding(bottom = 26.dp), // Padding vertical del botón
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             PrimaryButton(
                 text = "Registrarse",
                 onClick = {
@@ -225,15 +239,10 @@ fun RegisterScreen(
                                 context.contentResolver
                             )
                         } else {
-                            val language_id =
-                                languages.find { it.language_name == selectedLanguage }?.id.toString()
-                            val speciality_id =
-                                specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
-                            val service_id =
-                                services.find { it.title == selectedService }?.id.toString()
-                            val city_id =
-                                cities.find { it.city_name == selectedCity }?.id.toString()
-
+                            val language_id = languages.find { it.language_name == selectedLanguage }?.id.toString()
+                            val speciality_id = specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
+                            val service_id = services.find { it.title == selectedService }?.id.toString()
+                            val city_id = cities.find { it.city_name == selectedCity }?.id.toString()
 
                             registerViewModel.signUpProfessional(
                                 name,
@@ -247,31 +256,13 @@ fun RegisterScreen(
                                 language_id,
                                 service_id,
                                 speciality_id,
-                                context.contentResolver
+                                context.contentResolver,
                             )
                         }
                     }
                 },
                 width = 250
             )
-        }
-
-        // Indicador de carga o mensaje de error
-        when (authState) {
-            1 -> CircularProgressIndicator()
-            2 -> Text("Hubo un error", color = Color.Red)
-        }
-
-        Box(modifier = Modifier.height(32.dp))
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .weight(1f),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.Top
-        ) {
 
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -286,8 +277,8 @@ fun RegisterScreen(
                 )
             }
         }
-        Box(modifier = Modifier.height(48.dp))
     }
+
 }
 
 
@@ -325,7 +316,7 @@ fun SinglePhotoPicker(uri: Uri?, onUriChange: (Uri?) -> Unit) {
         modifier = Modifier
             .wrapContentHeight(Alignment.CenterVertically)
             .height(38.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(8.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(
             defaultElevation = 4.dp, // Elevación normal
             pressedElevation = 8.dp // Elevación cuando se presiona
