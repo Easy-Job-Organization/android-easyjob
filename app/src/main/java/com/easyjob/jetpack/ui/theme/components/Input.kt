@@ -94,6 +94,7 @@ fun DropdownMenu1(
     options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
+    placeholder: String = "Selecciona una opción",
     width: Int? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ fun DropdownMenu1(
 
     ) {
         TextField(
-            value = selectedOption,
+            value = if (selectedOption.isEmpty()) placeholder else selectedOption,
             onValueChange = onOptionSelected,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },

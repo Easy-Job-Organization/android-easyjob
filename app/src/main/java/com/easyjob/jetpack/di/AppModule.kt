@@ -12,7 +12,6 @@ import com.easyjob.jetpack.repositories.ReviewRepositoryImpl
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.AuthService
-import com.easyjob.jetpack.services.AuthServiceImpl
 import com.easyjob.jetpack.services.ReviewService
 import com.easyjob.jetpack.services.SearchScreenService
 import com.easyjob.jetpack.services.SearchScreenServiceImpl
