@@ -182,7 +182,9 @@ fun ProfessionalProfileScreen(
                         ButtonIconLink(
                             icon = Icons.Default.LocationOn,
                             descriptionIcon = "Mis direcciones",
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                innerNavController.navigate("places")
+                            },
                             text = "Mis direcciones",
                             color = Color.Black
                         )

@@ -126,13 +126,13 @@ fun ProfileScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalArrangement = Arrangement.SpaceBetween
                         ) {
-                            ButtonIconLink(
+                           /* ButtonIconLink(
                                 icon = Icons.Default.LocationOn,
                                 descriptionIcon = "Mis direcciones",
-                                onClick = { /*TODO*/ },
+                                onClick = { *//*TODO*//* },
                                 text = "Mis direcciones",
                                 color = Color.Black
-                            )
+                            )*/
                             ButtonIconLink(
                                 icon = Icons.Default.Settings,
                                 descriptionIcon = "Configuración",
