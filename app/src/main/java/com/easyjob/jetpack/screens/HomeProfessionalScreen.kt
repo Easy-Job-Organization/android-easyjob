@@ -46,9 +46,15 @@ fun HomeProfessionalScreen(
         ) {
             composable("profile") { ProfessionalProfileScreen(navController, nestedNavController) }
             composable("search") { SearchScreen(nestedNavController) }
-            composable("appointments") { AppointmentScreen(navController) }
+            composable("appointments") { AppointmentScreen(navController, nestedNavController) }
             composable("messages") { MessageScreen(navController) }
             composable("editServices") { EditServicesScreen(nestedNavController) }
+            composable("appointment/{id}", arguments = listOf(
+                navArgument("id") { type = NavType.StringType }
+            )) {entry ->
+                val id = entry.arguments?.getString("id")
+                AppointmentDetailsScreen(navController = nestedNavController, id = id?: "")
+            }
             composable("editProfile") {
                 EditProfessionalProfileScreen(
                     nestedNavController

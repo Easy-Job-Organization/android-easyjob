@@ -75,7 +75,7 @@ fun RegisterDateScreen(
                 isBack = true,
             )
         },
-    ) { innerPadding ->
+    ) { innerPadding ->1
 
         Column(
             modifier = Modifier

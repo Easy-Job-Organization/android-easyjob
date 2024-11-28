@@ -54,6 +54,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AppointmentScreen(
     navController: NavController = rememberNavController(),
+    innerNavController: NavController = rememberNavController(),
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
 
@@ -193,7 +194,8 @@ fun AppointmentScreen(
                                             service = appointment.service,
                                             date = formattedDate,
                                             hour = appointment.hour,
-                                            photo_url = appointment.professional?.photo_url ?: ""
+                                            photo_url = appointment.professional?.photo_url ?: "",
+                                            navController = innerNavController
                                         )
                                     } else {
                                         AppointmentCard(
@@ -202,7 +204,8 @@ fun AppointmentScreen(
                                             service = appointment.service,
                                             date = formattedDate,
                                             hour = appointment.hour,
-                                            photo_url = appointment.client?.photo_url ?: ""
+                                            photo_url = appointment.client?.photo_url ?: "",
+                                            navController = innerNavController
                                         )
                                     }
                                 }
