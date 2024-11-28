@@ -75,20 +75,15 @@ fun RegisterScreen(
     var selectedOption by remember { mutableStateOf("Selecciona una opción") }
 
     val cities by resourcesViewModel.cities.observeAsState(listOf())
-    val services by resourcesViewModel.services.observeAsState(listOf())
-    val languages by resourcesViewModel.languages.observeAsState(listOf())
     val specialities by resourcesViewModel.specialities.observeAsState(listOf())
 
     var selectedCity by remember { mutableStateOf("") }
-    var selectedService by remember { mutableStateOf("") }
-    var selectedLanguage by remember { mutableStateOf("") }
     var selectedSpeciality by remember { mutableStateOf("") }
 
     val authState by registerViewModel.authState.observeAsState()
 
     var uri by remember { mutableStateOf<Uri?>(null) }
     var permissionsGranted by remember { mutableStateOf(false) }
-    var photoError by remember { mutableStateOf(false) }
 
     RequestMediaPermissions(
         onPermissionsGranted = {
@@ -100,21 +95,19 @@ fun RegisterScreen(
         }
     )
 
-    // Navegación al home si el registro es exitoso
     LaunchedEffect(authState) {
         if (authState == 3) {
             navController.navigate("splash") {
                 popUpTo("register") { inclusive = true }
             }
+        } else if (authState == 2) {
+            Toast.makeText(context, "Hubo un error al registrarte", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Obtener recursos de la API al seleccionar Profesional
     LaunchedEffect(selectedOption) {
         if (selectedOption == "Profesional") {
             resourcesViewModel.getCities()
-            resourcesViewModel.getLanguages()
-            resourcesViewModel.getServices()
             resourcesViewModel.getSpecialities()
         }
     }
@@ -122,48 +115,41 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 60.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        if (authState == 1) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                // Selección de foto
-                SinglePhotoPicker(uri = uri) { newUri ->
-                    uri = newUri
-                    photoError = false
-                }
+                CircularProgressIndicator()
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                SinglePhotoPicker(uri = uri) { newUri -> uri = newUri }
 
-                if (photoError) {
-                    Text(
-                        text = "Por favor selecciona una foto",
-                        color = Color.Red,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Campos de registro
                 Input(value = name, label = "Nombre", onValueChange = { name = it })
                 Input(value = last_name, label = "Apellidos", onValueChange = { last_name = it })
                 Input(value = email, label = "Correo", onValueChange = { email = it })
-                Input(value = phone_number, label = "Teléfono", onValueChange = { phone_number = it })
+                Input(
+                    value = phone_number,
+                    label = "Teléfono",
+                    onValueChange = { phone_number = it })
                 Input(
                     value = password,
                     label = "Contraseña",
                     onValueChange = { password = it },
                     visualTransformation = PasswordVisualTransformation()
                 )
+
                 DropdownMenu1(
                     options = options,
                     selectedOption = selectedOption,
@@ -179,106 +165,84 @@ fun RegisterScreen(
                         placeholder = "Selecciona tu ciudad"
                     )
 
-                    /*DropdownMenu1(
-                   options = languages.map { it.language_name },
-                   selectedOption = selectedLanguage,
-                   onOptionSelected = { selectedLanguage = it },
-                   placeholder = "Selecciona tu idioma"
-               )*/
-
                     DropdownMenu1(
                         options = specialities.map { it.speciality_name },
                         selectedOption = selectedSpeciality,
                         onOptionSelected = { selectedSpeciality = it },
                         placeholder = "Selecciona una especialidad"
                     )
-
-                    /*DropdownMenu1(
-                    options = services.map { it.title },
-                    selectedOption = selectedService,
-                    onOptionSelected = { selectedService = it },
-                    placeholder = "Selecciona un servicio"
-                )*/
                 }
 
-                // Indicador de carga o mensaje de error
-                when (authState) {
-                    1 -> CircularProgressIndicator()
-                    2 -> Text("Hubo un error", color = Color.Red)
-                }
-            }
-        }
+                Spacer(modifier = Modifier.height(12.dp))
 
-        // Botón y texto "Ya tienes cuenta" al final de la ventana
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter) // Alinear al final del contenedor
-                .padding(bottom = 26.dp), // Padding vertical del botón
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            PrimaryButton(
-                text = "Registrarse",
-                onClick = {
-                    if (uri == null) {
-                        photoError = true
-                        return@PrimaryButton
-                    }
-
-                    uri?.let { photo ->
-                        if (selectedOption == "Cliente") {
-                            registerViewModel.signUpClient(
-                                name,
-                                last_name,
-                                email,
-                                phone_number,
-                                password,
-                                selectedOption,
-                                photo,
-                                context.contentResolver
-                            )
-                        } else {
-                            val language_id = languages.find { it.language_name == selectedLanguage }?.id.toString()
-                            val speciality_id = specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
-                            val service_id = services.find { it.title == selectedService }?.id.toString()
-                            val city_id = cities.find { it.city_name == selectedCity }?.id.toString()
-
-                            registerViewModel.signUpProfessional(
-                                name,
-                                last_name,
-                                email,
-                                phone_number,
-                                password,
-                                selectedOption,
-                                photo,
-                                city_id,
-                                language_id,
-                                service_id,
-                                speciality_id,
-                                context.contentResolver,
-                            )
-                        }
-                    }
-                },
-                width = 250
-            )
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = "¿Ya tienes cuenta?")
-                TextButton(
-                    text = "Inicia sesión",
+                PrimaryButton(
+                    text = "Registrarse",
                     onClick = {
-                        navController.navigate("login")
-                    }
+                        if (uri == null) {
+                            Toast.makeText(
+                                context,
+                                "Por favor selecciona una foto",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                            return@PrimaryButton
+                        }
+
+                        uri?.let { photo ->
+                            if (selectedOption == "Cliente") {
+                                registerViewModel.signUpClient(
+                                    name,
+                                    last_name,
+                                    email,
+                                    phone_number,
+                                    password,
+                                    selectedOption,
+                                    photo,
+                                    context.contentResolver
+                                )
+                            } else {
+                                val speciality_id =
+                                    specialities.find { it.speciality_name == selectedSpeciality }?.id.toString()
+                                val city_id =
+                                    cities.find { it.city_name == selectedCity }?.id.toString()
+
+                                registerViewModel.signUpProfessional(
+                                    name,
+                                    last_name,
+                                    email,
+                                    phone_number,
+                                    password,
+                                    selectedOption,
+                                    photo,
+                                    city_id,
+                                    speciality_id,
+                                    context.contentResolver,
+                                )
+                            }
+                        }
+                    },
+                    width = 250
                 )
             }
         }
-    }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(vertical = 16.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "¿Ya tienes cuenta?")
+            TextButton(
+                text = "Inicia sesión",
+                onClick = {
+                    navController.navigate("login")
+                }
+            )
+        }
+    }
 }
 
 

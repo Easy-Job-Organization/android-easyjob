@@ -1,6 +1,5 @@
 package com.easyjob.jetpack.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +9,7 @@ import com.easyjob.jetpack.services.City
 import com.easyjob.jetpack.services.Language
 import com.easyjob.jetpack.services.Service
 import com.easyjob.jetpack.services.Speciality
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ResourcesViewModel(
     private val repo: ResourcesRepository = ResourcesRepositoryImpl()

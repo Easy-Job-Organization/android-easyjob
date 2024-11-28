@@ -92,8 +92,6 @@ class RegisterViewModel @Inject constructor(
         option: String,
         uri: Uri,
         city_id: String,
-        language_id: String,
-        service_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
     ) {
@@ -118,8 +116,6 @@ class RegisterViewModel @Inject constructor(
                         option,
                         uri,
                         city_id,
-                        language_id,
-                        service_id,
                         speciality_id,
                         contentResolver
                     )

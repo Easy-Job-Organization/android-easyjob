@@ -40,8 +40,6 @@ interface AuthRepository {
         option: String,
         imageUri: Uri,
         city_id: String,
-        language_id: String,
-        service_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
     ): Response<RegisterResponse>
@@ -123,8 +121,6 @@ class AuthRepositoryImpl @Inject constructor(
         option: String,
         imageUri: Uri,
         city_id: String,
-        language_id: String,
-        service_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
     ): Response<RegisterResponse> {
@@ -136,9 +132,6 @@ class AuthRepositoryImpl @Inject constructor(
         val phoneNumberPart = RequestBody.create("text/plain".toMediaTypeOrNull(), phone_number)
         val passwordPart = RequestBody.create("text/plain".toMediaTypeOrNull(), password)
         val cityPart = RequestBody.create("text/plain".toMediaTypeOrNull(), city_id)
-        val languagePart = RequestBody.create("text/plain".toMediaTypeOrNull(), language_id)
-        val servicePart =
-            RequestBody.create("text/plain".toMediaTypeOrNull(), service_id)
         val specialityPart =
             RequestBody.create("text/plain".toMediaTypeOrNull(), speciality_id)
 
@@ -162,8 +155,6 @@ class AuthRepositoryImpl @Inject constructor(
                 passwordPart,
                 it,
                 cityPart,
-                languagePart,
-                servicePart,
                 specialityPart
             )
         }!!

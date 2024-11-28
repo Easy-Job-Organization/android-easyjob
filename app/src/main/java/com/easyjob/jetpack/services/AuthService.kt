@@ -3,8 +3,6 @@ package com.easyjob.jetpack.services
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -52,8 +50,6 @@ interface AuthService {
         @Part("password") password: RequestBody,
         @Part professional_image: MultipartBody.Part,
         @Part("city_id") city: RequestBody,
-        @Part("language_id") language: RequestBody,
-        @Part("service_id") service: RequestBody,
         @Part("speciality_id") speciality: RequestBody
     ): Response<RegisterResponse>
 
