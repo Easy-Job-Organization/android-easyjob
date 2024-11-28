@@ -211,13 +211,7 @@ fun ProfessionalProfileScreen(
                             text = "Reseñas sobre mi",
                             color = Color.Black
                         )
-                        ButtonIconLink(
-                            icon = Icons.AutoMirrored.Filled.ContactSupport,
-                            descriptionIcon = "Preguntas",
-                            onClick = { /*TODO*/ },
-                            text = "Preguntas",
-                            color = Color.Black
-                        )
+
                         ButtonIconLink(
                             icon = Icons.Default.ExitToApp,
                             descriptionIcon = "Cerrar sesión",

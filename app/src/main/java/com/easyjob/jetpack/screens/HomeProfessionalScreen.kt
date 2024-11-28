@@ -50,6 +50,7 @@ fun HomeProfessionalScreen(
             composable("messages") { MessageScreen(navController) }
             composable("editServices") { EditServicesScreen(nestedNavController) }
             composable("places") { PlacesScreen(nestedNavController) }
+            composable("addPlace") { AddPlaceScreen(nestedNavController) }
             composable("editProfile") {
                 EditProfessionalProfileScreen(
                     nestedNavController

@@ -314,7 +314,7 @@ fun GroupChatCard(
                         fontWeight = FontWeight.Thin,
                         fontSize = 14.sp,
                         color = Color(0xFF133c55),
-                        text = "($score)",
+                        text = "(${ String.format("%.1f", score) })",
                         modifier = Modifier.padding(start = 2.dp)
                     )
 

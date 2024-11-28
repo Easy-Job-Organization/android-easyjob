@@ -158,13 +158,13 @@ fun ProfileScreen(
                                 text = "Mis reseñas",
                                 color = Color.Black
                             )
-                            ButtonIconLink(
+                            /*ButtonIconLink(
                                 icon = Icons.AutoMirrored.Filled.ContactSupport,
                                 descriptionIcon = "Mis preguntas",
-                                onClick = { /*TODO*/ },
+                                onClick = { *//*TODO*//* },
                                 text = "Mis preguntas",
                                 color = Color.Black
-                            )
+                            )*/
                             ButtonIconLink(
                                 icon = Icons.Default.ExitToApp,
                                 descriptionIcon = "Cerrar sesión",

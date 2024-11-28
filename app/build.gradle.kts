@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.easyjob.jetpack"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.easyjob.jetpack"
@@ -52,6 +52,9 @@ android {
 }
 
 dependencies {
+
+    //Google Maps API
+    implementation("com.google.maps.android:maps-compose:6.2.1")
 
     implementation("io.coil-kt:coil-compose:2.3.0")
 

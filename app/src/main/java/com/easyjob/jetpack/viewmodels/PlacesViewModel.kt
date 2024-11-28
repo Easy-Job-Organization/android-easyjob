@@ -44,4 +44,16 @@ class PlacesViewModel @Inject constructor(
             }
         }
     }
+
+    fun savePlaceOfProfessional( name: String, longitude: Double, latitude: Double) {
+        profileState.value = 1
+        viewModelScope.launch(Dispatchers.IO) {
+            val professionalId = getUserId();
+            val response = placesRepository.saveLocationByProfessional(professionalId?:"", name, longitude, latitude);
+            withContext(Dispatchers.Main) {
+
+                profileState.value = 3
+            }
+        }
+    }
 }
