@@ -248,7 +248,8 @@ fun GroupChatCard(
     descriptionImage: String,
     name: String = "Cargando",
     score: Double = 0.0,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    isClient: Boolean
 ) {
 
     Box(
@@ -300,24 +301,25 @@ fun GroupChatCard(
                     text = name,
                     lineHeight = 30.sp
                 )
+                if(!isClient){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                        Box {
+                            RatingStars(rating = score, iconSize = 16)
+                        }
 
-                    Box {
-                        RatingStars(rating = score, iconSize = 16)
+                        Text(
+                            fontWeight = FontWeight.Thin,
+                            fontSize = 14.sp,
+                            color = Color(0xFF133c55),
+                            text = "($score)",
+                            modifier = Modifier.padding(start = 2.dp)
+                        )
+
                     }
-
-                    Text(
-                        fontWeight = FontWeight.Thin,
-                        fontSize = 14.sp,
-                        color = Color(0xFF133c55),
-                        text = "($score)",
-                        modifier = Modifier.padding(start = 2.dp)
-                    )
-
                 }
             }
 
