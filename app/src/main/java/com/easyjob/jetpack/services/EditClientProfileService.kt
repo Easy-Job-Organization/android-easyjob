@@ -15,11 +15,11 @@ interface EditClientProfileService {
     @Multipart
     @PATCH("clients/{id}")
     suspend fun editClient(
-        @Path("id") id : String,
+        @Path("id") id: String,
         @Part("name") name: RequestBody,
         @Part("last_name") last_name: RequestBody,
         @Part("phone_number") phone_number: RequestBody,
-        @Part client_image: MultipartBody.Part,
+        @Part client_image: MultipartBody.Part?,
 
         ): Response<Unit>
 

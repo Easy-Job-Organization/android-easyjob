@@ -9,7 +9,6 @@ import com.easyjob.jetpack.models.SpecialitiesResponse
 import com.easyjob.jetpack.services.EditProfessionalProfileService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
@@ -22,7 +21,7 @@ interface EditProfessionalProfileRepository {
         name: String,
         last_name: String,
         phone_number: String,
-        professional_image: Uri,
+        professional_image: Uri?,
         city: String,
         speciality: String,
         contentResolver: ContentResolver
@@ -38,42 +37,47 @@ interface EditProfessionalProfileRepository {
 class EditProfessionalProfileRepositoryImpl @Inject constructor(
     private val service : EditProfessionalProfileService
 ): EditProfessionalProfileRepository{
+
     override suspend fun editProfessional(
         id: String,
         name: String,
         last_name: String,
         phone_number: String,
-        professional_image: Uri,
+        professional_image: Uri?,
         city: String,
         speciality: String,
         contentResolver: ContentResolver
     ): Response<Unit>? {
+        val namePart = name.toRequestBody("text/plain".toMediaTypeOrNull())
+        val lastNamePart = last_name.toRequestBody("text/plain".toMediaTypeOrNull())
+        val phoneNumberPart = phone_number.toRequestBody("text/plain".toMediaTypeOrNull())
+        val cityPart = city.toRequestBody("text/plain".toMediaTypeOrNull())
+        val specialityPart = speciality.toRequestBody("text/plain".toMediaTypeOrNull())
 
-        // Convert fields to RequestBody
-        val namePart = RequestBody.create("text/plain".toMediaTypeOrNull(), name)
-        val lastNamePart = RequestBody.create("text/plain".toMediaTypeOrNull(), last_name)
-        val phoneNumberPart = RequestBody.create("text/plain".toMediaTypeOrNull(), phone_number)
-        val cityPart = RequestBody.create("text/plain".toMediaTypeOrNull(), city)
-        val specialityPart = RequestBody.create("text/plain".toMediaTypeOrNull(), speciality)
-
-        val imageName = "professional_image"
-
-        val imageStream = contentResolver.openInputStream(professional_image)
-        val imagePart = imageStream?.let {
-            MultipartBody.Part.createFormData(
-                imageName,
-                File(professional_image.path!!).name,
-                it.readBytes().toRequestBody("image/*".toMediaTypeOrNull())
-            )
+        val imagePart = if (professional_image != null &&
+            (professional_image.scheme == "content" || professional_image.scheme == "file")) {
+            val imageStream = contentResolver.openInputStream(professional_image)
+            imageStream?.let {
+                MultipartBody.Part.createFormData(
+                    "professional_image",
+                    File(professional_image.path!!).name,
+                    it.readBytes().toRequestBody("image/*".toMediaTypeOrNull())
+                )
+            }
+        } else {
+            null
         }
 
-        val res = imagePart?.let {
-            service.editProfessional(id, namePart, lastNamePart, phoneNumberPart,
-                it, cityPart, specialityPart)
+        return try {
+            imagePart?.let {
+                service.editProfessional(
+                    id, namePart, lastNamePart, phoneNumberPart, it, cityPart, specialityPart
+                )
+            } ?: service.editProfessional(id, namePart, lastNamePart, phoneNumberPart, null, cityPart, specialityPart)
+        } catch (e: Exception) {
+            Log.e("EditProfessionalRepo", "Error al enviar solicitud: ${e.message}")
+            null
         }
-
-        Log.d("EditProfessionalProfileRepository", ">>> Response - $res")
-        return res
     }
 
     override suspend fun getCurrentProfessional(id: String): Response<Professional>{
