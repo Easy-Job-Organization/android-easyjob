@@ -14,8 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -64,6 +66,7 @@ fun PlacesScreen(
     placesViewModel: PlacesViewModel = hiltViewModel(),
 ) {
 
+
     val places by placesViewModel.placesProfessional.observeAsState(emptyList())
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -91,7 +94,9 @@ fun PlacesScreen(
                     tint = Color.White
                 )
             }
-        }
+        },
+        modifier = Modifier.
+                    fillMaxSize()
     ) { padding ->
 
 
@@ -99,16 +104,16 @@ fun PlacesScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-
         ) {
 
             Column(
                 modifier = Modifier
+                    .fillMaxSize()
                     .background(Color.White)
                     .padding(
-                        vertical = 28.dp,
                         horizontal = 24.dp
                     )
+                    .padding(top = 28.dp)
             ) {
                 Row() {
 
