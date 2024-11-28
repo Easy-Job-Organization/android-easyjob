@@ -94,6 +94,7 @@ fun DropdownMenu1(
     options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
+    placeholder: String = "Selecciona una opción",
     width: Int? = null,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -117,7 +118,7 @@ fun DropdownMenu1(
 
     ) {
         TextField(
-            value = selectedOption,
+            value = if (selectedOption.isEmpty()) placeholder else selectedOption,
             onValueChange = onOptionSelected,
             readOnly = true,
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -192,16 +193,18 @@ fun DateTimePicker(
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
 
-    // DatePicker Dialog
+    // Configuración para bloquear días pasados
     val datePickerDialog = DatePickerDialog(
         context,
         { _, pickedYear, pickedMonth, pickedDay ->
             onDateSelected("$pickedDay/${pickedMonth + 1}/$pickedYear")
         },
         year, month, day
-    )
+    ).apply {
+        datePicker.minDate = calendar.timeInMillis // Bloquear días pasados
+    }
 
-    // TimePicker Dialog
+    // Configuración para bloquear horas pasadas
     val timePickerDialog = TimePickerDialog(
         context,
         { _, pickedHour, pickedMinute ->
@@ -296,7 +299,9 @@ fun DateTimePicker(
                         pressedElevation = 8.dp // Elevación cuando se presiona
                     ),
                     shape = RoundedCornerShape(6.dp),
-                    onClick = { timePickerDialog.show()  }
+                    onClick = {
+                        timePickerDialog.show()
+                    }
                 ) {
                     Icon(
                         imageVector = Icons.Filled.HourglassBottom,

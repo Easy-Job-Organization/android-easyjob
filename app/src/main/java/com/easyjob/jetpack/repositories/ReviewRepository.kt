@@ -1,5 +1,6 @@
 package com.easyjob.jetpack.repositories
 
+import android.util.Log
 import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.models.Review
 import com.easyjob.jetpack.services.ReviewRequest
@@ -15,16 +16,48 @@ data class ReviewClientDTO(
 )
 
 interface ReviewRepository {
-    suspend fun submitReview(clientId: String, professionalId: String, score: Double, comment: String): Response<Review>
+    suspend fun submitReview(
+        clientId: String,
+        professionalId: String,
+        score: Double,
+        comment: String
+    ): Response<Review>
+
+    suspend fun updateReview(reviewId: String, score: Double, comment: String): Response<Review>
     suspend fun getReviewsByClientId(clientId: String): Response<List<ReviewClientDTO>>
 }
 
 class ReviewRepositoryImpl @Inject constructor(
     private val reviewService: ReviewService
 ) : ReviewRepository {
-    override suspend fun submitReview(clientId: String, professionalId: String, score: Double, comment: String): Response<Review> {
+    override suspend fun submitReview(
+        clientId: String,
+        professionalId: String,
+        score: Double,
+        comment: String
+    ): Response<Review> {
         val reviewRequest = ReviewRequest(score, comment)
-        return reviewService.submitReview(clientId, professionalId, reviewRequest)
+        val response = reviewService.submitReview(clientId, professionalId, reviewRequest)
+        if (!response.isSuccessful) {
+            Log.e("ReviewRepository", "Error al enviar reseña: ${response.errorBody()?.string()}")
+        }
+        return response
+    }
+
+    override suspend fun updateReview(
+        reviewId: String,
+        score: Double,
+        comment: String
+    ): Response<Review> {
+        val reviewRequest = ReviewRequest(score, comment)
+        val response = reviewService.updateReview(reviewId, reviewRequest)
+        if (!response.isSuccessful) {
+            Log.e(
+                "ReviewRepository",
+                "Error al actualizar reseña: ${response.errorBody()?.string()}"
+            )
+        }
+        return response
     }
 
     override suspend fun getReviewsByClientId(clientId: String): Response<List<ReviewClientDTO>> {

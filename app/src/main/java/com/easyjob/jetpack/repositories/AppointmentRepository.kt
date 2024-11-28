@@ -39,6 +39,7 @@ class AppointmentRepositoryImpl @Inject constructor(
 
     override suspend fun getCLientAppointments(id: String): List<Appointment> {
         val res = appointmentService.getClientAppointments(id)
+        Log.e("AppointmentDetailsScreen", "APPOINTMENTaa: ${res.body()}")
         res.body()?.let {
             return it
         } ?: run {

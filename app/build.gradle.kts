@@ -53,7 +53,7 @@ android {
 
 dependencies {
 
-    //Google Maps API
+    // Android Maps Compose composables for the Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:6.2.1")
 
     implementation("io.coil-kt:coil-compose:2.3.0")

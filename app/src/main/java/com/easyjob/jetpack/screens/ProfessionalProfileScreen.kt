@@ -32,6 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,6 +47,7 @@ import com.easyjob.jetpack.models.Professional
 import com.easyjob.jetpack.ui.theme.components.ActionCard
 import com.easyjob.jetpack.ui.theme.components.ButtonIconLink
 import com.easyjob.jetpack.ui.theme.components.FilterCard
+import com.easyjob.jetpack.ui.theme.components.InfoAlert
 import com.easyjob.jetpack.ui.theme.components.ProfileSection
 import com.easyjob.jetpack.ui.theme.components.Topbar
 import com.easyjob.jetpack.viewmodels.ProfessionalProfileViewModel
@@ -56,6 +60,14 @@ fun ProfessionalProfileScreen(
     innerNavController: NavController = rememberNavController(),
     viewModel: ProfessionalProfileViewModel = hiltViewModel()
 ) {
+
+    var showHelpInfo by remember {
+        mutableStateOf(false)
+    }
+
+    var showInProgressInfo by remember {
+        mutableStateOf(false)
+    }
 
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
@@ -110,6 +122,23 @@ fun ProfessionalProfileScreen(
                 }
 
                 3 -> {
+
+                    if(showHelpInfo){
+                        InfoAlert(
+                            title = "Ayuda",
+                            info = "Comunicate con nosotros al correo:\n\ncontacto@easyjob.com",
+                            onAccept = {showHelpInfo=false}
+                        )
+                    }
+
+                    if(showInProgressInfo){
+                        InfoAlert(
+                            title = "Funcion en desarrollo",
+                            info = "Agradecemos tu interes\n\nPronto tendremos esta funcion disponible",
+                            onAccept = {showInProgressInfo=false}
+                        )
+                    }
+
                     profile?.let { professional: Professional ->
                         ProfileSection(
                             image = professional.photo_url,
@@ -158,19 +187,19 @@ fun ProfessionalProfileScreen(
                             image = com.easyjob.jetpack.R.drawable.ayuda,
                             descriptionImage = "Ayuda",
                             title = "Ayuda",
-                            onClick = { /*TODO*/ }
+                            onClick = { showHelpInfo=true }
                         )
                         ActionCard(
                             image = com.easyjob.jetpack.R.drawable.easyjobplus,
                             descriptionImage = "Easy job +",
                             title = "Easy job +",
-                            onClick = { /*TODO*/ }
+                            onClick = { showInProgressInfo=true }
                         )
                         ActionCard(
                             image = com.easyjob.jetpack.R.drawable.history_toggle_off,
                             descriptionImage = "Historial",
                             title = "Historial",
-                            onClick = { /*TODO*/ }
+                            onClick = { showInProgressInfo=true }
                         )
                     }
 

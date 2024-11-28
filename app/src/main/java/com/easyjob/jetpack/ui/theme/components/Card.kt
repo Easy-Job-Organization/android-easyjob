@@ -248,7 +248,8 @@ fun GroupChatCard(
     descriptionImage: String,
     name: String = "Cargando",
     score: Double = 0.0,
-    navController: NavController = rememberNavController()
+    navController: NavController = rememberNavController(),
+    isClient: Boolean
 ) {
 
     Box(
@@ -300,15 +301,15 @@ fun GroupChatCard(
                     text = name,
                     lineHeight = 30.sp
                 )
+                if(!isClient){
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Box {
-                        RatingStars(rating = score, iconSize = 16)
-                    }
+                        Box {
+                            RatingStars(rating = score, iconSize = 16)
+                        }
 
                     Text(
                         fontWeight = FontWeight.Thin,
@@ -318,6 +319,8 @@ fun GroupChatCard(
                         modifier = Modifier.padding(start = 2.dp)
                     )
 
+
+                    }
                 }
             }
 
@@ -334,7 +337,8 @@ fun AppointmentCard(
     service: Service?,
     date: String,
     hour: String,
-    photo_url: String
+    photo_url: String,
+    navController: NavController
 ){
     Box(
         modifier = Modifier
@@ -342,6 +346,10 @@ fun AppointmentCard(
             .wrapContentHeight()
             .shadow(10.dp, RoundedCornerShape(12.dp)) // Sombra aplicada al Box
             .background(Color.White, RoundedCornerShape(12.dp))
+            .clickable {
+                navController.navigate("appointment/$id")
+            }
+
     ) {
 
         Row(

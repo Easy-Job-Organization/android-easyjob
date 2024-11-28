@@ -15,13 +15,13 @@ import retrofit2.http.Path
 interface EditProfessionalProfileService {
 
     @Multipart
-    @PATCH("professional/{id}")
+    @PATCH("professionals/{id}")
     suspend fun editProfessional(
-        @Path("id") id : String,
+        @Path("id") id: String,
         @Part("name") name: RequestBody,
         @Part("last_name") last_name: RequestBody,
         @Part("phone_number") phone_number: RequestBody,
-        @Part professional_image: MultipartBody.Part,
+        @Part professional_image: MultipartBody.Part?,
         @Part("city_id") city: RequestBody,
         @Part("speciality_id") speciality: RequestBody,
 

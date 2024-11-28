@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class EditClientProfileViewModel @Inject constructor(
@@ -34,8 +35,8 @@ class EditClientProfileViewModel @Inject constructor(
     private val _clientImage = MutableLiveData<Uri?>()
     val clientImage: LiveData<Uri?> get() = _clientImage
 
-    private val _updateResult = MutableLiveData<Boolean>()
-    val updateResult: LiveData<Boolean> get() = _updateResult
+    private val _updateResult = MutableLiveData<Boolean?>(null)
+    val updateResult: LiveData<Boolean?> get() = _updateResult
 
     // Obtener el ID del usuario desde UserPreferencesRepository
     private suspend fun getUserId(): String? {
@@ -76,16 +77,17 @@ class EditClientProfileViewModel @Inject constructor(
                         _name.value = it.name
                         _lastName.value = it.last_name
                         _phoneNumber.value = it.phone_number
-                        _clientImage.value = Uri.parse(it.photo_url)
+                        if (it.photo_url.isNotBlank()) {
+                            _clientImage.value = Uri.parse(it.photo_url) // Asigna URI remota
+                        }
                     }
-                } else {
-                    Log.e("EditClientVM", "Error al obtener datos del cliente: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e("EditClientVM", "Excepción al obtener datos del cliente: ${e.message}")
             }
         }
     }
+
 
     // Editar perfil del cliente
     fun editClientProfile(imageUri: Uri?, contentResolver: ContentResolver) {
@@ -94,8 +96,8 @@ class EditClientProfileViewModel @Inject constructor(
             val lastName = _lastName.value.orEmpty()
             val phoneNumber = _phoneNumber.value.orEmpty()
 
-            if (name.isBlank() || lastName.isBlank() || phoneNumber.isBlank() || imageUri == null) {
-                Log.e("EditClientVM", "Campos vacíos o imagen no seleccionada")
+            if (name.isBlank() || lastName.isBlank() || phoneNumber.isBlank()) {
+                Log.e("EditClientVM", "Campos vacíos")
                 _updateResult.value = false
                 return@launch
             }
@@ -107,12 +109,29 @@ class EditClientProfileViewModel @Inject constructor(
                 return@launch
             }
 
-            val response = repository.editClient(userId, name, lastName, phoneNumber, imageUri, contentResolver)
+            // Si la imagen es remota, no intentes enviarla
+            if (imageUri != null && (imageUri.scheme == "https" || imageUri.scheme == "http")) {
+                Log.d("EditClientVM", "La imagen es remota, omitiendo envío")
+            }
+
+            val response = repository.editClient(
+                userId,
+                name,
+                lastName,
+                phoneNumber,
+                imageUri ?: Uri.EMPTY, // Usa un valor por defecto si no hay imagen
+                contentResolver
+            )
             _updateResult.value = response?.isSuccessful == true
 
             if (response?.isSuccessful == false) {
                 Log.e("EditClientVM", "Error al actualizar perfil: ${response.errorBody()?.string()}")
             }
         }
+    }
+
+
+    fun resetUpdateResult() {
+        _updateResult.value = null
     }
 }

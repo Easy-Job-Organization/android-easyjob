@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.easyjob.jetpack.data.store.UserPreferencesRepository
 import com.easyjob.jetpack.repositories.AuthRepository
-import com.easyjob.jetpack.repositories.AuthRepositoryImpl
-import com.easyjob.jetpack.services.AuthServiceImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,11 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository, // Add this line
-    val repo: AuthRepository = AuthRepositoryImpl(
-        authService = AuthServiceImpl(),
-        userPreferencesRepository = userPreferencesRepository
-    )
+    private val repo: AuthRepository,
+    private val userPreferencesRepository: UserPreferencesRepository
 ) : ViewModel() {
 
     //0. Idle
@@ -96,8 +91,6 @@ class RegisterViewModel @Inject constructor(
         password: String,
         option: String,
         uri: Uri,
-        service_id: String,
-        language_id: String,
         city_id: String,
         speciality_id: String,
         contentResolver: ContentResolver
@@ -122,8 +115,6 @@ class RegisterViewModel @Inject constructor(
                         password,
                         option,
                         uri,
-                        service_id,
-                        language_id,
                         city_id,
                         speciality_id,
                         contentResolver

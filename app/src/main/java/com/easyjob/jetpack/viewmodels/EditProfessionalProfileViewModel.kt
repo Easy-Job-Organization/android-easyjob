@@ -48,8 +48,8 @@ class EditProfessionalProfileViewModel @Inject constructor(
     private val _cities = MutableLiveData<List<City>>()
     val cities: LiveData<List<City>> get() = _cities
 
-    private val _updateResult = MutableLiveData<Boolean>()
-    val updateResult: LiveData<Boolean> get() = _updateResult
+    private val _updateResult = MutableLiveData<Boolean?>(null)
+    val updateResult: LiveData<Boolean?> get() = _updateResult
 
     // Obtener el ID del usuario desde UserPreferencesRepository
     private suspend fun getUserId(): String? {
@@ -123,18 +123,21 @@ class EditProfessionalProfileViewModel @Inject constructor(
                         _phoneNumber.value = it.phone_number
                         _cityId.value = it.cities[0].id
                         _specialityId.value = it.specialities[0].id
-                        _professionalImage.value = Uri.parse(it.photo_url)
+                        _professionalImage.value = if (it.photo_url.isNotBlank()) {
+                            Uri.parse(it.photo_url)
+                        } else {
+                            null
+                        }
                     }
                 } else {
-                    Log.e("EditProfessionalVM", "Error al obtener datos del profesional: ${response.errorBody()?.string()}")
+                    Log.e("EditProfessionalVM", "Error al obtener datos: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                Log.e("EditProfessionalVM", "Excepción al obtener datos del profesional: ${e.message}")
+                Log.e("EditProfessionalVM", "Excepción: ${e.message}")
             }
         }
     }
 
-    // Editar perfil del profesional
     fun editProfessionalProfile(imageUri: Uri?, contentResolver: ContentResolver) {
         viewModelScope.launch {
             val name = _name.value.orEmpty()
@@ -143,29 +146,38 @@ class EditProfessionalProfileViewModel @Inject constructor(
             val city = _cityId.value.orEmpty()
             val speciality = _specialityId.value.orEmpty()
 
-            if (name.isBlank() || lastName.isBlank() || phoneNumber.isBlank() || city.isBlank() || speciality.isBlank() || imageUri == null) {
-                Log.e("EditProfessionalVM", "Campos vacíos o imagen no seleccionada")
+            if (name.isBlank() || lastName.isBlank() || phoneNumber.isBlank() || city.isBlank() || speciality.isBlank()) {
+                Log.e("EditProfessionalVM", "Campos vacíos")
                 _updateResult.value = false
                 return@launch
             }
 
-            val userId = getUserId()
-            if (userId == null) {
-                Log.e("EditProfessionalVM", "No se pudo obtener el ID del usuario")
-                _updateResult.value = false
-                return@launch
+            // Validar imagen remota
+            if (imageUri != null && (imageUri.scheme == "http" || imageUri.scheme == "https")) {
+                Log.d("EditProfessionalVM", "La imagen es remota, omitiendo envío")
             }
 
             try {
+                val userId = getUserId()
+                if (userId == null) {
+                    Log.e("EditProfessionalVM", "No se pudo obtener el ID del usuario")
+                    _updateResult.value = false
+                    return@launch
+                }
+
                 val response = repository.editProfessional(
                     userId, name, lastName, phoneNumber, imageUri, city, speciality, contentResolver
                 )
                 _updateResult.value = response?.isSuccessful == true
             } catch (e: Exception) {
-                Log.e("EditProfessionalVM", "Error al actualizar perfil: ${e.message}")
+                Log.e("EditProfessionalVM", "Error al actualizar: ${e.message}")
                 _updateResult.value = false
             }
         }
+    }
+
+    fun resetUpdateResult() {
+        _updateResult.value = null
     }
 
 }

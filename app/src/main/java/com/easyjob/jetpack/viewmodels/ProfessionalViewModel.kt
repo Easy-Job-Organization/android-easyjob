@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class ProfessionalViewModel(
     val repo: ProfessionalRepository = ProfessionalRepositoryImpl()
-): ViewModel() {
+) : ViewModel() {
 
     private val _professional = MutableLiveData<Professional?>()
     val professional: LiveData<Professional?> get() = _professional
@@ -32,6 +32,9 @@ class ProfessionalViewModel(
 
     private val _errorMessage = MutableLiveData<String>("")
     val errorMessage: LiveData<String> get() = _errorMessage
+
+    private val _scoreAndCount = MutableLiveData<Pair<Double, Int>>()
+    val scoreAndCount: LiveData<Pair<Double, Int>> get() = _scoreAndCount
 
 
     fun fetchProfessional(id: String) {
@@ -110,6 +113,25 @@ class ProfessionalViewModel(
                 }
             }
         }
+    }
+
+    fun recalculateScoreAndCount(reviews: List<Review?>) {
+        if (reviews.isEmpty()) {
+            _scoreAndCount.value = Pair(0.0, 0)
+            return
+        }
+
+        var totalScore = 0.0
+        var count = 0
+        reviews.forEach {
+            if (it != null) {
+                totalScore += it.score
+                count++
+            }
+        }
+
+        val averageScore = if (count > 0) totalScore / count else 0.0
+        _scoreAndCount.value = Pair(averageScore, count)
     }
 
 }

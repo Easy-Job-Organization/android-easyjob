@@ -12,7 +12,6 @@ import com.easyjob.jetpack.repositories.ReviewRepositoryImpl
 import com.easyjob.jetpack.repositories.SearchScreenRepository
 import com.easyjob.jetpack.repositories.SearchScreenRepositoryImpl
 import com.easyjob.jetpack.services.AuthService
-import com.easyjob.jetpack.services.AuthServiceImpl
 import com.easyjob.jetpack.services.ReviewService
 import com.easyjob.jetpack.services.SearchScreenService
 import com.easyjob.jetpack.services.SearchScreenServiceImpl
@@ -172,6 +171,11 @@ object AppModule {
     @Singleton
     fun providePlacesService(retrofit: Retrofit): PlacesService {
         return retrofit.create(PlacesService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAppointmentDetailsService(retrofit: Retrofit): AppointmentDetailsService {
+        return retrofit.create(AppointmentDetailsService::class.java)
     }
 
 
@@ -299,5 +303,12 @@ object AppModule {
         placesService: PlacesService
     ): PlacesRepository {
         return PlacesRepositoryImpl(placesService)
+
+    @Singleton
+    @Provides
+    fun provideAppointmentDetailsRepository(
+        appointmentDetailsService: AppointmentDetailsService
+    ): AppointmentDetailsRepository {
+        return AppointmentDetailsRepositoryImpl(appointmentDetailsService)
     }
 }

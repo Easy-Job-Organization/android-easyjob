@@ -323,7 +323,7 @@ fun ActionCard(image: Int = R.drawable.ic_launcher_background, descriptionImage:
     ) {
         Column(
             modifier = Modifier
-                .padding(14.dp)
+                .padding(start = 2.dp, end = 2.dp, top = 14.dp, bottom = 14.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween,

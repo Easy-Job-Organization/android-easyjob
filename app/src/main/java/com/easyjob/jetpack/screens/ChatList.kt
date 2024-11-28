@@ -207,7 +207,8 @@ fun ChatList(
                                         descriptionImage = "Profile photo of ${groupChat.professional.name} ${groupChat.professional.last_name}",
                                         name = "${groupChat.professional.name  } ${groupChat.professional.last_name}",
                                         score = groupChat.professional.score ,
-                                        navController = navController
+                                        navController = navController,
+                                        isClient = false
                                     )
                                 } else if(groupChat.client != null) {
                                     GroupChatCard(
@@ -215,7 +216,8 @@ fun ChatList(
                                         image = groupChat.client.photo_url,
                                         descriptionImage = "Profile photo of ${groupChat.client.name} ${groupChat.client.last_name}",
                                         name = "${groupChat.client.name  } ${groupChat.client.last_name}",
-                                        navController = navController
+                                        navController = navController,
+                                        isClient = true
                                     )
                                 }
                             }
